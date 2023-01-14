@@ -13,6 +13,7 @@
 		AE3B12AC29732A0100111B19 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */; };
 		AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12AD29732A0100111B19 /* Persistence.swift */; };
 		AE3B12B129732A0100111B19 /* MyThings.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12AF29732A0100111B19 /* MyThings.xcdatamodeld */; };
+		AE3B12BC29732FAB00111B19 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12BB29732FAB00111B19 /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AE3B12AD29732A0100111B19 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		AE3B12B029732A0100111B19 /* MyThings.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyThings.xcdatamodel; sourceTree = "<group>"; };
+		AE3B12BB29732FAB00111B19 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			children = (
 				AE3B12A4297329FF00111B19 /* MyThingsApp.swift */,
 				AE3B12A6297329FF00111B19 /* MyWishlistView.swift */,
+				AE3B12BB29732FAB00111B19 /* LoginView.swift */,
 				AE3B12A829732A0100111B19 /* Assets.xcassets */,
 				AE3B12AD29732A0100111B19 /* Persistence.swift */,
 				AE3B12AF29732A0100111B19 /* MyThings.xcdatamodeld */,
@@ -146,6 +149,7 @@
 				AE3B12B129732A0100111B19 /* MyThings.xcdatamodeld in Sources */,
 				AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */,
 				AE3B12A7297329FF00111B19 /* MyWishlistView.swift in Sources */,
+				AE3B12BC29732FAB00111B19 /* LoginView.swift in Sources */,
 				AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
