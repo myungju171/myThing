@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A4297329FF00111B19 /* MyThingsApp.swift */; };
-		AE3B12A7297329FF00111B19 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* ContentView.swift */; };
+		AE3B12A7297329FF00111B19 /* MyWishlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* MyWishlistView.swift */; };
 		AE3B12A929732A0100111B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12A829732A0100111B19 /* Assets.xcassets */; };
 		AE3B12AC29732A0100111B19 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */; };
 		AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12AD29732A0100111B19 /* Persistence.swift */; };
@@ -18,7 +18,7 @@
 /* Begin PBXFileReference section */
 		AE3B12A1297329FF00111B19 /* MyThings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyThings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE3B12A4297329FF00111B19 /* MyThingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyThingsApp.swift; sourceTree = "<group>"; };
-		AE3B12A6297329FF00111B19 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AE3B12A6297329FF00111B19 /* MyWishlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishlistView.swift; sourceTree = "<group>"; };
 		AE3B12A829732A0100111B19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AE3B12AD29732A0100111B19 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				AE3B12A4297329FF00111B19 /* MyThingsApp.swift */,
-				AE3B12A6297329FF00111B19 /* ContentView.swift */,
+				AE3B12A6297329FF00111B19 /* MyWishlistView.swift */,
 				AE3B12A829732A0100111B19 /* Assets.xcassets */,
 				AE3B12AD29732A0100111B19 /* Persistence.swift */,
 				AE3B12AF29732A0100111B19 /* MyThings.xcdatamodeld */,
@@ -145,7 +145,7 @@
 			files = (
 				AE3B12B129732A0100111B19 /* MyThings.xcdatamodeld in Sources */,
 				AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */,
-				AE3B12A7297329FF00111B19 /* ContentView.swift in Sources */,
+				AE3B12A7297329FF00111B19 /* MyWishlistView.swift in Sources */,
 				AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
