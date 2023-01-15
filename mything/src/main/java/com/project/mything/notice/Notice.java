@@ -28,7 +28,7 @@ public class Notice extends BaseTime {
     private Boolean isChecked;
 
     @Enumerated(EnumType.STRING)
-    private DomainType domainType;성
+    private DomainType domainType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
