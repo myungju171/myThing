@@ -1,6 +1,7 @@
 package com.project.mything.auth.controller;
 
 import com.project.mything.auth.service.PhoneAuthService;
+import com.project.mything.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +24,7 @@ public class PhoneAuthController {
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseUserId requestJoin(@RequestBody RequestJoin join) {
+    public UserDto.ResponseUserId requestJoin(@RequestBody RequestJoin join) {
         return authService.join(join);
     }
 }
