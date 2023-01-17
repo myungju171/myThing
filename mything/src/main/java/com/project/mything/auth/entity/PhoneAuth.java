@@ -1,4 +1,4 @@
-package com.project.mything.auth;
+package com.project.mything.auth.entity;
 
 import com.project.mything.time.BaseTime;
 import lombok.*;
@@ -19,6 +19,6 @@ public class PhoneAuth extends BaseTime {
 
     private String phone;
 
-    private Integer authNumber;
+    private String authNumber;
 
 }
