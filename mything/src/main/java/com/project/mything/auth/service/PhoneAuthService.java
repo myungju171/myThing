@@ -4,6 +4,8 @@ import com.project.mything.auth.dto.PhoneAuthDto;
 import com.project.mything.auth.entity.PhoneAuth;
 import com.project.mything.auth.mapper.PhoneAuthMapper;
 import com.project.mything.auth.repository.PhoneAuthRepository;
+import com.project.mything.exception.BusinessLogicException;
+import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
@@ -47,7 +49,7 @@ public class PhoneAuthService {
         phoneAuthRepository.delete(dbPhoneAuth);
 
         if (!dbPhoneAuth.getAuthNumber().equals(requestJoin.getAuthNumber())) {
-            throw new RuntimeException("정확한 인증번호 필요");
+            throw new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER);
         }
 
         User user = phoneAuthMapper.toUser(requestJoin);
@@ -58,7 +60,7 @@ public class PhoneAuthService {
     private PhoneAuth findVerifiedPhoneAuth(PhoneAuthDto.RequestJoin requestJoin) {
         return phoneAuthRepository
                 .findPhoneAuthByPhone(requestJoin.getPhone())
-                .orElseThrow(() -> new RuntimeException("정확한 휴대폰 번호 필요"));
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER));
     }
 
 }
