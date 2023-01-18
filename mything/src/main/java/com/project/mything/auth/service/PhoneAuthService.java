@@ -60,7 +60,7 @@ public class PhoneAuthService {
     private PhoneAuth findVerifiedPhoneAuth(PhoneAuthDto.RequestJoin requestJoin) {
         return phoneAuthRepository
                 .findPhoneAuthByPhone(requestJoin.getPhone())
-                .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER));
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_MATCH_PHONE_NUMBER));
     }
 
 }
