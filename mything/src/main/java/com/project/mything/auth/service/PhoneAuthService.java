@@ -29,6 +29,9 @@ public class PhoneAuthService {
     private final UserMapper userMapper;
 
     public String sendAuthNumber(PhoneAuthDto.RequestAuthNumber authNumber) {
+        if (authNumber.getPhone().length() != 12) {
+            throw new BusinessLogicException(ErrorCode.INVALID_PHONE_NUMBER);
+        }
         PhoneAuth phoneAuth = phoneAuthMapper.toPhoneAuth(authNumber, getRandomCode());
         Message message = sendService.send(phoneAuth.getPhone(), phoneAuth.getAuthNumber());
         phoneAuthRepository.save(phoneAuth);
