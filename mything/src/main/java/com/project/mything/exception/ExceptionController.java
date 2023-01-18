@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionController {
 
     @ExceptionHandler({BusinessLogicException.class})
-    public ResponseEntity<Response> businessLogicException(BusinessLogicException businessLogicException) {
-        return Response.toResponseEntity(businessLogicException.getErrorCode());
+    public ResponseEntity<ResponseException> businessLogicException(BusinessLogicException businessLogicException) {
+        return ResponseException.toResponseEntity(businessLogicException.getErrorCode());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Response> methodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
-        return Response.toResponseEntity(methodArgumentNotValidException);
+    public ResponseEntity<ResponseException> methodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
+        return ResponseException.toResponseEntity(methodArgumentNotValidException);
     }
 }
