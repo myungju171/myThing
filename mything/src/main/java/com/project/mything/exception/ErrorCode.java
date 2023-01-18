@@ -9,11 +9,11 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    NO_MATCH_AUTH_NUMBER(BAD_REQUEST,"정확한 인증번호를 입력해주세요 "),
-
+    NO_MATCH_AUTH_NUMBER(BAD_REQUEST),
+    NO_MATCH_PHONE_NUMBER(BAD_REQUEST),
     ;
 
     private HttpStatus httpStatus;
-    private String message;
+
 
 }
