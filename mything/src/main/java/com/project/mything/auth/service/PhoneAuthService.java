@@ -11,7 +11,6 @@ import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import net.nurigo.sdk.message.model.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ public class PhoneAuthService {
             throw new BusinessLogicException(ErrorCode.INVALID_PHONE_NUMBER);
         }
         PhoneAuth phoneAuth = phoneAuthMapper.toPhoneAuth(authNumber, getRandomCode());
-        Message message = sendService.send(phoneAuth.getPhone(), phoneAuth.getAuthNumber());
+        sendService.send(phoneAuth.getPhone(), phoneAuth.getAuthNumber());
         phoneAuthRepository.save(phoneAuth);
         return "true";
     }
