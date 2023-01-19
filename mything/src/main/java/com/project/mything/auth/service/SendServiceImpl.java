@@ -1,6 +1,5 @@
 package com.project.mything.auth.service;
 
-import com.project.mything.auth.config.AuthConfig;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;

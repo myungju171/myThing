@@ -1,12 +1,12 @@
 package com.project.mything.item.entity;
 
-import com.project.mything.item.entity.enums.ItemEmoji;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.time.BaseTime;
-import com.project.mything.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,24 +20,30 @@ public class Item extends BaseTime {
     @Column(name = "item_id")
     private Long id;
 
-    private String name;
+    private Long productId;
 
-    private Integer price;
+    private String title;
 
-    private String siteUrl;
+    private Integer lprice;
 
-    private String imageUrl;
+    private String link;
+
+    private String image;
 
     private String memo;
 
-    @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus;
+    @Builder.Default
+    private Boolean interestedItem = Boolean.FALSE;
 
-    @Enumerated(EnumType.STRING)
-    private ItemEmoji itemEmoji;
+    @Builder.Default
+    private Boolean secretItem = Boolean.FALSE;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private ItemStatus itemStatus = ItemStatus.POST;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item")
+    private List<ItemUser> itemUserList = new ArrayList<>();
 
 }
