@@ -24,21 +24,20 @@ class PhoneAuthRepositoryTest {
     public void findPhoneAuthByPhone_suc(){
     //given
         PhoneAuth phoneAuth = PhoneAuth.builder()
-                .id(1L)
                 .phone("01011112222")
                 .authNumber("1234")
                 .build();
 
-        phoneAuthRepository.save(phoneAuth);
+        PhoneAuth dbPhoneAuth = phoneAuthRepository.save(phoneAuth);
 
         //when
-        PhoneAuth dbPhoneAuth = phoneAuthRepository.findPhoneAuthByPhone("01011112222")
+        PhoneAuth foundPhoneAuth = phoneAuthRepository.findPhoneAuthByPhone("01011112222")
                 .orElseThrow(() -> new RuntimeException());
 
         //then
-        assertThat(dbPhoneAuth.getPhone()).isEqualTo(phoneAuth.getPhone());
-        assertThat(dbPhoneAuth.getAuthNumber()).isEqualTo(phoneAuth.getAuthNumber());
-        assertThat(dbPhoneAuth.getId()).isEqualTo(phoneAuth.getId());
+        assertThat(foundPhoneAuth.getPhone()).isEqualTo(dbPhoneAuth.getPhone());
+        assertThat(foundPhoneAuth.getAuthNumber()).isEqualTo(dbPhoneAuth.getAuthNumber());
+        assertThat(foundPhoneAuth.getId()).isEqualTo(dbPhoneAuth.getId());
     }
 
     @Test
