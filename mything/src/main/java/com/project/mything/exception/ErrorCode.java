@@ -5,15 +5,16 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    NO_MATCH_AUTH_NUMBER(BAD_REQUEST,"정확한 인증번호를 입력해주세요 "),
-
-    ;
+    NO_MATCH_AUTH_NUMBER(NOT_FOUND),
+    NO_MATCH_PHONE_NUMBER(NOT_FOUND),
+    INVALID_PHONE_NUMBER(BAD_REQUEST);
 
     private HttpStatus httpStatus;
-    private String message;
+
 
 }

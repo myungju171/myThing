@@ -10,7 +10,7 @@ import com.project.mything.user.entity.enums.UserStatus;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class User extends BaseTime {
 
     private String phone;
 
-    private LocalDateTime birthDay;
+    private LocalDate birthDay;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
