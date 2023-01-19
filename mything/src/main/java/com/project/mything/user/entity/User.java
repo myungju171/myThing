@@ -2,7 +2,7 @@ package com.project.mything.user.entity;
 
 import com.project.mything.friend.entity.Apply;
 import com.project.mything.friend.entity.Friend;
-import com.project.mything.item.entity.Item;
+import com.project.mything.item.entity.ItemUser;
 import com.project.mything.notice.Notice;
 import com.project.mything.time.BaseTime;
 import com.project.mything.user.entity.enums.UserEmoji;
@@ -32,8 +32,9 @@ public class User extends BaseTime {
 
     private LocalDate birthDay;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private UserStatus userStatus = UserStatus.ACTIVE;
 
     private String infoMessage;
 
@@ -57,8 +58,8 @@ public class User extends BaseTime {
     private List<Notice> noticeList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
-    private List<Item> itemList = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ItemUser> itemUserList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
