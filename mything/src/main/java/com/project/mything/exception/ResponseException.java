@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,6 +23,13 @@ public class ResponseException {
     private String message;
 
     private Map<String, String> errorData;
+
+    public ResponseException(String code, String message, Map<String, String> errorData) {
+        this.timeTable = LocalDateTime.now();
+        this.code = code;
+        this.message = message;
+        this.errorData = errorData;
+    }
 
     public ResponseException(String code, String message) {
         timeTable = LocalDateTime.now();
@@ -50,6 +59,36 @@ public class ResponseException {
                         ));
 
         ResponseException responseException = new ResponseException(BAD_REQUEST.toString(), errorData);
+
+        return new ResponseEntity<ResponseException>(responseException, BAD_REQUEST);
+    }
+
+    public static ResponseEntity<ResponseException> toResponseEntity(
+            MissingServletRequestParameterException missingServletRequestParameterException
+    ) {
+        Map<String, String> errorData = new HashMap<>();
+
+        String parameterName = missingServletRequestParameterException.getParameterName();
+        String message = missingServletRequestParameterException.getMessage();
+        errorData.put("parameterName", parameterName);
+        errorData.put("message", message);
+
+        ResponseException responseException = new ResponseException(BAD_REQUEST.toString(), errorData);
+
+        return new ResponseEntity<ResponseException>(responseException, BAD_REQUEST);
+    }
+
+    public static ResponseEntity<ResponseException> toResponseEntity(
+            HttpRequestMethodNotSupportedException httpRequestMethodNotSupportedException
+    ) {
+        Map<String, String> errorData = new HashMap<>();
+        String message = httpRequestMethodNotSupportedException.getMessage();
+
+        httpRequestMethodNotSupportedException.getSupportedHttpMethods().forEach(error ->
+            errorData.put(error.name(), "사용가능"));
+
+
+        ResponseException responseException = new ResponseException(BAD_REQUEST.toString(), message ,errorData);
 
         return new ResponseEntity<ResponseException>(responseException, BAD_REQUEST);
     }
