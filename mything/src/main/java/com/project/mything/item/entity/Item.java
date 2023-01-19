@@ -24,7 +24,9 @@ public class Item extends BaseTime {
 
     private Integer price;
 
-    private String url;
+    private String siteUrl;
+
+    private String imageUrl;
 
     private String memo;
 
@@ -33,10 +35,6 @@ public class Item extends BaseTime {
 
     @Enumerated(EnumType.STRING)
     private ItemEmoji itemEmoji;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_Id")
-    private File file;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

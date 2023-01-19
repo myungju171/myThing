@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum ApplyType {
-
+    REQUEST,
+    RECEIVE,
 }

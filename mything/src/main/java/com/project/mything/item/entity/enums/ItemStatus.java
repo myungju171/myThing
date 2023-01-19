@@ -4,4 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ItemStatus {
+    POST,
+    BOUGHT,
+    RESERVE,
+    RECEIVED,
 }
