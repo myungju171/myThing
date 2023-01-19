@@ -19,7 +19,7 @@ public class PhoneAuthController {
 
     @PostMapping("/message")
     @ResponseStatus(HttpStatus.CREATED)
-    public String requestAuthNumber(@RequestBody RequestAuthNumber authNumber) {
+    public String requestAuthNumber(@Valid @RequestBody RequestAuthNumber authNumber) {
         return authService.sendAuthNumber(authNumber);
     }
 
