@@ -13,25 +13,29 @@ struct MyWishDetailView: View {
   var body : some View {
     //       Color.yellow.edgesIgnoringSafeArea(.all)
     ScrollView(Axis.Set.vertical, showsIndicators: true) {
-      VStack(alignment: .leading) {
-        Image(systemName: "heart.fill")
+      VStack(alignment: .leading, spacing: 10) {
+        Image(uiImage: UIImage(named: "deep")!)
           .resizable()
           .aspectRatio(contentMode: .fit)
-        Text("[디즈니 공식] '몬스터 듀오' 등받이 의자&방수 돗자리 세트_캠프 피크닉 페스티벌")
-          .padding()
+        Text("[딥티크] 딥티크 플레르 드 뽀 오 드 퍼퓸 75ml")
+          .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
           .font(.system(size: 20, weight: .bold))
         HStack(spacing:0) {
-          Text("42,000")
+          Text("361,000")
           Text("원")
         }
         .font(.system(size: 20, weight: .bold))
+        .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
+        VStack(alignment: .center) {
+          Text("이거 내가 진짜 갖고 싶었던 건데 힝힝 근데 너무 비싸고 또 내가 사긴 좀 그럼 그래서 친구놈들이 사주면 정말 좋겠따 벗 아임 낫 속물~")
+            .padding()
+            .overlay(
+              RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.gray, lineWidth: 1)
+            )
+        }
         .padding()
-        Text("이거 내가 진짜 갖고 싶었던 건데 힝힝 근데 너무 비싸고 또 내가 사긴 좀 그럼 그래서 친구놈들이 사주면 정말 좋겠따 벗 아임 낫 속물~")
-          .padding()
-          .overlay(
-            RoundedRectangle(cornerRadius: 10)
-              .stroke(Color.gray, lineWidth: 1)
-          )
+        Spacer()
         HStack {
           Button {
             print("fire~~더사고싶어")
@@ -43,11 +47,10 @@ struct MyWishDetailView: View {
               .foregroundColor(.gray)
               .padding()
           }
-          Button {
-            print("shoshop")
-          } label: {
-            Text("쇼핑몰로 이동하기")
-              .foregroundColor(.white)
+          Link(destination: URL(string: "https://seons-dev.tistory.com/")!) {
+              HStack {
+                  Text("사이트로 이동하기")
+              } .foregroundColor(.white)
           }
           .frame(width: 150, height: 50)
           .background(.blue)
@@ -64,10 +67,7 @@ struct MyWishDetailView: View {
         }
         .padding()
       }
-//      .frame(minWidth: .infinity)
     }
-    //     .navigationBarTitle("\(index) View",displayMode: .inline)
-    //     .navigationBarBackButtonHidden(true)
     //     .toolbar {
     //       ToolbarItem(placement: .navigationBarLeading) {
     //         Button(action: { print("") }) {
