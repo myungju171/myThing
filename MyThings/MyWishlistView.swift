@@ -11,7 +11,31 @@ import CoreData
 struct MyWishlistView: View {
   
   var body: some View {
-    Text("my Wishlist")
+    NavigationView{
+      TabView {
+        MyRowView()
+          .tabItem {
+            Image(systemName: "arrow.right.circle.fill")
+            Text("내 Wish")
+          }
+        FriendListView()
+          .tabItem {
+            Image(systemName: "arrow.right.circle.fill")
+            Text("친구 Wish")
+          }
+        ChattingView()
+          .tabItem {
+            Image(systemName: "arrow.right.circle.fill")
+            Text("채팅")
+          }
+        MyPageView()
+          .tabItem {
+            
+            Text("마이페이지")
+          }
+      }
+      .navigationTitle(" Jelly님의 위시리스트")
+    }
   }
 }
 

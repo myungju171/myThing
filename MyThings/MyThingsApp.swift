@@ -13,7 +13,7 @@ struct MyThingsApp: App {
 
     var body: some Scene {
         WindowGroup {
-          LoginView()
+          MyWishDetail(index: 5)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
