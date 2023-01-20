@@ -1,46 +1,43 @@
 //
-//  ContentView.swift
+//  FirstView.swift
 //  MyThings
 //
 //  Created by 고명주 on 2023/01/15.
 //
 
 import SwiftUI
-import CoreData
 
-struct MyWishlistView: View {
-  
+struct MyWishListView: View {
   var body: some View {
-    NavigationView{
-      TabView {
-        MyRowView()
-          .tabItem {
-            Image(systemName: "arrow.right.circle.fill")
-            Text("내 Wish")
+    List {
+      ForEach((0...10), id: \.self) { index in
+        NavigationLink {
+          MyWishDetailView(index: 5)
+        } label: {
+          HStack {
+            Image(systemName: "heart.fill")
+              .resizable()
+              .aspectRatio(contentMode: .fill)
+              .frame(width: 80, height: 80)
+            VStack(alignment: .leading, spacing: 10) {
+              Text("짱구 손전등 신상")
+                .fontWeight(.bold)
+              HStack(spacing: 0) {
+                Text("34,000")
+                Text("원")
+              }
+              Image(systemName: "heart")
+            }
+            .padding()
           }
-        FriendListView()
-          .tabItem {
-            Image(systemName: "arrow.right.circle.fill")
-            Text("친구 Wish")
-          }
-        ChattingView()
-          .tabItem {
-            Image(systemName: "arrow.right.circle.fill")
-            Text("채팅")
-          }
-        MyPageView()
-          .tabItem {
-            
-            Text("마이페이지")
-          }
+        }
       }
-      .navigationTitle(" Jelly님의 위시리스트")
     }
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct MyWishListView_Previews: PreviewProvider {
   static var previews: some View {
-    MyWishlistView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    MyWishListView()
   }
 }

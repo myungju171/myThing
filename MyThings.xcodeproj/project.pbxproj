@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A4297329FF00111B19 /* MyThingsApp.swift */; };
-		AE3B12A7297329FF00111B19 /* MyWishlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* MyWishlistView.swift */; };
+		AE3B12A7297329FF00111B19 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* MainTabView.swift */; };
 		AE3B12A929732A0100111B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12A829732A0100111B19 /* Assets.xcassets */; };
 		AE3B12AC29732A0100111B19 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */; };
 		AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12AD29732A0100111B19 /* Persistence.swift */; };
@@ -19,14 +19,14 @@
 		AE3B12C42974382000111B19 /* MyPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C32974382000111B19 /* MyPageView.swift */; };
 		AE3B12C62974416200111B19 /* MyWishDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C52974416200111B19 /* MyWishDetailView.swift */; };
 		AE3B12C829792FFD00111B19 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C729792FFD00111B19 /* FriendCell.swift */; };
-		AE3B12CA297A7B4200111B19 /* MyRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C9297A7B4200111B19 /* MyRowView.swift */; };
+		AE3B12CA297A7B4200111B19 /* MyWishListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C9297A7B4200111B19 /* MyWishListView.swift */; };
 		AE3B12CE297A7CA700111B19 /* FirstInitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12CD297A7CA700111B19 /* FirstInitView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AE3B12A1297329FF00111B19 /* MyThings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyThings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE3B12A4297329FF00111B19 /* MyThingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyThingsApp.swift; sourceTree = "<group>"; };
-		AE3B12A6297329FF00111B19 /* MyWishlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishlistView.swift; sourceTree = "<group>"; };
+		AE3B12A6297329FF00111B19 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		AE3B12A829732A0100111B19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE3B12AB29732A0100111B19 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AE3B12AD29732A0100111B19 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 		AE3B12C32974382000111B19 /* MyPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageView.swift; sourceTree = "<group>"; };
 		AE3B12C52974416200111B19 /* MyWishDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishDetailView.swift; sourceTree = "<group>"; };
 		AE3B12C729792FFD00111B19 /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
-		AE3B12C9297A7B4200111B19 /* MyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRowView.swift; sourceTree = "<group>"; };
+		AE3B12C9297A7B4200111B19 /* MyWishListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishListView.swift; sourceTree = "<group>"; };
 		AE3B12CD297A7CA700111B19 /* FirstInitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstInitView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,8 +74,8 @@
 				AE3B12A4297329FF00111B19 /* MyThingsApp.swift */,
 				AE3B12CD297A7CA700111B19 /* FirstInitView.swift */,
 				AE3B12BB29732FAB00111B19 /* LoginView.swift */,
-				AE3B12A6297329FF00111B19 /* MyWishlistView.swift */,
-				AE3B12C9297A7B4200111B19 /* MyRowView.swift */,
+				AE3B12A6297329FF00111B19 /* MainTabView.swift */,
+				AE3B12C9297A7B4200111B19 /* MyWishListView.swift */,
 				AE3B12C52974416200111B19 /* MyWishDetailView.swift */,
 				AE3B12BF2974352500111B19 /* FriendListView.swift */,
 				AE3B12C729792FFD00111B19 /* FriendCell.swift */,
@@ -170,13 +170,13 @@
 				AE3B12B129732A0100111B19 /* MyThings.xcdatamodeld in Sources */,
 				AE3B12CE297A7CA700111B19 /* FirstInitView.swift in Sources */,
 				AE3B12C62974416200111B19 /* MyWishDetailView.swift in Sources */,
-				AE3B12CA297A7B4200111B19 /* MyRowView.swift in Sources */,
+				AE3B12CA297A7B4200111B19 /* MyWishListView.swift in Sources */,
 				AE3B12C22974380A00111B19 /* ChattingView.swift in Sources */,
 				AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */,
 				AE3B12C02974352500111B19 /* FriendListView.swift in Sources */,
 				AE3B12C42974382000111B19 /* MyPageView.swift in Sources */,
 				AE3B12C829792FFD00111B19 /* FriendCell.swift in Sources */,
-				AE3B12A7297329FF00111B19 /* MyWishlistView.swift in Sources */,
+				AE3B12A7297329FF00111B19 /* MainTabView.swift in Sources */,
 				AE3B12BC29732FAB00111B19 /* LoginView.swift in Sources */,
 				AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */,
 			);
