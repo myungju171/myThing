@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -54,8 +55,13 @@ public class PhoneAuthService {
             throw new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER);
         }
 
-        User user = phoneAuthMapper.toUser(requestJoin);
+        Optional<User> userByPhone = userRepository.findUserByPhone(requestJoin.getPhone());
+        if (userByPhone.isPresent()) {
+            User dbUser = userByPhone.get();
+            return userMapper.toResponseUserId(dbUser);
+        }
 
+        User user = phoneAuthMapper.toUser(requestJoin);
         return userMapper.toResponseUserId(userRepository.save(user));
     }
 

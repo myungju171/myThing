@@ -1,31 +1,30 @@
 package com.project.mything.auth.service;
 
+import com.project.mything.auth.config.AuthConfig;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 public class SendServiceImpl implements SendService {
-    @Value("${nurigo.number}")
-    String fromNumber;
-
     private final DefaultMessageService defaultMessageService;
+    private final AuthConfig authConfig;
 
-    public SendServiceImpl(@Value("${nurigo.public}") String publicKey, @Value("${nurigo.secret}") String secretKey) {
+    public SendServiceImpl(AuthConfig authConfig) {
+        this.authConfig = authConfig;
         this.defaultMessageService =
-                NurigoApp.INSTANCE.initialize(publicKey, secretKey, "https://api.coolsms.co.kr");
+                NurigoApp.INSTANCE.initialize(authConfig.getPublicKey(), authConfig.getSecret(), "https://api.coolsms.co.kr");
     }
 
     public Message send(String toNumber, String randomNumber) {
 
         Message message = new Message();
-        message.setFrom(fromNumber);
+        message.setFrom(authConfig.getFromNumber());
         message.setTo(toNumber);
         message.setText("[MyThing] 인증번호는 " + randomNumber + " 입니다.");
 

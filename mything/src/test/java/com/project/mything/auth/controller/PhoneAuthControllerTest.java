@@ -15,10 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
@@ -67,10 +69,13 @@ class PhoneAuthControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("phone").description("유저의 핸드폰 번호")
+                                List.of(
+                                        fieldWithPath("phone").description("유저의 핸드폰 번호")
+                                )
                         ),
                         responseBody()
                 ));
+
     }
 
 
@@ -93,7 +98,11 @@ class PhoneAuthControllerTest {
                 .andDo(document("11자리의 휴대폰 번호가 아닐시 실패 400",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("phone").description("유저의 핸드폰 번호")),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("phone").description("유저의 핸드폰 번호")
+                                )
+                        ),
                         responseBody()
                 ));
     }
@@ -126,11 +135,58 @@ class PhoneAuthControllerTest {
                 .andDo(document("회원가입 성공 200",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("name").description("유저 이름"),
-                                fieldWithPath("birthDay").description("유저의 생년월일"),
-                                fieldWithPath("phone").description("유저의 핸드폰 번호"),
-                                fieldWithPath("authNumber").description("유저의 핸드폰 인증번호")),
-                        responseFields(fieldWithPath("userId").description("회원가입에 성공한 유저의 아이디 번호"))
+                        requestFields(
+                                List.of(fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름"),
+                                        fieldWithPath("birthDay").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-1-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호"),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("유저의 핸드폰 인증번호")
+                                )),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원가입에 성공한 유저의 아이디 번호")
+                                )
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("회원가입 요청시 기존 회원 유저 라면 200코드와 userId를 리턴한다.")
+    public void requestJoin_suc2() throws Exception {
+        //given
+        PhoneAuthDto.RequestJoin requestJoin = PhoneAuthDto.RequestJoin.builder()
+                .name("홍길동")
+                .phone("01011112222")
+                .birthDay(LocalDate.of(1999, 11, 11))
+                .authNumber("1234")
+                .build();
+        String content = objectMapper.writeValueAsString(requestJoin);
+        UserDto.ResponseUserId responseUserId = UserDto.ResponseUserId.builder()
+                .userId(1L)
+                .build();
+
+        given(phoneAuthService.join(any())).willReturn(responseUserId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.userId").value(responseUserId.getUserId()))
+                .andDo(document("기존회원_유저아이디_리턴_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름"),
+                                        fieldWithPath("birthDay").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-1-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호"),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("유저의 핸드폰 인증번호")
+                                )),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("userId").type(JsonFieldType.NUMBER).description("회원가입에 성공한 유저의 아이디 번호")
+                                )
+                        )
                 ));
     }
 
@@ -158,10 +214,13 @@ class PhoneAuthControllerTest {
                 .andDo(document("회원가입시 인증번호가 다름 실패 404",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("name").description("유저 이름"),
-                                fieldWithPath("birthDay").description("유저의 생년월일"),
-                                fieldWithPath("phone").description("유저의 핸드폰 번호"),
-                                fieldWithPath("authNumber").description("유저의 핸드폰 인증번호"))
+                        requestFields(
+                                List.of(fieldWithPath("name").description("유저 이름"),
+                                        fieldWithPath("birthDay").description("유저의 생년월일"),
+                                        fieldWithPath("phone").description("유저의 핸드폰 번호"),
+                                        fieldWithPath("authNumber").description("유저의 핸드폰 인증번호")
+                                )
+                        )
                 ));
     }
 
@@ -189,10 +248,13 @@ class PhoneAuthControllerTest {
                 .andDo(document("회원가입시 해당 핸드폰으로 인증번호를 받은 기록이 없음 실패 404",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("name").description("유저 이름"),
-                                fieldWithPath("birthDay").description("유저의 생년월일"),
-                                fieldWithPath("phone").description("유저의 핸드폰 번호"),
-                                fieldWithPath("authNumber").description("유저의 핸드폰 인증번호"))
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("name").description("유저 이름"),
+                                        fieldWithPath("birthDay").description("유저의 생년월일"),
+                                        fieldWithPath("phone").description("유저의 핸드폰 번호"),
+                                        fieldWithPath("authNumber").description("유저의 핸드폰 인증번호")
+                                ))
                 ));
     }
 
