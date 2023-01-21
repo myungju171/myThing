@@ -24,7 +24,7 @@ public class ItemService {
     private final ItemMapper itemMapper;
     private final ItemUserRepository itemUserRepository;
     private final UserService userService;
-    private final NaverApiService naverApiService;
+    private final NAVERApiService naverApiService;
 
     public ResponseEntity<String> search(String query, Integer size, String sort) {
         if (query.equals("")) {
@@ -41,7 +41,12 @@ public class ItemService {
         Item dbItem =
                 saveItemFromDto(requestSaveItem);
 
-        itemUserRepository.save(ItemUser.builder().user(dbUser).item(dbItem).build().addItemUser());
+        ItemUser itemUser = ItemUser.builder()
+                .user(dbUser)
+                .item(dbItem)
+                .build()
+                .addItemUser();
+        itemUserRepository.save(itemUser);
 
         return itemMapper.toResponseItemId(dbItem.getId());
     }
