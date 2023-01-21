@@ -24,7 +24,7 @@ public class Item extends BaseTime {
 
     private String title;
 
-    private Integer lprice;
+    private Integer price;
 
     private String link;
 

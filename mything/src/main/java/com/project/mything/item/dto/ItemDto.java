@@ -22,7 +22,7 @@ public class ItemDto {
         @NotBlank
         private String image;
         @NotNull
-        private Integer lprice;
+        private Integer price;
     }
 
     @Getter
