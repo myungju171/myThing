@@ -31,4 +31,11 @@ public class ItemController {
     public ItemDto.ResponseItemId saveItem(@Valid @RequestBody ItemDto.RequestSaveItem requestSaveItem) {
         return itemService.saveItem(requestSaveItem);
     }
+
+    @GetMapping("/{item-id}/users/{user-id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseDetailItem getDetailPage(@PathVariable("item-id") Long itemId,
+                                                    @PathVariable("user-id") Long userId) {
+        return itemService.getDetailItem(userId, itemId);
+    }
 }
