@@ -64,7 +64,7 @@ public class ItemService {
         }
     }
 
-    public ItemDto.ResponseDetailItem 성(Long userId, Long itemId) {
+    public ItemDto.ResponseDetailItem getDetailItem(Long userId, Long itemId) {
         ItemUser dbItemUser = itemUserRepository.findItemUserByUserIdAndItemId(userId, itemId)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
 
