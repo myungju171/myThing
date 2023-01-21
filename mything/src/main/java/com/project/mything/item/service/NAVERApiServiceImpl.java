@@ -1,6 +1,6 @@
 package com.project.mything.item.service;
 
-import com.project.mything.item.ItemConfig;
+import com.project.mything.item.config.ItemConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

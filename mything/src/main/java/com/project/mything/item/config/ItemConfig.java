@@ -1,4 +1,4 @@
-package com.project.mything.item;
+package com.project.mything.item.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
