@@ -63,4 +63,11 @@ public class ItemService {
             throw new BusinessLogicException(ErrorCode.ITEM_EXISTS);
         }
     }
+
+    public ItemDto.ResponseDetailItem 성(Long userId, Long itemId) {
+        ItemUser dbItemUser = itemUserRepository.findItemUserByUserIdAndItemId(userId, itemId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+
+        return itemMapper.toResponseDetailItem(dbItemUser, dbItemUser.getItem());
+    }
 }
