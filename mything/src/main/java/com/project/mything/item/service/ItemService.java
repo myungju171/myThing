@@ -12,43 +12,25 @@ import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
-    @Value("${naver.X-Naver-Client-Id}")
-    private String publicKey;
-    @Value("${naver.X-Naver-Client-Secret}")
-    private String secretKey;
-
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final ItemUserRepository itemUserRepository;
     private final UserService userService;
+    private final NaverApiService naverApiService;
 
     public ResponseEntity<String> search(String query, Integer size, String sort) {
-        if (query.equals("") || query == null) {
+        if (query.equals("")) {
             throw new BusinessLogicException(ErrorCode.INCORRECT_QUERY_REQUEST);
         }
-        RestTemplate rest = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Naver-Client-Id", publicKey);
-        httpHeaders.add("X-Naver-Client-Secret", secretKey);
-        String body = "";
-
-        HttpEntity<String> requestEntity = new HttpEntity<String>(body, httpHeaders);
-
-        ResponseEntity<String> responseEntity = rest.exchange(
-                "https://openapi.naver.com/v1/search/shop.json?query=" + query + "&display=" + size + "&sort=" + sort,
-                HttpMethod.GET, requestEntity, String.class);
-        return responseEntity;
-
+        return naverApiService.searchItem(query, size, sort);
     }
 
     public ItemDto.ResponseItemId saveItem(ItemDto.RequestSaveItem requestSaveItem) {
