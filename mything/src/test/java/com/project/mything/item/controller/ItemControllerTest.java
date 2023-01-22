@@ -7,6 +7,7 @@ import com.project.mything.exception.ExceptionController;
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.service.ItemService;
+import com.project.mything.page.ResponseMultiPageDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +30,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -251,6 +258,7 @@ class ItemControllerTest {
                         )
                 ));
     }
+
     private static Stream<Arguments> notNullFieldValue() {
         return Stream.of(
                 Arguments.of(null, "testLink", "testTitle", 1L, "imageLink", 1000),
@@ -342,4 +350,131 @@ class ItemControllerTest {
                 ));
     }
 
+    @Test
+    @DisplayName("리스트로 아이템을 조회할때 성공시 200과 ResponseSimpleItem를 리스트로 전달받는다.")
+    public void getSimpleItems_suc() throws Exception {
+        //given
+        List<ItemDto.ResponseSimpleItem> data = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            Boolean value;
+            ItemStatus itemStatus;
+            if (i % 2 == 0) {
+                value = false;
+                itemStatus = ItemStatus.BOUGHT;
+            } else {
+                value = true;
+                itemStatus = ItemStatus.POST;
+            }
+            data.add(ItemDto.ResponseSimpleItem.builder()
+                    .itemId((long) i)
+                    .itemStatus(itemStatus)
+                    .secretItem(value)
+                    .interestedItem(value)
+                    .title("test")
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .image("imageLInk")
+                    .price(1000)
+                    .build());
+        }
+        PageRequest pageable = PageRequest.of(0, 5, Sort.by("itemStatus").descending());
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 5);
+        ResponseMultiPageDto responseMultiPageDto = new ResponseMultiPageDto(data, responseSimpleItems);
+
+        given(itemService.getSimpleItems(any(), any(), any())).willReturn(responseMultiPageDto);
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/users/{user-id}", 1)
+                        .param("start", "1")
+                        .param("size", "5")
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.pageInfo.page").value(1))
+                .andExpect(jsonPath("$.pageInfo.size").value(5))
+                .andExpect(jsonPath("$.pageInfo.totalElements").value(5))
+                .andExpect(jsonPath("$.pageInfo.totalPages").value(1))
+                .andDo(document("아이템_리스트_조회_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("아이템을 가져올 유저의 아이디값입니다.")
+                        ),
+                        requestParameters(
+                                List.of(
+                                        parameterWithName("start").description("현재 보여질 페이지 번호입니다."),
+                                        parameterWithName("size").description("한페이지에 보여질 게시글의 갯수입니다.")
+                                )
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("아이템을 리스트 형태로 보여줍니다."),
+                                        fieldWithPath("data[].itemId").type(JsonFieldType.NUMBER).description("아이템의 아이디 번호 입니다."),
+                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("아이템의 타이틀입니다."),
+                                        fieldWithPath("data[].price").type(JsonFieldType.NUMBER).description("아이템의 가격입니다."),
+                                        fieldWithPath("data[].image").type(JsonFieldType.STRING).description("아이템의 이미지 주소입니다."),
+                                        fieldWithPath("data[].interestedItem").type(JsonFieldType.BOOLEAN).description("관심상품 유무입니다.true 관심, false 관심없음"),
+                                        fieldWithPath("data[].secretItem").type(JsonFieldType.BOOLEAN).description("공개/비공개 상품 유무입니다. ture 비공개, false 공개"),
+                                        fieldWithPath("data[].itemStatus").type(JsonFieldType.STRING).description("아이템의 상태입니다."),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("아이템을 등록한 날자입니다."),
+                                        fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("아이템을 최종 수정한 날짜 입니다."),
+                                        fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 보여질 페이지 입니다."),
+                                        fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("한페이지에 들어갈 게시글의 갯수 입니다."),
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 게시글의 갯수 입니다."),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 숫자입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    public void getSimpleItems_fail() throws Exception {
+        //given
+
+        given(itemService.getSimpleItems(any(), any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/users/{user-id}", -1)
+                        .param("start", "1")
+                        .param("size", "5")
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("존재하지_않는_유저아이디로_요청_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("아이템을 가져올 유저의 아이디값입니다.")
+                        ),
+                        requestParameters(
+                                List.of(
+                                        parameterWithName("start").description("현재 보여질 페이지 번호입니다."),
+                                        parameterWithName("size").description("한페이지에 보여질 게시글의 갯수입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    public void getSimpleItems_fail2() throws Exception {
+        //given
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/users/{user-id}", -1)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("파라미터를_작성하지_않고_요청_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("아이템을 가져올 유저의 아이디값입니다.")
+                        )
+                ));
+    }
 }
