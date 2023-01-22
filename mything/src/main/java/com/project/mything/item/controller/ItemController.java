@@ -1,6 +1,7 @@
 package com.project.mything.item.controller;
 
 import com.project.mything.item.dto.ItemDto;
+import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,8 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<String> search(@RequestParam String query,
                                          @RequestParam(required = false, defaultValue = "10") Integer size,
-                                         @RequestParam(required = false, defaultValue = "sim") String sort) {
+                                         @RequestParam(required = false, defaultValue = "sim") String sort,
+                                         @RequestParam(required = false, defaultValue = "1") Integer start) {
         ResponseEntity<String> search = itemService.search(query, size, sort);
         return search;
     }
@@ -37,5 +39,13 @@ public class ItemController {
     public ItemDto.ResponseDetailItem getDetailPage(@PathVariable("item-id") Long itemId,
                                                     @PathVariable("user-id") Long userId) {
         return itemService.getDetailItem(userId, itemId);
+    }
+
+    @GetMapping("/users/{user-id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(@PathVariable("user-id") Long userId,
+                                                                           @RequestParam Integer start,
+                                                                           @RequestParam Integer size) {
+        return itemService.getSimpleItems(userId, start, size);
     }
 }
