@@ -1,6 +1,7 @@
 package com.project.mything.item.entity;
 
 import com.project.mything.item.entity.enums.ItemStatus;
+import com.project.mything.time.BaseTime;
 import com.project.mything.user.entity.User;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ItemUser {
+public class ItemUser extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
