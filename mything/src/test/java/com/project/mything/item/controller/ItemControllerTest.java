@@ -88,7 +88,7 @@ class ItemControllerTest {
                 "    ]\n" +
                 "}";
 
-        given(itemService.search(any(), any(), any())).willReturn(new ResponseEntity<String>(
+        given(itemService.search(any(), any(), any(),any())).willReturn(new ResponseEntity<String>(
                 content, HttpStatus.OK));
         //when
         ResultActions perform = mockMvc.perform(
@@ -96,6 +96,7 @@ class ItemControllerTest {
                         .param("query", "test")
                         .param("size", "10")
                         .param("sort", "sim")
+                        .param("start", "1")
         );
         //then
         perform.andExpect(status().isOk())
@@ -109,7 +110,8 @@ class ItemControllerTest {
                                 parameterWithName("sort").description("정렬조건입니다. 필수값이 아닙니다. 디폴트 sim(정확도순으로 내림차순 정렬)," +
                                         " date: 날짜순으로 내림차순 정렬,\n" +
                                         " asc: 가격순으로 오름차순 정렬,\n" +
-                                        " dsc: 가격순으로 내림차순 정렬")
+                                        " dsc: 가격순으로 내림차순 정렬"),
+                                parameterWithName("start").description("가져올 데이터의 페이지 번호 입니다. 필수값이 아닙니다. 디폴트 1번")
                         ),
                         responseBody()
                 ));
