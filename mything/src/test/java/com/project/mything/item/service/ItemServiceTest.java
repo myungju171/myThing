@@ -9,6 +9,7 @@ import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.mapper.ItemMapper;
 import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
+import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +18,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -200,6 +205,60 @@ class ItemServiceTest {
         //when
         //then
         assertThatThrownBy(() -> itemService.getDetailItem(any(), any())).isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템을 리스트로 가져오면 ResponseMultiPageDto를 리턴한다.")
+    public void getSimpleItems_suc() {
+        //given
+        List<ItemDto.ResponseSimpleItem> data = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Boolean value;
+            ItemStatus itemStatus;
+            if (i % 2 == 0) {
+                value = false;
+                itemStatus = ItemStatus.BOUGHT;
+            } else {
+                value = true;
+                itemStatus = ItemStatus.POST;
+            }
+            data.add(ItemDto.ResponseSimpleItem.builder()
+                    .itemId((long) i)
+                    .itemStatus(itemStatus)
+                    .secretItem(value)
+                    .interestedItem(value)
+                    .title("test")
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .image("imageLInk")
+                    .price(1000)
+                    .build());
+        }
+        PageRequest pageable = PageRequest.of(0, 5, Sort.by("itemStatus").descending());
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 5);
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto = new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems);
+
+        given(userService.findVerifiedUser(any())).willReturn(User.builder().build());
+        given(itemUserRepository.searchSimpleItem(any(), any())).willReturn(responseSimpleItems);
+        //when
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> result = itemService.getSimpleItems(1L, 1, 5);
+        //then
+        assertThat(result.getData()).isEqualTo(responseMultiPageDto.getData());
+        assertThat(result.getPageInfo().getPage()).isEqualTo(responseMultiPageDto.getPageInfo().getPage());
+        assertThat(result.getPageInfo().getTotalPages()).isEqualTo(responseMultiPageDto.getPageInfo().getTotalPages());
+        assertThat(result.getPageInfo().getSize()).isEqualTo(responseMultiPageDto.getPageInfo().getSize());
+        assertThat(result.getPageInfo().getTotalElements()).isEqualTo(responseMultiPageDto.getPageInfo().getTotalElements());
+
+    }
+    @Test
+    @DisplayName("아이템을 리스트로 가져올때 존재하지 않는 유저 아이디를 입력시 User_Not_Found 404가 리턴된다.")
+    public void getSimpleItems_fail() {
+        //given
+        given(userService.findVerifiedUser(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.getSimpleItems(1L, 1, 1)).isInstanceOf(BusinessLogicException.class);
     }
 
 }
