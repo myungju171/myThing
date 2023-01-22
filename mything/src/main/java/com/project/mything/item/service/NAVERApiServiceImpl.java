@@ -16,7 +16,7 @@ public class NAVERApiServiceImpl implements NAVERApiService {
     private final ItemConfig itemConfig;
 
     @Override
-    public ResponseEntity<String> searchItem(String query, Integer size, String sort) {
+    public ResponseEntity<String> searchItem(String query, Integer size, String sort, Integer start) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-Naver-Client-Id", itemConfig.getPublicKey());
@@ -26,7 +26,8 @@ public class NAVERApiServiceImpl implements NAVERApiService {
         HttpEntity<String> requestEntity = new HttpEntity<String>(body, httpHeaders);
 
         return rest.exchange(
-                "https://openapi.naver.com/v1/search/shop.json?query=" + query + "&display=" + size + "&sort=" + sort,
+                "https://openapi.naver.com/v1/search/shop.json?query="
+                        + query + "&display=" + size + "&sort=" + sort + "&start=" + sort,
                 HttpMethod.GET, requestEntity, String.class);
     }
 }
