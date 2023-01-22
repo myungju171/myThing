@@ -57,10 +57,11 @@ class ItemServiceTest {
         String query = "";
         Integer size = 10;
         String sort = "sim";
+        Integer start = 1;
 
         //when
         //then
-        assertThatThrownBy(() -> itemService.search(query, size, sort)).isInstanceOf(BusinessLogicException.class);
+        assertThatThrownBy(() -> itemService.search(query, size, sort, start)).isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
@@ -70,10 +71,11 @@ class ItemServiceTest {
         String query = "테스트";
         Integer size = 10;
         String sort = "sim";
+        Integer start = 1;
 
-        given(naverApiService.searchItem(any(), any(), any())).willReturn(new ResponseEntity<String>("body", HttpStatus.OK));
+        given(naverApiService.searchItem(any(), any(), any(), any())).willReturn(new ResponseEntity<String>("body", HttpStatus.OK));
         //when
-        ResponseEntity<String> search = itemService.search(query, size, sort);
+        ResponseEntity<String> search = itemService.search(query, size, sort, start);
         //then
         assertThat(search.getBody()).isEqualTo("body");
         assertThat(search.getStatusCodeValue()).isEqualTo(200);
