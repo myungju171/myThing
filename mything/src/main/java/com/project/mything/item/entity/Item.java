@@ -30,18 +30,6 @@ public class Item extends BaseTime {
 
     private String image;
 
-    private String memo;
-
-    @Builder.Default
-    private Boolean interestedItem = Boolean.FALSE;
-
-    @Builder.Default
-    private Boolean secretItem = Boolean.FALSE;
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private ItemStatus itemStatus = ItemStatus.POST;
-
     @Builder.Default
     @OneToMany(mappedBy = "item")
     private List<ItemUser> itemUserList = new ArrayList<>();

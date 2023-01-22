@@ -2,6 +2,7 @@ package com.project.mything.item.mapper;
 
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.entity.Item;
+import com.project.mything.item.entity.ItemUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,4 +48,36 @@ class ItemMapperTest {
         //then
         assertThat(responseItemId.getItemId()).isEqualTo(1L);
     }
+
+
+    @Test
+    @DisplayName("ResponseDetailItem 객체로 mapping하는 메서드 테스트 ")
+    public void toResponseDetailItem_suc(){
+        //given
+        Item dbItem = Item.builder()
+                .id(1L)
+                .link("링크")
+                .title("타이틀")
+                .price(1000)
+                .image("이미지 링크")
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .item(dbItem)
+                .memo("test Memo")
+                .build();
+        //when
+        ItemDto.ResponseDetailItem detailItem = itemMapper.toResponseDetailItem(dbItemUser, dbItem);
+        //then
+        assertThat(detailItem.getItemId()).isEqualTo(dbItem.getId());
+        assertThat(detailItem.getLink()).isEqualTo(dbItem.getLink());
+        assertThat(detailItem.getTitle()).isEqualTo(dbItem.getTitle());
+        assertThat(detailItem.getPrice()).isEqualTo(dbItem.getPrice());
+        assertThat(detailItem.getImage()).isEqualTo(dbItem.getImage());
+        assertThat(detailItem.getMemo()).isEqualTo(dbItemUser.getMemo());
+        assertThat(detailItem.getInterestedItem()).isEqualTo(dbItemUser.getInterestedItem());
+        assertThat(detailItem.getSecretItem()).isEqualTo(dbItemUser.getSecretItem());
+        assertThat(detailItem.getItemStatus()).isEqualTo(dbItemUser.getItemStatus());
+    }
+
 }

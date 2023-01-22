@@ -93,4 +93,22 @@ class ItemUserRepositoryTest {
         //then
         assertThat(result).isTrue();
     }
+
+    @Test
+    @DisplayName("itemUser 객체 userId와 itemId로 찾아내는 메소드 성공 테스트")
+    public void findItemUserByUserIdAndItemId(){
+    //given
+        User user = User.builder().name("홍길동").build();
+        User dbUser = userRepository.save(user);
+        Item item = Item.builder().title("테스트 타이틀").build();
+        Item dbItem = itemRepository.save(item);
+        ItemUser itemUser = ItemUser.builder().user(user).item(item).build().addItemUser();
+        ItemUser dbItemUser = itemUserRepository.save(itemUser);
+    //when
+        ItemUser result = itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), item.getId())
+                .orElseThrow(() -> new RuntimeException("ItemUser null값"));
+        //then
+        assertThat(result.getItem().getTitle()).isEqualTo(dbItem.getTitle());
+        assertThat(result.getUser().getName()).isEqualTo(user.getName());
+    }
 }

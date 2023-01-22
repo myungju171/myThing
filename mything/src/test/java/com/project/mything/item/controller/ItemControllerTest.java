@@ -5,6 +5,7 @@ import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.exception.ExceptionController;
 import com.project.mything.item.dto.ItemDto;
+import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.service.ItemService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -105,6 +107,7 @@ class ItemControllerTest {
                         responseBody()
                 ));
     }
+
     @Test
     @DisplayName("아이템검색 API 사용시 파라미터를 전달하지 않을시 400 Bad_Request가 리턴된다. ")
     public void search_fail1() throws Exception {
@@ -124,8 +127,8 @@ class ItemControllerTest {
 
     @Test
     @DisplayName("검색한 아이템을 저장할때 성공시 아이템 아이디와 201을 리턴한다.")
-    public void saveItem_suc() throws Exception{
-    //given
+    public void saveItem_suc() throws Exception {
+        //given
         ItemDto.RequestSaveItem requestSaveItem = ItemDto.RequestSaveItem.builder()
                 .userId(1L)
                 .link("testLink")
@@ -173,8 +176,8 @@ class ItemControllerTest {
 
     @Test
     @DisplayName("아이템을 중복으로 저장하면 409 CONFLICT를 리턴한다. ")
-    public void searchItem_fail1() throws Exception{
-    //given
+    public void searchItem_fail1() throws Exception {
+        //given
         ItemDto.RequestSaveItem requestSaveItem = ItemDto.RequestSaveItem.builder()
                 .userId(1L)
                 .link("testLink")
@@ -185,7 +188,7 @@ class ItemControllerTest {
                 .build();
         String content = objectMapper.writeValueAsString(requestSaveItem);
         given(itemService.saveItem(any())).willThrow(new BusinessLogicException(ErrorCode.ITEM_EXISTS));
-    //when
+        //when
         ResultActions perform = mockMvc.perform(
                 post("/items/storages")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -214,7 +217,7 @@ class ItemControllerTest {
     @DisplayName("이미지 저장하기 API를 사용할때 요청 dto값 중 하나라도 null값일시 400 BadRequest를 리턴한다. ")
     @MethodSource("notNullFieldValue")
     public void search_fail2(final Long userId, final String link, final String title, final Long productId,
-                            final String image, final Integer price) throws Exception {
+                             final String image, final Integer price) throws Exception {
         //given
         ItemDto.RequestSaveItem requestSaveItem = ItemDto.RequestSaveItem.builder()
                 .userId(userId)
@@ -248,7 +251,7 @@ class ItemControllerTest {
                         )
                 ));
     }
-    private static Stream<Arguments> notNullFieldValue(){
+    private static Stream<Arguments> notNullFieldValue() {
         return Stream.of(
                 Arguments.of(null, "testLink", "testTitle", 1L, "imageLink", 1000),
                 Arguments.of(1L, null, "testTitle", 1L, "imageLink", 1000),
@@ -257,6 +260,86 @@ class ItemControllerTest {
                 Arguments.of(1L, "testLink", "testTitle", 1L, null, 1000),
                 Arguments.of(1L, "testLink", "testTitle", 1L, "imageLink", null)
         );
+    }
+
+    @Test
+    @DisplayName("UserId 와 ItemId를 보냈을때 해당 아이디를 가지고있는 ItemUser가 존재할시 200 ResponseDetailItem객체를 리턴함")
+    public void getDetailPage_suc() throws Exception {
+        //given
+        ItemDto.ResponseDetailItem responseDetailItem = ItemDto.ResponseDetailItem.builder()
+                .itemId(1L)
+                .title("타이틀")
+                .link("링크")
+                .price(1000)
+                .image("이미지 링크")
+                .memo("test Memo")
+                .interestedItem(false)
+                .secretItem(false)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        given(itemService.getDetailItem(any(), any())).willReturn(responseDetailItem);
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/{item-id}/users/{user-id}", 1L, 1L)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("itemId").value(responseDetailItem.getItemId()))
+                .andExpect(jsonPath("title").value(responseDetailItem.getTitle()))
+                .andExpect(jsonPath("link").value(responseDetailItem.getLink()))
+                .andExpect(jsonPath("price").value(responseDetailItem.getPrice()))
+                .andExpect(jsonPath("image").value(responseDetailItem.getImage()))
+                .andExpect(jsonPath("memo").value(responseDetailItem.getMemo()))
+                .andExpect(jsonPath("interestedItem").value(responseDetailItem.getInterestedItem()))
+                .andExpect(jsonPath("secretItem").value(responseDetailItem.getSecretItem()))
+                .andExpect(jsonPath("itemStatus").value(responseDetailItem.getItemStatus().toString()))
+                .andDo(document("아이템_상세조회_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                List.of(
+                                        parameterWithName("item-id").description("아이템 아이디 입니다."),
+                                        parameterWithName("user-id").description("유저 아이디 입니다.")
+                                )
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("title").description("아이템 이름입니다."),
+                                        fieldWithPath("link").description("아이템 네이버 주소입니다."),
+                                        fieldWithPath("price").description("아이템 가격입니다."),
+                                        fieldWithPath("image").description("아이템 이미지 주소입니다."),
+                                        fieldWithPath("memo").description("아이템에 대한 짧은 메모입니다."),
+                                        fieldWithPath("interestedItem").description("관심있는 아이템 유/무 입니다."),
+                                        fieldWithPath("secretItem").description("비밀 아이템 유/무 입니다."),
+                                        fieldWithPath("itemStatus").description("아이템 상태입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상세 조회시 존재하지 않는 아이템을 조회할때 404 ITEM_NOT_FOUND 리턴")
+    public void getDetailPage_fail1() throws Exception {
+        //given
+        given(itemService.getDetailItem(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/{item-id}/users/{user-id}", 1L, 1L)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("아이템_상세조회시_존재하지_않는_아이템_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                List.of(
+                                        parameterWithName("item-id").description("아이템 아이디 입니다."),
+                                        parameterWithName("user-id").description("유저 아이디 입니다.")
+                                )
+                        )
+                ));
     }
 
 }

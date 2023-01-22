@@ -5,6 +5,7 @@ import com.project.mything.exception.ErrorCode;
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.entity.Item;
 import com.project.mything.item.entity.ItemUser;
+import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.mapper.ItemMapper;
 import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
@@ -18,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -114,7 +117,7 @@ class ItemServiceTest {
         ItemDto.ResponseItemId responseItemId = itemService.saveItem(requestSaveItem);
         //then
         assertThat(responseItemId.getItemId()).isEqualTo(1L);
-        verify(itemUserRepository, times(1)).findItemUserByUserIdAndProductId(any(),any());
+        verify(itemUserRepository, times(1)).findItemUserByUserIdAndProductId(any(), any());
     }
 
     @Test
@@ -134,6 +137,69 @@ class ItemServiceTest {
         //when
         //then
         assertThatThrownBy(() -> itemService.saveItem(requestSaveItem)).isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템 상세정보 구하기 성공 테스트")
+    public void getDetailItem_suc() {
+        //given
+        Item dbItem = Item.builder()
+                .id(1L)
+                .link("링크")
+                .title("타이틀")
+                .price(1000)
+                .image("이미지 링크")
+                .build();
+
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .memo("test Memo")
+                .build();
+
+        ItemDto.ResponseDetailItem responseDetailItem = ItemDto.ResponseDetailItem.builder()
+                .itemId(1L)
+                .title("타이틀")
+                .link("링크")
+                .price(1000)
+                .image("이미지 링크")
+                .memo("test Memo")
+                .interestedItem(false)
+                .secretItem(false)
+                .itemStatus(ItemStatus.POST)
+                .build();
+
+        given(itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), dbItem.getId()))
+                .willReturn(Optional.of(dbItemUser));
+        given(itemMapper.toResponseDetailItem(dbItemUser, dbItemUser.getItem())).willReturn(responseDetailItem);
+        //when
+        ItemDto.ResponseDetailItem detailItem = itemService.getDetailItem(dbItem.getId(), dbUser.getId());
+        //then
+        assertThat(detailItem.getItemId()).isEqualTo(dbItem.getId());
+        assertThat(detailItem.getLink()).isEqualTo(dbItem.getLink());
+        assertThat(detailItem.getTitle()).isEqualTo(dbItem.getTitle());
+        assertThat(detailItem.getPrice()).isEqualTo(dbItem.getPrice());
+        assertThat(detailItem.getImage()).isEqualTo(dbItem.getImage());
+        assertThat(detailItem.getMemo()).isEqualTo(dbItemUser.getMemo());
+        assertThat(detailItem.getInterestedItem()).isEqualTo(dbItemUser.getInterestedItem());
+        assertThat(detailItem.getSecretItem()).isEqualTo(dbItemUser.getSecretItem());
+        assertThat(detailItem.getItemStatus()).isEqualTo(dbItemUser.getItemStatus());
+    }
+
+    @Test
+    @DisplayName("아이템 상세정보 구할때 유저아이디와 아이템아이디로 된 ItemUser객체가 존재하지않을때 404 Item_Not_Found 실패 테스트")
+    public void getDetailItem_fail() {
+        //given
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.getDetailItem(any(), any())).isInstanceOf(BusinessLogicException.class);
     }
 
 }

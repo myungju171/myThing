@@ -3,6 +3,7 @@ package com.project.mything.item.service;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.item.dto.ItemDto;
+import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.item.entity.Item;
 import com.project.mything.item.entity.ItemUser;
 import com.project.mything.item.mapper.ItemMapper;
@@ -12,9 +13,12 @@ import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -62,5 +66,24 @@ public class ItemService {
                 findItemUserByUserIdAndProductId(requestSaveItem.getUserId(), requestSaveItem.getProductId()).isPresent()) {
             throw new BusinessLogicException(ErrorCode.ITEM_EXISTS);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ItemDto.ResponseDetailItem getDetailItem(Long userId, Long itemId) {
+        ItemUser dbItemUser = itemUserRepository.findItemUserByUserIdAndItemId(userId, itemId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+
+        return itemMapper.toResponseDetailItem(dbItemUser, dbItemUser.getItem());
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Integer start, Integer size) {
+        userService.findVerifiedUser(userId);
+        PageRequest pageRequest = PageRequest.of(start-1, size);
+
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = itemUserRepository.searchSimpleItem(userId,pageRequest);
+        List<ItemDto.ResponseSimpleItem> content = responseSimpleItems.getContent();
+
+        return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(content, responseSimpleItems);
     }
 }
