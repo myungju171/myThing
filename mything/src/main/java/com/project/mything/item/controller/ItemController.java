@@ -24,7 +24,7 @@ public class ItemController {
                                          @RequestParam(required = false, defaultValue = "10") Integer size,
                                          @RequestParam(required = false, defaultValue = "sim") String sort,
                                          @RequestParam(required = false, defaultValue = "1") Integer start) {
-        ResponseEntity<String> search = itemService.search(query, size, sort);
+        ResponseEntity<String> search = itemService.search(query, size, sort, start);
         return search;
     }
 
