@@ -41,7 +41,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                                 .or(itemUser.itemStatus.eq(ItemStatus.RESERVE))))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(itemUser.interestedItem.desc())
+                .orderBy(itemUser.interestedItem.desc(),itemUser.createdAt.desc())
                 .fetch();
 
         Long count = queryFactory
