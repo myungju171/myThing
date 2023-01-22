@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface ItemUserRepository extends JpaRepository<ItemUser, Long> {
+public interface ItemUserRepository extends JpaRepository<ItemUser, Long>, ItemUserQueryRepository{
 
     @Query("select iu from ItemUser iu left join fetch iu.user left join fetch iu.item " +
             "where iu.user.id = :userId and iu.item.productId = :productId")
