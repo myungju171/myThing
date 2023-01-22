@@ -30,11 +30,11 @@ public class ItemService {
     private final UserService userService;
     private final NAVERApiService naverApiService;
 
-    public ResponseEntity<String> search(String query, Integer size, String sort) {
+    public ResponseEntity<String> search(String query, Integer size, String sort, Integer start) {
         if (query.equals("")) {
             throw new BusinessLogicException(ErrorCode.INCORRECT_QUERY_REQUEST);
         }
-        return naverApiService.searchItem(query, size, sort);
+        return naverApiService.searchItem(query, size, sort, start);
     }
 
     public ItemDto.ResponseItemId saveItem(ItemDto.RequestSaveItem requestSaveItem) {
