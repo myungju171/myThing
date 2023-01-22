@@ -1,10 +1,12 @@
 package com.project.mything.item.dto;
 
 import com.project.mything.item.entity.enums.ItemStatus;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 public class ItemDto {
     @Getter
@@ -50,4 +52,41 @@ public class ItemDto {
         private ItemStatus itemStatus;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseSimpleItem {
+
+        private Long itemId;
+        private String title;
+        private Integer price;
+        private String image;
+        private Boolean interestedItem;
+        private Boolean secretItem;
+        private ItemStatus itemStatus;
+        private LocalDateTime createdAt;
+        private LocalDateTime lastModifiedAt;
+
+        @QueryProjection
+        public ResponseSimpleItem(Long itemId,
+                                  String title,
+                                  Integer price,
+                                  String image,
+                                  Boolean interestedItem,
+                                  Boolean secretItem,
+                                  ItemStatus itemStatus,
+                                  LocalDateTime createdAt,
+                                  LocalDateTime lastModifiedAt) {
+            this.itemId = itemId;
+            this.title = title;
+            this.price = price;
+            this.image = image;
+            this.interestedItem = interestedItem;
+            this.secretItem = secretItem;
+            this.itemStatus = itemStatus;
+            this.createdAt = createdAt;
+            this.lastModifiedAt = lastModifiedAt;
+        }
+
+    }
 }
