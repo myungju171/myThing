@@ -11,6 +11,7 @@ import com.project.mything.item.mapper.ItemMapper;
 import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
 import com.project.mything.user.entity.User;
+import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public class ItemService {
     private final ItemUserRepository itemUserRepository;
     private final UserService userService;
     private final NAVERApiService naverApiService;
+    private final UserMapper userMapper;
 
     public ResponseEntity<String> search(String query, Integer size, String sort, Integer start) {
         if (query.equals("")) {
@@ -79,13 +81,20 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Integer start, Integer size) {
-        userService.findVerifiedUser(userId);
+        User dbUser = userService.findVerifiedUser(userId);
+
         PageRequest pageRequest = PageRequest.of(start - 1, size);
 
-        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = itemUserRepository.searchSimpleItem(userId, pageRequest);
-        List<ItemDto.ResponseSimpleItem> content = responseSimpleItems.getContent();
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems =
+                itemUserRepository.searchSimpleItem(userId, pageRequest);
 
-        return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(content, responseSimpleItems);
+        List<ItemDto.ResponseSimpleItem> content =
+                responseSimpleItems.getContent();
+
+        return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(
+                content,
+                responseSimpleItems,
+                userMapper.toResponseSimpleUser(dbUser));
     }
 
     public ItemDto.ResponseItemId changeItemStatus(ItemDto.RequestChangeItemStatus requestChangeItemStatus,

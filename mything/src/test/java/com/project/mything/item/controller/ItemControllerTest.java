@@ -8,6 +8,7 @@ import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.service.ItemService;
 import com.project.mything.page.ResponseMultiPageDto;
+import com.project.mything.user.dto.UserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -379,9 +380,15 @@ class ItemControllerTest {
                     .price(1000)
                     .build());
         }
+        UserDto.ResponseSimpleUser responseSimpleUser = UserDto.ResponseSimpleUser.builder()
+                .userId(1L)
+                .name("홍길동")
+                .image("remote image")
+                .build();
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("itemStatus").descending());
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 5);
-        ResponseMultiPageDto responseMultiPageDto = new ResponseMultiPageDto(data, responseSimpleItems);
+        ResponseMultiPageDto responseMultiPageDto =
+                new ResponseMultiPageDto(data, responseSimpleItems, responseSimpleUser);
 
         given(itemService.getSimpleItems(any(), any(), any())).willReturn(responseMultiPageDto);
         //when
@@ -393,6 +400,9 @@ class ItemControllerTest {
         //then
         perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.user.userId").value(1))
+                .andExpect(jsonPath("$.user.name").value("홍길동"))
+                .andExpect(jsonPath("$.user.image").value("remote image"))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
                 .andExpect(jsonPath("$.pageInfo.size").value(5))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(5))
@@ -421,6 +431,9 @@ class ItemControllerTest {
                                         fieldWithPath("data[].itemStatus").type(JsonFieldType.STRING).description("아이템의 상태입니다."),
                                         fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("아이템을 등록한 날자입니다."),
                                         fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("아이템을 최종 수정한 날짜 입니다."),
+                                        fieldWithPath("user.userId").type(JsonFieldType.NUMBER).description("아이템을 가지고 있는 유저의 아이디입니다."),
+                                        fieldWithPath("user.name").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이름입니다."),
+                                        fieldWithPath("user.image").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이미지 주소입니다."),
                                         fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 보여질 페이지 입니다."),
                                         fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("한페이지에 들어갈 게시글의 갯수 입니다."),
                                         fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 게시글의 갯수 입니다."),
@@ -431,7 +444,7 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    @DisplayName("리스트로 아이템 조회시 존재하지 않는 유저 아이디로 요청을 보낼때")
     public void getSimpleItems_fail() throws Exception {
         //given
 
@@ -445,7 +458,7 @@ class ItemControllerTest {
         );
         //then
         perform.andExpect(status().isNotFound())
-                .andDo(document("존재하지_않는_유저아이디로_요청_404",
+                .andDo(document("아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
@@ -461,7 +474,7 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    @DisplayName("파라미터를 작성하지 않고 요청을 보낼때")
     public void getSimpleItems_fail2() throws Exception {
         //given
         //when
@@ -470,7 +483,7 @@ class ItemControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("파라미터를_작성하지_않고_요청_400",
+                .andDo(document("아이템_리스트_조회_파라미터를_작성하지_않고_요청_400",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
