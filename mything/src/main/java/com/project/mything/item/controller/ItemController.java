@@ -48,4 +48,17 @@ public class ItemController {
                                                                            @RequestParam Integer size) {
         return itemService.getSimpleItems(userId, start, size);
     }
+
+    @PatchMapping("/statuses")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseItemId changeItemStatus(@RequestBody ItemDto.RequestChangeItemStatus requestChangeItemStatus,
+                                                   @RequestHeader(required = false) Long reservedId) {
+        return itemService.changeItemStatus(requestChangeItemStatus, reservedId);
+    }
+
+    @DeleteMapping("/statuses")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReserve(@RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
+        itemService.cancelReservedItem(requestCancelReserveItem);
+    }
 }
