@@ -10,7 +10,9 @@ import com.project.mything.item.mapper.ItemMapper;
 import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
 import com.project.mything.page.ResponseMultiPageDto;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
+import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,8 @@ class ItemServiceTest {
     UserService userService;
     @Mock
     NAVERApiService naverApiService;
+    @Mock
+    UserMapper userMapper;
 
 
     @Test
@@ -236,12 +240,19 @@ class ItemServiceTest {
                     .price(1000)
                     .build());
         }
+        UserDto.ResponseSimpleUser responseSimpleUser = UserDto.ResponseSimpleUser.builder()
+                .userId(1L)
+                .name("홍길동")
+                .image("remote image")
+                .build();
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("itemStatus").descending());
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 5);
-        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto = new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems);
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto =
+                new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems, responseSimpleUser);
 
         given(userService.findVerifiedUser(any())).willReturn(User.builder().build());
         given(itemUserRepository.searchSimpleItem(any(), any())).willReturn(responseSimpleItems);
+        given(userMapper.toResponseSimpleUser(any())).willReturn(responseSimpleUser);
         //when
         ResponseMultiPageDto<ItemDto.ResponseSimpleItem> result = itemService.getSimpleItems(1L, 1, 5);
         //then
