@@ -12,5 +12,15 @@ public class UserDto {
         private Long userId;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseSimpleUser {
+        private Long userId;
+        private String name;
+        private String image;
+    }
+
 
 }
