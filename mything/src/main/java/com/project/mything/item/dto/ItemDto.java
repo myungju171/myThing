@@ -105,7 +105,6 @@ public class ItemDto {
         @Positive
         private Long itemId;
         @NotNull
-        @Positive
         private ItemStatus itemStatus;
     }
 

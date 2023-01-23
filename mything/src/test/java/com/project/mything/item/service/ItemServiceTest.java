@@ -274,4 +274,213 @@ class ItemServiceTest {
         assertThatThrownBy(() -> itemService.getSimpleItems(1L, 1, 1)).isInstanceOf(BusinessLogicException.class);
     }
 
+    @Test
+    @DisplayName("아이템의 상태를 Bought로 변경 성공")
+    public void changeItemStatus_suc(){
+    //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.BOUGHT)
+                .build();
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+        Item dbItem = Item.builder()
+                .id(1L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        ItemDto.ResponseItemId result = itemService.changeItemStatus(requestChangeItemStatus, null);
+        //then
+        assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
+        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.BOUGHT);
+    }
+    @Test
+    @DisplayName("아이템의 상태를 POST로 변경 성공")
+    public void changeItemStatus_suc2(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+        Item dbItem = Item.builder()
+                .id(1L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .itemStatus(ItemStatus.BOUGHT)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        ItemDto.ResponseItemId result = itemService.changeItemStatus(requestChangeItemStatus, null);
+        //then
+        assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
+        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.POST);
+    }
+    @Test
+    @DisplayName("아이템의 상태를 RECEIVED로 변경 성공")
+    public void changeItemStatus_suc3(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RECEIVED)
+                .build();
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+        Item dbItem = Item.builder()
+                .id(1L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        ItemDto.ResponseItemId result = itemService.changeItemStatus(requestChangeItemStatus, null);
+        //then
+        assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
+        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.RECEIVED);
+    }
+    @Test
+    @DisplayName("아이템의 상태를 RESERVE로 변경 성공")
+    public void changeItemStatus_suc4(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+        User reservedUser = User.builder()
+                .id(2L)
+                .build();
+        Item dbItem = Item.builder()
+                .id(1L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(userService.findVerifiedUser(any())).willReturn(reservedUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        ItemDto.ResponseItemId result = itemService.changeItemStatus(requestChangeItemStatus, reservedUser.getId());
+        //then
+        assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
+        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.RESERVE);
+        assertThat(dbItemUser.getReservedUserId()).isEqualTo(reservedUser.getId());
+    }
+    @Test
+    @DisplayName("아이템의 상태를 RESERVE로 변경시 이미 RESERVE상태일 경우 실패 409 ")
+    public void changeItemStatus_fail1(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        User dbUser = User.builder()
+                .id(1L)
+                .build();
+        User reservedUser = User.builder()
+                .id(2L)
+                .build();
+        Item dbItem = Item.builder()
+                .id(1L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .user(dbUser)
+                .item(dbItem)
+                .itemStatus(ItemStatus.RESERVE)
+                .reservedUserId(2L)
+                .build();
+
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(userService.findVerifiedUser(any())).willReturn(reservedUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, reservedUser.getId()))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+    @Test
+    @DisplayName("아이템의 상태를 RESERVE로 변경시 존재하지 않는 reservedId를 전달 할 경우 실패 409 ")
+    public void changeItemStatus_fail2(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        User reservedUser = User.builder()
+                .id(50000L)
+                .build();
+        given(userService.findVerifiedUser(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, reservedUser.getId()))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+    @Test
+    @DisplayName("아이템의 상태를 변경시 존재하지않는 유저아이디를 전달 할 경우 실패 404 ")
+    public void changeItemStatus_fail3(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(5000L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, null))
+                .isInstanceOf(BusinessLogicException.class);
+    }
 }
