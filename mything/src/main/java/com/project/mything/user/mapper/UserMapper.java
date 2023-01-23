@@ -1,6 +1,5 @@
 package com.project.mything.user.mapper;
 
-import com.project.mything.auth.dto.PhoneAuthDto;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import org.mapstruct.Mapper;
@@ -12,4 +11,8 @@ public interface UserMapper {
 
     @Mapping(source = "user.id", target = "userId")
     UserDto.ResponseUserId toResponseUserId(User user);
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.avatar.remotePath", target = "image")
+    UserDto.ResponseSimpleUser toResponseSimpleUser(User user);
 }
