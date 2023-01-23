@@ -5,7 +5,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 public class ItemDto {
@@ -14,9 +14,9 @@ public class ItemDto {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RequestSaveItem {
-        @NotNull
+        @Positive
         private Long userId;
-        @NotNull
+        @Positive
         private Long productId;
         @NotBlank
         private String title;
@@ -24,7 +24,7 @@ public class ItemDto {
         private String link;
         @NotBlank
         private String image;
-        @NotNull
+        @Positive
         private Integer price;
     }
 
@@ -87,6 +87,31 @@ public class ItemDto {
             this.createdAt = createdAt;
             this.lastModifiedAt = lastModifiedAt;
         }
+    }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestChangeItemStatus {
+        @Positive
+        private Long userId;
+        @Positive
+        private Long itemId;
+        @NotBlank
+        private ItemStatus itemStatus;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestCancelReserveItem {
+        @Positive
+        private Long userId;
+        @Positive
+        private Long itemId;
+        @Positive
+        private Long reservedId;
     }
 }

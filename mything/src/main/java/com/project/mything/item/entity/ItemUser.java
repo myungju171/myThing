@@ -31,6 +31,8 @@ public class ItemUser extends BaseTime {
     @Builder.Default
     private Boolean secretItem = Boolean.FALSE;
 
+    private Long reservedUserId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -49,4 +51,13 @@ public class ItemUser extends BaseTime {
         return this;
     }
 
+    public void changeItemStatus(ItemStatus itemStatus, Long reservedUserId) {
+        this.itemStatus = itemStatus;
+        this.reservedUserId = reservedUserId;
+    }
+
+    public void cancelReserveItem() {
+        this.itemStatus = ItemStatus.POST;
+        this.reservedUserId = null;
+    }
 }
