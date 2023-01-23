@@ -110,7 +110,6 @@ public class ItemService {
     }
 
     private ItemUser duplicateUserIdAndItemId(Long userId, Long itemId, Long reservedId) {
-        userService.findVerifiedUser(userId);
         if (reservedId != null) {
             userService.findVerifiedUser(reservedId);
         }
