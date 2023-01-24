@@ -41,7 +41,7 @@ public class ItemService {
     }
 
     public ItemDto.ResponseItemId saveItem(ItemDto.RequestSaveItem requestSaveItem) {
-        duplicateItem(requestSaveItem);
+        checkDuplicateItem(requestSaveItem);
 
         User dbUser =
                 userService.findVerifiedUser(requestSaveItem.getUserId());
@@ -64,7 +64,7 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    private void duplicateItem(ItemDto.RequestSaveItem requestSaveItem) {
+    private void checkDuplicateItem(ItemDto.RequestSaveItem requestSaveItem) {
         if (itemUserRepository.
                 findItemUserByUserIdAndProductId(requestSaveItem.getUserId(), requestSaveItem.getProductId()).isPresent()) {
             throw new BusinessLogicException(ErrorCode.ITEM_EXISTS);
@@ -102,10 +102,10 @@ public class ItemService {
         if (requestChangeItemStatus.getUserId().equals(reservedId)) {
             throw new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT);
         }
-        ItemUser dbItemUser = duplicateUserIdAndItemId(
+        verifyReservedId(reservedId);
+        ItemUser dbItemUser = verifyItemUser(
                 requestChangeItemStatus.getUserId(),
-                requestChangeItemStatus.getItemId(),
-                reservedId);
+                requestChangeItemStatus.getItemId());
         if (dbItemUser.getReservedUserId() != null) {
             throw new BusinessLogicException(ErrorCode.ITEM_ALREADY_RESERVED);
         }
@@ -114,21 +114,23 @@ public class ItemService {
         return itemMapper.toResponseItemId(dbItemUser.getItem().getId());
     }
 
-    private ItemUser duplicateUserIdAndItemId(Long userId, Long itemId, Long reservedId) {
+    private ItemUser verifyItemUser(Long userId, Long itemId) {
+        return itemUserRepository
+                .findItemUserByUserIdAndItemId(userId, itemId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+    }
+
+    private void verifyReservedId(Long reservedId) {
         if (reservedId != null) {
             userService.findVerifiedUser(reservedId);
         }
-        ItemUser dbItemUser = itemUserRepository
-                .findItemUserByUserIdAndItemId(userId, itemId)
-                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
-        return dbItemUser;
     }
 
     public void cancelReservedItem(ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
-        ItemUser dbItemUser = duplicateUserIdAndItemId(
+        verifyReservedId(requestCancelReserveItem.getReservedId());
+        ItemUser dbItemUser = verifyItemUser(
                 requestCancelReserveItem.getUserId(),
-                requestCancelReserveItem.getItemId(),
-                requestCancelReserveItem.getReservedId());
+                requestCancelReserveItem.getItemId());
         if (!dbItemUser.getItemStatus().equals(ItemStatus.RESERVE)) {
             throw new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_RESERVE);
         }
