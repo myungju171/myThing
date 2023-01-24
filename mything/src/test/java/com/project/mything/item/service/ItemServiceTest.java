@@ -707,4 +707,89 @@ class ItemServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("관심있는 아이템의 상태를 변경할때 정확한 유저아이디와 정확한 아이템아이디를 전달할 경우 itemId와 200 리턴  ")
+    public void changeItemInterest_suc() {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        ItemUser interestedTrueItemUser = ItemUser.builder()
+                .interestedItem(Boolean.TRUE)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willReturn(Optional.of(interestedTrueItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        responseItemId = itemService.changeItemInterest(requestSimpleItem);
+        //then
+        assertThat(responseItemId.getItemId()).isEqualTo(requestSimpleItem.getItemId());
+        assertThat(interestedTrueItemUser.getInterestedItem()).isFalse();
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("invalidUserIdAndItemIdParameter")
+    @DisplayName("관심있는 아이템의 상태를 변경할때 잘못된 유저아이디와 아이템아이디를 전달할 경우 ITEM_NOT_FOUND 와 404 리턴  ")
+    public void changeItemInterest_fail(final Long userId, final Long itemId) {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(userId)
+                .itemId(itemId)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+
+        //then
+        assertThatThrownBy(() -> itemService.changeItemInterest(requestSimpleItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("비공개 아이템의 상태를 변경할때 정확한 유저아이디와 정확한 아이템아이디를 전달할 경우 itemId와 200 리턴  ")
+    public void changeItemSecret_suc() {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        ItemUser secretItemTrueItemUser = ItemUser.builder()
+                .secretItem(Boolean.TRUE)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willReturn(Optional.of(secretItemTrueItemUser));
+        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
+        //when
+        responseItemId = itemService.changeItemSecret(requestSimpleItem);
+        //then
+        assertThat(responseItemId.getItemId()).isEqualTo(requestSimpleItem.getItemId());
+        assertThat(secretItemTrueItemUser.getInterestedItem()).isFalse();
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("invalidUserIdAndItemIdParameter")
+    @DisplayName("관심있는 아이템의 상태를 변경할때 잘못된 유저아이디와 아이템아이디를 전달할 경우 ITEM_NOT_FOUND 와 404 리턴  ")
+    public void changeItemSecret_fail(final Long userId, final Long itemId) {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(userId)
+                .itemId(itemId)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+
+        //then
+        assertThatThrownBy(() -> itemService.changeItemSecret(requestSimpleItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
 }
