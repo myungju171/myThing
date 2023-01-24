@@ -140,4 +140,15 @@ public class ItemService {
         dbItemUser.cancelReserveItem();
     }
 
+    public void deleteItemUser(ItemDto.RequestDeleteItem requestDeleteItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestDeleteItem.getUserId(), requestDeleteItem.getItemId());
+        if (!dbItemUser.getItemStatus().equals(ItemStatus.POST)) {
+            throw new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_POST);
+        }
+        dbItemUser.getUser().getItemUserList().remove(dbItemUser);
+        dbItemUser.getItem().getItemUserList().remove(dbItemUser);
+        itemUserRepository.delete(dbItemUser);
+    }
+
 }
