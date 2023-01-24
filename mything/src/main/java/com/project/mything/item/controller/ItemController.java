@@ -36,8 +36,8 @@ public class ItemController {
 
     @DeleteMapping("/storages")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteItem(@Valid @RequestBody ItemDto.RequestDeleteItem requestDeleteItem) {
-        itemService.deleteItemUser(requestDeleteItem);
+    public void deleteItem(@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem) {
+        itemService.deleteItemUser(requestSimpleItem);
     }
 
     @GetMapping("/{item-id}/users/{user-id}")
@@ -66,5 +66,17 @@ public class ItemController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cancelReserve(@Valid @RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
         itemService.cancelReservedItem(requestCancelReserveItem);
+    }
+
+    @PatchMapping("/interests")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseItemId changeItemInterest (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
+        return itemService.changeItemInterest(requestSimpleItem);
+    }
+
+    @PatchMapping("/secrets")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseItemId changeItemSecret (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
+        return itemService.changeItemSecret(requestSimpleItem);
     }
 }
