@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -649,6 +649,7 @@ class ItemControllerTest {
                                 fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
                         )));
     }
+
     @Test
     @DisplayName("아이템 상태를 변경시 존재하지 않는 유저의 아이템을 변경하려 할때 ITEM_NOT_FOUND 404 리턴")
     public void changeItemStatus_fail1() throws Exception {
@@ -679,8 +680,9 @@ class ItemControllerTest {
                                         fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
                                 )
                         )
-                        ));
+                ));
     }
+
     @Test
     @DisplayName("아이템 상태를 변경시 존재하지 않는 아이템의 상태를 변경하려 할때 ITEM_NOT_FOUND 404 리턴")
     public void changeItemStatus_fail2() throws Exception {
@@ -713,6 +715,7 @@ class ItemControllerTest {
                         )
                 ));
     }
+
     @Test
     @DisplayName("아이템의 상태를 변경할때 요청값이 잘못되었을때 Bad_Request 400 리턴")
     public void changeItemStatus_fail3() throws Exception {
@@ -780,6 +783,7 @@ class ItemControllerTest {
                         )
                 ));
     }
+
     @Test
     @DisplayName("아이템 상태를 변경시 존재하지 않는 유저가 예약하려 할때 User_Not_Found 404 리턴")
     public void changeItemStatus_fail5() throws Exception {
@@ -815,5 +819,259 @@ class ItemControllerTest {
                                 )
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 정확한 정보를 전달할 경우 204 No Content 리턴")
+    public void cancelReserve_suc() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isNoContent())
+                .andDo(document("예약된_아이템_예약취소_성공_204",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+
+        verify(itemService, times(1)).cancelReservedItem(any());
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 요청 값이 누락되었을 경우 400 Bad_Request 리턴")
+    public void cancelReserve_fail() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("예약된_아이템_예약취소시_요청값을_누락할_경우_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다. 필수값입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다. 필수값입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 요청 값이 음수일 경우 400 Bad_Request 리턴")
+    public void cancelReserve_fail2() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(-1L)
+                .itemId(-1L)
+                .reservedId(-1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("예약된_아이템_예약취소시_요청값을_누락할_경우_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다. 양수이어야합니다.."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다. 양수이어야합니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다. 양수이어야합니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 reservedId를 전달할 경우 USER_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail3() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(5000L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 itemId를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail4() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(5000L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 userId를 전달할 경우 USER_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail5() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(5000L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 아이템의 상태가 RESERVE가 아닐 경우 ITEM_STATUS_NOT_RESERVE 409 리턴")
+    public void cancelReserve_fail6() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_RESERVE))
+                .when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 기존 reservedId 와 요청 reservedId가 다를 경우 USER_NOT_MATCH 403 리턴")
+    public void cancelReserve_fail7() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_MATCH))
+                .when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isForbidden())
+                .andDo(document("예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403 ",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
     }
 }

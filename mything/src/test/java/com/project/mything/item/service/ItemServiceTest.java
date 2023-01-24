@@ -222,10 +222,10 @@ class ItemServiceTest {
             Boolean value;
             ItemStatus itemStatus;
             if (i % 2 == 0) {
-                value = false;
+                value = Boolean.FALSE;
                 itemStatus = ItemStatus.BOUGHT;
             } else {
-                value = true;
+                value = Boolean.TRUE;
                 itemStatus = ItemStatus.POST;
             }
             data.add(ItemDto.ResponseSimpleItem.builder()
@@ -263,6 +263,7 @@ class ItemServiceTest {
         assertThat(result.getPageInfo().getTotalElements()).isEqualTo(responseMultiPageDto.getPageInfo().getTotalElements());
 
     }
+
     @Test
     @DisplayName("아이템을 리스트로 가져올때 존재하지 않는 유저 아이디를 입력시 User_Not_Found 404가 리턴된다.")
     public void getSimpleItems_fail() {
@@ -276,8 +277,8 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("아이템의 상태를 Bought로 변경 성공")
-    public void changeItemStatus_suc(){
-    //given
+    public void changeItemStatus_suc() {
+        //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
                 .itemId(1L)
@@ -306,9 +307,10 @@ class ItemServiceTest {
         assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
         assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.BOUGHT);
     }
+
     @Test
     @DisplayName("아이템의 상태를 POST로 변경 성공")
-    public void changeItemStatus_suc2(){
+    public void changeItemStatus_suc2() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
@@ -338,9 +340,10 @@ class ItemServiceTest {
         assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
         assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.POST);
     }
+
     @Test
     @DisplayName("아이템의 상태를 RECEIVED로 변경 성공")
-    public void changeItemStatus_suc3(){
+    public void changeItemStatus_suc3() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
@@ -370,9 +373,10 @@ class ItemServiceTest {
         assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
         assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.RECEIVED);
     }
+
     @Test
     @DisplayName("아이템의 상태를 RESERVE로 변경 성공")
-    public void changeItemStatus_suc4(){
+    public void changeItemStatus_suc4() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
@@ -407,9 +411,10 @@ class ItemServiceTest {
         assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.RESERVE);
         assertThat(dbItemUser.getReservedUserId()).isEqualTo(reservedUser.getId());
     }
+
     @Test
     @DisplayName("아이템의 상태를 RESERVE로 변경시 이미 RESERVE상태일 경우 실패 409 ")
-    public void changeItemStatus_fail1(){
+    public void changeItemStatus_fail1() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
@@ -432,10 +437,6 @@ class ItemServiceTest {
                 .itemStatus(ItemStatus.RESERVE)
                 .reservedUserId(2L)
                 .build();
-
-        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
-                .itemId(1L)
-                .build();
         given(userService.findVerifiedUser(any())).willReturn(reservedUser);
         given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
 
@@ -445,9 +446,10 @@ class ItemServiceTest {
         assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, reservedUser.getId()))
                 .isInstanceOf(BusinessLogicException.class);
     }
+
     @Test
     @DisplayName("아이템의 상태를 RESERVE로 변경시 존재하지 않는 reservedId를 전달 할 경우 실패 409 ")
-    public void changeItemStatus_fail2(){
+    public void changeItemStatus_fail2() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
@@ -465,9 +467,10 @@ class ItemServiceTest {
         assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, reservedUser.getId()))
                 .isInstanceOf(BusinessLogicException.class);
     }
+
     @Test
     @DisplayName("아이템의 상태를 변경시 존재하지않는 유저아이디를 전달 할 경우 실패 404 ")
-    public void changeItemStatus_fail3(){
+    public void changeItemStatus_fail3() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(5000L)
@@ -481,6 +484,123 @@ class ItemServiceTest {
         //when
         //then
         assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, null))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템 예약을 취소하는 서비스로직 성공")
+    public void cancelReservedItem_suc() {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .reservedUserId(2L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        User reservedUser = User.builder()
+                .id(2L)
+                .build();
+
+        given(userService.findVerifiedUser(any())).willReturn(reservedUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        //when
+        itemService.cancelReservedItem(requestCancelReserveItem);
+        //then
+        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.POST);
+        assertThat(dbItemUser.getReservedUserId()).isNull();
+    }
+
+    @Test
+    @DisplayName("아이템 예약을 취소시 예약자가 아닌 다른 이가 취소하려 할때 USER_NOT_MATCH 409 리턴")
+    public void cancelReservedItem_fail1() {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .reservedUserId(10L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        User differentUser = User.builder()
+                .id(2L)
+                .build();
+
+        given(userService.findVerifiedUser(any())).willReturn(differentUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.cancelReservedItem(requestCancelReserveItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템 예약을 취소시 아이템의 상태가 RESERVE가 아닐시 ITEM_STATUS_NOT_RESERVE 409리턴")
+    public void cancelReservedItem_fail3() {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        ItemUser dbItemUser = ItemUser.builder()
+                .id(1L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        User reservedUser = User.builder()
+                .id(2L)
+                .build();
+
+        given(userService.findVerifiedUser(any())).willReturn(reservedUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.cancelReservedItem(requestCancelReserveItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템 예약을 취소시 존재하지 않는 reserve유저아이디를 전달 할 경우 USER_NOT_FOUND 404 리턴")
+    public void cancelReservedItem_fail4() {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(5000L)
+                .build();
+
+        given(userService.findVerifiedUser(any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.cancelReservedItem(requestCancelReserveItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
+    @DisplayName("아이템 예약을 취소시 존재하지 않는 아이템아이디를 전달 할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void cancelReservedItem_fail5() {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(5000L)
+                .reservedId(2L)
+                .build();
+        User reservedUser = User.builder()
+                .id(2L)
+                .build();
+
+        given(userService.findVerifiedUser(any())).willReturn(reservedUser);
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.cancelReservedItem(requestCancelReserveItem))
                 .isInstanceOf(BusinessLogicException.class);
     }
 }
