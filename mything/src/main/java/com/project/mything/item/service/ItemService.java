@@ -99,8 +99,13 @@ public class ItemService {
 
     public ItemDto.ResponseItemId changeItemStatus(ItemDto.RequestChangeItemStatus requestChangeItemStatus,
                                                    Long reservedId) {
-        ItemUser dbItemUser = duplicateUserIdAndItemId(requestChangeItemStatus.getUserId(),requestChangeItemStatus.getItemId(), reservedId);
-
+        if (requestChangeItemStatus.getUserId().equals(reservedId)) {
+            throw new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT);
+        }
+        ItemUser dbItemUser = duplicateUserIdAndItemId(
+                requestChangeItemStatus.getUserId(),
+                requestChangeItemStatus.getItemId(),
+                reservedId);
         if (dbItemUser.getReservedUserId() != null) {
             throw new BusinessLogicException(ErrorCode.ITEM_ALREADY_RESERVED);
         }
@@ -114,11 +119,10 @@ public class ItemService {
             userService.findVerifiedUser(reservedId);
         }
         ItemUser dbItemUser = itemUserRepository
-                .findItemUserByUserIdAndItemId(userId,itemId)
+                .findItemUserByUserIdAndItemId(userId, itemId)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
         return dbItemUser;
     }
-
 
     public void cancelReservedItem(ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
         ItemUser dbItemUser = duplicateUserIdAndItemId(

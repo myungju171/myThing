@@ -753,7 +753,7 @@ class ItemControllerTest {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
-                .itemId(10000L)
+                .itemId(2L)
                 .itemStatus(ItemStatus.RESERVE)
                 .build();
         String content = objectMapper.writeValueAsString(requestChangeItemStatus);
@@ -763,7 +763,7 @@ class ItemControllerTest {
         ResultActions perform = mockMvc.perform(
                 patch("/items/statuses")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("reservedId", "500000")
+                        .header("reservedId", 2L)
                         .content(content)
         );
         //then
@@ -790,7 +790,7 @@ class ItemControllerTest {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(1L)
-                .itemId(10000L)
+                .itemId(2L)
                 .itemStatus(ItemStatus.RESERVE)
                 .build();
         String content = objectMapper.writeValueAsString(requestChangeItemStatus);
@@ -800,12 +800,49 @@ class ItemControllerTest {
         ResultActions perform = mockMvc.perform(
                 patch("/items/statuses")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("reservedId", "500000")
+                        .header("reservedId", 50000L)
                         .content(content)
         );
         //then
         perform.andExpect(status().isNotFound())
                 .andDo(document("존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("reservedId").description("예약하는 유저의 아이디 번호입니다. 예약시에만 필요함")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 아이템 소유자의 유저아이디와 예약자의 유저아이디가 동일할 경우 RESERVE_USER_CONFLICT 409 리턴")
+    public void changeItemStatus_fail6() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("reservedId", 1L)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestHeaders(
@@ -906,7 +943,7 @@ class ItemControllerTest {
         //then
 
         perform.andExpect(status().isBadRequest())
-                .andDo(document("예약된_아이템_예약취소시_요청값을_누락할_경우_400",
+                .andDo(document("예약된_아이템_예약취소시_요청값이_음수일_경우_400",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
