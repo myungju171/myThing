@@ -140,9 +140,9 @@ public class ItemService {
         dbItemUser.cancelReserveItem();
     }
 
-    public void deleteItemUser(ItemDto.RequestDeleteItem requestDeleteItem) {
+    public void deleteItemUser(ItemDto.RequestSimpleItem requestSimpleItem) {
         ItemUser dbItemUser =
-                verifyItemUser(requestDeleteItem.getUserId(), requestDeleteItem.getItemId());
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
         if (!dbItemUser.getItemStatus().equals(ItemStatus.POST)) {
             throw new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_POST);
         }
@@ -151,4 +151,17 @@ public class ItemService {
         itemUserRepository.delete(dbItemUser);
     }
 
+    public ItemDto.ResponseItemId changeItemInterest(ItemDto.RequestSimpleItem requestSimpleItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
+        dbItemUser.changeItemInterest();
+        return itemMapper.toResponseItemId(dbItemUser.getId());
+    }
+
+    public ItemDto.ResponseItemId changeItemSecret(ItemDto.RequestSimpleItem requestSimpleItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
+        dbItemUser.changeItemSecret();
+        return itemMapper.toResponseItemId(dbItemUser.getId());
+    }
 }
