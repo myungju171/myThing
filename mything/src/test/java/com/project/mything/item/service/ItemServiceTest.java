@@ -17,6 +17,9 @@ import com.project.mything.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -489,7 +493,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("아이템의 상태를 변경시 아이템을 소유한 유저아이디와 예약자아이디가 동일할 경우 실패 409")
-    public void changeItemStatus_fail4(){
+    public void changeItemStatus_fail4() {
         //given
         ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
                 .userId(5000L)
@@ -620,4 +624,87 @@ class ItemServiceTest {
         assertThatThrownBy(() -> itemService.cancelReservedItem(requestCancelReserveItem))
                 .isInstanceOf(BusinessLogicException.class);
     }
+
+    @Test
+    @DisplayName("ItemUser객체 삭제시 ItemStatus가 POST면 삭제된다.")
+    public void deleteItemUser_suc() {
+        //given
+        User user = User.builder().id(1L).build();
+        Item item = Item.builder().id(1L).build();
+
+        ItemUser itemUser = ItemUser.builder().item(item).user(user).itemStatus(ItemStatus.POST).build();
+        itemUser.addItemUser();
+
+        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        assertThat(user.getItemUserList().size()).isEqualTo(1);
+        assertThat(user.getItemUserList().size()).isEqualTo(1);
+
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(itemUser));
+
+        //when
+        itemService.deleteItemUser(requestDeleteItem);
+        //then
+        assertThat(user.getItemUserList().size()).isEqualTo(0);
+        assertThat(user.getItemUserList().size()).isEqualTo(0);
+        verify(itemUserRepository, times(1)).delete(any());
+    }
+
+    @DisplayName("ItemUser객체 삭제시 ItemStatus가 POST가 아니면 409 ITEM_STATUS_NOT_POST 리턴")
+    @ParameterizedTest
+    @MethodSource("invalidItemStatusParameter")
+    public void deleteItemUser_fail(final ItemStatus itemStatus) {
+        //given
+        ItemUser itemUser = ItemUser.builder().itemStatus(itemStatus).build();
+
+        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(itemUser));
+
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.deleteItemUser(requestDeleteItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    private static Stream<Arguments> invalidItemStatusParameter() {
+
+        return Stream.of(
+                Arguments.of(ItemStatus.BOUGHT),
+                Arguments.of(ItemStatus.RECEIVED),
+                Arguments.of(ItemStatus.RESERVE)
+        );
+    }
+
+    @DisplayName("ItemUser객체 삭제시 존재하지 않는 유저아이디 또는 아이템 아이디를 전달할 경우 404 ITEM_NOT_FOUND 404 리턴.")
+    @ParameterizedTest
+    @MethodSource("invalidUserIdAndItemIdParameter")
+    public void deleteItemUser_fail2(final Long userId, final Long itemId) {
+        //given
+        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+                .itemId(userId)
+                .userId(itemId)
+                .build();
+
+        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.deleteItemUser(requestDeleteItem))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    private static Stream<Arguments> invalidUserIdAndItemIdParameter() {
+
+        return Stream.of(
+                Arguments.of(5000L, 1L),
+                Arguments.of(1L, 5000L)
+        );
+    }
+
 }

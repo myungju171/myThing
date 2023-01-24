@@ -123,4 +123,17 @@ public class ItemDto {
         @Positive
         private Long reservedId;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestDeleteItem {
+        @NotNull
+        @Positive
+        private Long userId;
+        @NotNull
+        @Positive
+        private Long itemId;
+    }
 }
