@@ -128,7 +128,7 @@ public class ItemDto {
     @Builder
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class RequestDeleteItem {
+    public static class RequestSimpleItem {
         @NotNull
         @Positive
         private Long userId;
