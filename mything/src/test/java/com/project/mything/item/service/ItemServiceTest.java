@@ -488,6 +488,23 @@ class ItemServiceTest {
     }
 
     @Test
+    @DisplayName("아이템의 상태를 변경시 아이템을 소유한 유저아이디와 예약자아이디가 동일할 경우 실패 409")
+    public void changeItemStatus_fail4(){
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(5000L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(() ->
+                itemService.changeItemStatus(requestChangeItemStatus, requestChangeItemStatus.getUserId()))
+                .isInstanceOf(BusinessLogicException.class);
+    }
+
+    @Test
     @DisplayName("아이템 예약을 취소하는 서비스로직 성공")
     public void cancelReservedItem_suc() {
         //given
