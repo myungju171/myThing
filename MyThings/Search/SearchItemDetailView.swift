@@ -7,21 +7,24 @@
 
 import SwiftUI
 
-struct MyWishDetailView: View {
-  var index : Int
+struct SearchItemDetailView: View {
+  var model: SearchItem
+  @State var manager = DataPost()
   
   var body : some View {
     //       Color.yellow.edgesIgnoringSafeArea(.all)
     ScrollView(Axis.Set.vertical, showsIndicators: true) {
       VStack(alignment: .leading, spacing: 10) {
-        Image(uiImage: UIImage(named: "deep")!)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-        Text("[딥티크] 딥티크 플레르 드 뽀 오 드 퍼퓸 75ml")
+        AsyncImage(url: URL(string: model.image), content: { image in
+          image.resizable()
+            .aspectRatio(contentMode: .fit)
+        }, placeholder: {
+        })
+        Text(model.title)
           .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
           .font(.system(size: 20, weight: .bold))
         HStack(spacing:0) {
-          Text("361,000")
+          Text(String(model.lprice))
           Text("원")
         }
         .font(.system(size: 20, weight: .bold))
@@ -47,26 +50,27 @@ struct MyWishDetailView: View {
               .foregroundColor(.gray)
               .padding()
           }
-          Link(destination: URL(string: "https://seons-dev.tistory.com/")!) {
-              HStack {
-                  Text("사이트로 이동하기")
-              } .foregroundColor(.white)
+          Link(destination: URL(string: model.link)!) {
+            HStack {
+              Text("사이트로 이동하기")
+            } .foregroundColor(.white)
           }
           .frame(width: 150, height: 50)
           .background(.blue)
           .cornerRadius(10)
           Button {
-            print("shoshop")
+            self.manager.checkDetails(userId: 1, productId: Int(model.productId)!, title: model.title, link: model.link, image: model.image, price: Int( model.lprice)!)
           } label: {
-            Text("선물 예약하기")
+            Text("담기")
               .foregroundColor(.white)
           }
-          .frame(width: 120, height: 50)
+          .frame(width: 80, height: 50)
           .background(.blue)
           .cornerRadius(10)
         }
         .padding()
       }
+      //      .navigationBarHidden(true)
     }
     //     .toolbar {
     //       ToolbarItem(placement: .navigationBarLeading) {
@@ -80,8 +84,8 @@ struct MyWishDetailView: View {
   }
 }
 
-struct MyWishDetail_Previews: PreviewProvider {
-  static var previews: some View {
-    MyWishDetailView(index: 5)
-  }
-}
+//struct MyWishDetail_Previews: PreviewProvider {
+//  static var previews: some View {
+//    MyWishDetailView(model: <#T##SearchItem#>)
+//  }
+//}
