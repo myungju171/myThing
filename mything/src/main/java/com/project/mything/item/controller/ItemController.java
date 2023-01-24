@@ -34,6 +34,12 @@ public class ItemController {
         return itemService.saveItem(requestSaveItem);
     }
 
+    @DeleteMapping("/storages")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteItem(@Valid @RequestBody ItemDto.RequestDeleteItem requestDeleteItem) {
+        itemService.deleteItemUser(requestDeleteItem);
+    }
+
     @GetMapping("/{item-id}/users/{user-id}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto.ResponseDetailItem getDetailPage(@PathVariable("item-id") Long itemId,
