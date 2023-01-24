@@ -1116,12 +1116,12 @@ class ItemControllerTest {
     @DisplayName("사용자가 보관중인 POST상태인 아이템을 삭제시 204 No_Content 리턴")
     public void deleteItem_suc() throws Exception {
         //given
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .userId(1L)
                 .itemId(1L)
                 .build();
-        String content = objectMapper.writeValueAsString(requestDeleteItem);
-        doNothing().when(itemService).deleteItemUser(requestDeleteItem);
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        doNothing().when(itemService).deleteItemUser(requestSimpleItem);
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/items/storages")
@@ -1145,11 +1145,11 @@ class ItemControllerTest {
     @DisplayName("사용자가 보관중인 아이템 삭제시 잘못된 유저 아이디를 보낼경우 Item_Not_Found 404 리턴 리턴")
     public void deleteItem_fail() throws Exception {
         //given
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .userId(5000L)
                 .itemId(1L)
                 .build();
-        String content = objectMapper.writeValueAsString(requestDeleteItem);
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
         doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND))
                 .when(itemService).deleteItemUser(any());
         //when
@@ -1175,11 +1175,11 @@ class ItemControllerTest {
     @DisplayName("사용자가 보관중인 아이템 삭제시 잘못된 아이템 아이디를 보낼경우 Item_Not_Found 404 리턴 리턴")
     public void deleteItem_fail2() throws Exception {
         //given
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .userId(1L)
                 .itemId(5000L)
                 .build();
-        String content = objectMapper.writeValueAsString(requestDeleteItem);
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
         doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND))
                 .when(itemService).deleteItemUser(any());
         //when
@@ -1205,11 +1205,11 @@ class ItemControllerTest {
     @DisplayName("사용자가 보관중인 POST가 아닌 아이템을 삭제시 409 Item_Status_Not_Post 리턴")
     public void deleteItem_fail3() throws Exception {
         //given
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .userId(1L)
                 .itemId(1L)
                 .build();
-        String content = objectMapper.writeValueAsString(requestDeleteItem);
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
         doThrow(new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_POST))
                 .when(itemService).deleteItemUser(any());
         //when

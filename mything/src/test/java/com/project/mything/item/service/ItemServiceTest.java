@@ -635,7 +635,7 @@ class ItemServiceTest {
         ItemUser itemUser = ItemUser.builder().item(item).user(user).itemStatus(ItemStatus.POST).build();
         itemUser.addItemUser();
 
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .itemId(1L)
                 .userId(1L)
                 .build();
@@ -645,7 +645,7 @@ class ItemServiceTest {
         given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(itemUser));
 
         //when
-        itemService.deleteItemUser(requestDeleteItem);
+        itemService.deleteItemUser(requestSimpleItem);
         //then
         assertThat(user.getItemUserList().size()).isEqualTo(0);
         assertThat(user.getItemUserList().size()).isEqualTo(0);
@@ -659,7 +659,7 @@ class ItemServiceTest {
         //given
         ItemUser itemUser = ItemUser.builder().itemStatus(itemStatus).build();
 
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .itemId(1L)
                 .userId(1L)
                 .build();
@@ -667,7 +667,7 @@ class ItemServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> itemService.deleteItemUser(requestDeleteItem))
+        assertThatThrownBy(() -> itemService.deleteItemUser(requestSimpleItem))
                 .isInstanceOf(BusinessLogicException.class);
     }
 
@@ -685,7 +685,7 @@ class ItemServiceTest {
     @MethodSource("invalidUserIdAndItemIdParameter")
     public void deleteItemUser_fail2(final Long userId, final Long itemId) {
         //given
-        ItemDto.RequestDeleteItem requestDeleteItem = ItemDto.RequestDeleteItem.builder()
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
                 .itemId(userId)
                 .userId(itemId)
                 .build();
@@ -695,7 +695,7 @@ class ItemServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> itemService.deleteItemUser(requestDeleteItem))
+        assertThatThrownBy(() -> itemService.deleteItemUser(requestSimpleItem))
                 .isInstanceOf(BusinessLogicException.class);
     }
 
