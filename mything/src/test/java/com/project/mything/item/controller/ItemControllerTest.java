@@ -1231,4 +1231,143 @@ class ItemControllerTest {
                         )));
     }
 
+    @Test
+    @DisplayName("관심상품 아이템의 상태를 변경할떄 정확한 유저, 아이템 아이디를 전달할 경우 itemId와 200 리턴")
+    public void changeItemInterest_suc() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemInterest(any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/interests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1))
+                .andDo(document("관심아이템_상태_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 필수값입니다.")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("관심아이템 상태가 변경된 아이템 아이디 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("관심상품 아이템의 상태를 변경할떄 정확하지 않은 유저, 아이템 아이디를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemInterest_fail() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemInterest(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/interests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("관심아이템_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 정확한 값 필요"),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 정확한 값 필요")
+                                )
+                        )
+                ));
+    }
+
+
+    @Test
+    @DisplayName("비밀 아이템의 상태를 변경할떄 정확한 유저, 아이템 아이디를 전달할 경우 itemId와 200 리턴")
+    public void changeItemSecret_suc() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemSecret(any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/secrets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1))
+                .andDo(document("비밀아이템_상태_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다.")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("관심아이템 상태가 변경된 아이템 아이디 입니다.")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀상품 아이템의 상태를 변경할떄 정확하지 않은 유저, 아이템 아이디를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemSecret_fail() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemSecret(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/secrets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("비밀아이템_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 정확한 값 필요"),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 정확한 값 필요")
+                                )
+                        )
+                ));
+    }
 }
