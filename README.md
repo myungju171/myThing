@@ -20,7 +20,7 @@
   <tr><td align="center"><a href="https://github.com/SionBackEnd"><img src="https://avatars.githubusercontent.com/u/104377048?v=4" width="100px;" alt=""/><br /><sub><b>@SionBackEnd</b></sub></a><br />
   <td align="center"><a href="https://github.com/myungju171"><img src="https://avatars.githubusercontent.com/u/66284051?v=4" width="100px;" alt=""/><br /><sub><b>@myungju171</b></sub></a><br /></td></tr>
       <td align="center">[BackEnd]백시온</td>
-      <td align="center">[Swift]고명주</td>
+      <td align="center">[iOS]고명주</td>
 </tr>
 
 </table>
