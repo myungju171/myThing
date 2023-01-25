@@ -859,6 +859,39 @@ class ItemControllerTest {
     }
 
     @Test
+    @DisplayName("아이템 상태를 POST로 변경하려할시 POST_NOT_ALLOW 409 리턴")
+    public void changeItemStatus_fail7() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.POST_NOT_ALLOW));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아이템상태를_POST로_변경_시도_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
     @DisplayName("예약된 아이템 예약취소시 정확한 정보를 전달할 경우 204 No Content 리턴")
     public void cancelReserve_suc() throws Exception {
         //given

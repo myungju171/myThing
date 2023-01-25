@@ -102,6 +102,9 @@ public class ItemService {
         if (requestChangeItemStatus.getUserId().equals(reservedId)) {
             throw new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT);
         }
+        if (requestChangeItemStatus.getItemStatus().equals(ItemStatus.POST)) {
+            throw new BusinessLogicException(ErrorCode.POST_NOT_ALLOW);
+        }
         verifyReservedId(reservedId);
         ItemUser dbItemUser = verifyItemUser(
                 requestChangeItemStatus.getUserId(),
