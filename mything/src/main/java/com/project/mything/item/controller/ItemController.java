@@ -34,6 +34,12 @@ public class ItemController {
         return itemService.saveItem(requestSaveItem);
     }
 
+    @DeleteMapping("/storages")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteItem(@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem) {
+        itemService.deleteItemUser(requestSimpleItem);
+    }
+
     @GetMapping("/{item-id}/users/{user-id}")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto.ResponseDetailItem getDetailPage(@PathVariable("item-id") Long itemId,
@@ -51,14 +57,26 @@ public class ItemController {
 
     @PatchMapping("/statuses")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto.ResponseItemId changeItemStatus(@RequestBody ItemDto.RequestChangeItemStatus requestChangeItemStatus,
+    public ItemDto.ResponseItemId changeItemStatus(@Valid @RequestBody ItemDto.RequestChangeItemStatus requestChangeItemStatus,
                                                    @RequestHeader(required = false) Long reservedId) {
         return itemService.changeItemStatus(requestChangeItemStatus, reservedId);
     }
 
     @DeleteMapping("/statuses")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancelReserve(@RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
+    public void cancelReserve(@Valid @RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
         itemService.cancelReservedItem(requestCancelReserveItem);
+    }
+
+    @PatchMapping("/interests")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseItemId changeItemInterest (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
+        return itemService.changeItemInterest(requestSimpleItem);
+    }
+
+    @PatchMapping("/secrets")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto.ResponseItemId changeItemSecret (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
+        return itemService.changeItemSecret(requestSimpleItem);
     }
 }

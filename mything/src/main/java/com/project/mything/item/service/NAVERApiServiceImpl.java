@@ -27,7 +27,7 @@ public class NAVERApiServiceImpl implements NAVERApiService {
 
         return rest.exchange(
                 "https://openapi.naver.com/v1/search/shop.json?query="
-                        + query + "&display=" + size + "&sort=" + sort + "&start=" + sort,
+                        + query + "&display=" + size + "&sort=" + sort + "&start=" + start,
                 HttpMethod.GET, requestEntity, String.class);
     }
 }

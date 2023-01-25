@@ -2,6 +2,7 @@ package com.project.mything.item.repository;
 
 import com.project.mything.item.entity.Item;
 import com.project.mything.item.entity.ItemUser;
+import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,15 +81,15 @@ class ItemUserRepositoryTest {
 
     @Test
     @DisplayName("itemUser 객체 userId와 productId로 찾아내는 메소드 성공 테스트")
-    public void findItemUserByUserIdAndProductId_suc(){
-    //given
+    public void findItemUserByUserIdAndProductId_suc() {
+        //given
         User user = User.builder().name("홍길동").build();
         User dbUser = userRepository.save(user);
         Item item = Item.builder().productId(12345L).title("테스트 타이틀").price(1000).build();
         Item dbItem = itemRepository.save(item);
         ItemUser itemUser = ItemUser.builder().user(user).item(item).build().addItemUser();
         ItemUser dbItemUser = itemUserRepository.save(itemUser);
-    //when
+        //when
         boolean result = itemUserRepository.findItemUserByUserIdAndProductId(dbUser.getId(), dbItem.getProductId()).isPresent();
         //then
         assertThat(result).isTrue();
@@ -96,19 +97,49 @@ class ItemUserRepositoryTest {
 
     @Test
     @DisplayName("itemUser 객체 userId와 itemId로 찾아내는 메소드 성공 테스트")
-    public void findItemUserByUserIdAndItemId(){
-    //given
+    public void findItemUserByUserIdAndItemId() {
+        //given
         User user = User.builder().name("홍길동").build();
         User dbUser = userRepository.save(user);
         Item item = Item.builder().title("테스트 타이틀").build();
         Item dbItem = itemRepository.save(item);
         ItemUser itemUser = ItemUser.builder().user(user).item(item).build().addItemUser();
         ItemUser dbItemUser = itemUserRepository.save(itemUser);
-    //when
+        //when
         ItemUser result = itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), item.getId())
                 .orElseThrow(() -> new RuntimeException("ItemUser null값"));
         //then
         assertThat(result.getItem().getTitle()).isEqualTo(dbItem.getTitle());
         assertThat(result.getUser().getName()).isEqualTo(user.getName());
+    }
+
+    @Test
+    @DisplayName("ItemUser 객체 삭제시 User와 Item객체안에 있는 ItemUserList에도 삭제되는지 테스트 진행 ")
+    public void deleteItemUser_suc() {
+        //given
+        User user = User.builder().build();
+        User dbUser = userRepository.save(user);
+
+        Item item = Item.builder().build();
+        Item dbItem = itemRepository.save(item);
+
+        ItemUser itemUser = ItemUser.builder().item(dbItem).user(dbUser).itemStatus(ItemStatus.POST).build();
+        ItemUser dbItemUser = itemUserRepository.save(itemUser);
+        dbItemUser.addItemUser();
+
+        assertThat(dbUser.getItemUserList().size()).isEqualTo(1);
+        assertThat(dbItem.getItemUserList().size()).isEqualTo(1);
+
+        //when
+        dbItemUser.getUser().getItemUserList().remove(dbItemUser);
+        dbItemUser.getItem().getItemUserList().remove(dbItemUser);
+        itemUserRepository.delete(dbItemUser);
+
+        boolean present =
+                itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), dbItem.getId()).isPresent();
+        //then
+        assertThat(dbUser.getItemUserList().size()).isEqualTo(0);
+        assertThat(dbItem.getItemUserList().size()).isEqualTo(0);
+        assertThat(present).isFalse();
     }
 }

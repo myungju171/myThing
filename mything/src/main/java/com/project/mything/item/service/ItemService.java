@@ -11,6 +11,7 @@ import com.project.mything.item.mapper.ItemMapper;
 import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
 import com.project.mything.user.entity.User;
+import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,7 @@ public class ItemService {
     private final ItemUserRepository itemUserRepository;
     private final UserService userService;
     private final NAVERApiService naverApiService;
+    private final UserMapper userMapper;
 
     public ResponseEntity<String> search(String query, Integer size, String sort, Integer start) {
         if (query.equals("")) {
@@ -39,7 +41,7 @@ public class ItemService {
     }
 
     public ItemDto.ResponseItemId saveItem(ItemDto.RequestSaveItem requestSaveItem) {
-        duplicateItem(requestSaveItem);
+        checkDuplicateItem(requestSaveItem);
 
         User dbUser =
                 userService.findVerifiedUser(requestSaveItem.getUserId());
@@ -62,7 +64,7 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    private void duplicateItem(ItemDto.RequestSaveItem requestSaveItem) {
+    private void checkDuplicateItem(ItemDto.RequestSaveItem requestSaveItem) {
         if (itemUserRepository.
                 findItemUserByUserIdAndProductId(requestSaveItem.getUserId(), requestSaveItem.getProductId()).isPresent()) {
             throw new BusinessLogicException(ErrorCode.ITEM_EXISTS);
@@ -79,19 +81,34 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Integer start, Integer size) {
-        userService.findVerifiedUser(userId);
+        User dbUser = userService.findVerifiedUser(userId);
+
         PageRequest pageRequest = PageRequest.of(start - 1, size);
 
-        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = itemUserRepository.searchSimpleItem(userId, pageRequest);
-        List<ItemDto.ResponseSimpleItem> content = responseSimpleItems.getContent();
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems =
+                itemUserRepository.searchSimpleItem(userId, pageRequest);
 
-        return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(content, responseSimpleItems);
+        List<ItemDto.ResponseSimpleItem> content =
+                responseSimpleItems.getContent();
+
+        return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(
+                content,
+                responseSimpleItems,
+                userMapper.toResponseSimpleUser(dbUser));
     }
 
     public ItemDto.ResponseItemId changeItemStatus(ItemDto.RequestChangeItemStatus requestChangeItemStatus,
                                                    Long reservedId) {
-        ItemUser dbItemUser = duplicateUserIdAndItemId(requestChangeItemStatus.getUserId(),requestChangeItemStatus.getItemId(), reservedId);
-
+        if (requestChangeItemStatus.getUserId().equals(reservedId)) {
+            throw new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT);
+        }
+        if (requestChangeItemStatus.getItemStatus().equals(ItemStatus.POST)) {
+            throw new BusinessLogicException(ErrorCode.POST_NOT_ALLOW);
+        }
+        verifyReservedId(reservedId);
+        ItemUser dbItemUser = verifyItemUser(
+                requestChangeItemStatus.getUserId(),
+                requestChangeItemStatus.getItemId());
         if (dbItemUser.getReservedUserId() != null) {
             throw new BusinessLogicException(ErrorCode.ITEM_ALREADY_RESERVED);
         }
@@ -100,23 +117,23 @@ public class ItemService {
         return itemMapper.toResponseItemId(dbItemUser.getItem().getId());
     }
 
-    private ItemUser duplicateUserIdAndItemId(Long userId, Long itemId, Long reservedId) {
-        userService.findVerifiedUser(userId);
+    private ItemUser verifyItemUser(Long userId, Long itemId) {
+        return itemUserRepository
+                .findItemUserByUserIdAndItemId(userId, itemId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+    }
+
+    private void verifyReservedId(Long reservedId) {
         if (reservedId != null) {
             userService.findVerifiedUser(reservedId);
         }
-        ItemUser dbItemUser = itemUserRepository
-                .findItemUserByUserIdAndItemId(userId,itemId)
-                .orElseThrow(() -> new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
-        return dbItemUser;
     }
 
-
     public void cancelReservedItem(ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
-        ItemUser dbItemUser = duplicateUserIdAndItemId(
+        verifyReservedId(requestCancelReserveItem.getReservedId());
+        ItemUser dbItemUser = verifyItemUser(
                 requestCancelReserveItem.getUserId(),
-                requestCancelReserveItem.getItemId(),
-                requestCancelReserveItem.getReservedId());
+                requestCancelReserveItem.getItemId());
         if (!dbItemUser.getItemStatus().equals(ItemStatus.RESERVE)) {
             throw new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_RESERVE);
         }
@@ -126,4 +143,28 @@ public class ItemService {
         dbItemUser.cancelReserveItem();
     }
 
+    public void deleteItemUser(ItemDto.RequestSimpleItem requestSimpleItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
+        if (!dbItemUser.getItemStatus().equals(ItemStatus.POST)) {
+            throw new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_POST);
+        }
+        dbItemUser.getUser().getItemUserList().remove(dbItemUser);
+        dbItemUser.getItem().getItemUserList().remove(dbItemUser);
+        itemUserRepository.delete(dbItemUser);
+    }
+
+    public ItemDto.ResponseItemId changeItemInterest(ItemDto.RequestSimpleItem requestSimpleItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
+        dbItemUser.changeItemInterest();
+        return itemMapper.toResponseItemId(dbItemUser.getId());
+    }
+
+    public ItemDto.ResponseItemId changeItemSecret(ItemDto.RequestSimpleItem requestSimpleItem) {
+        ItemUser dbItemUser =
+                verifyItemUser(requestSimpleItem.getUserId(), requestSimpleItem.getItemId());
+        dbItemUser.changeItemSecret();
+        return itemMapper.toResponseItemId(dbItemUser.getId());
+    }
 }

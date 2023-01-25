@@ -8,6 +8,7 @@ import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.item.service.ItemService;
 import com.project.mything.page.ResponseMultiPageDto;
+import com.project.mything.user.dto.UserDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,12 +39,13 @@ import java.util.stream.Stream;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -88,7 +90,7 @@ class ItemControllerTest {
                 "    ]\n" +
                 "}";
 
-        given(itemService.search(any(), any(), any(),any())).willReturn(new ResponseEntity<String>(
+        given(itemService.search(any(), any(), any(), any())).willReturn(new ResponseEntity<String>(
                 content, HttpStatus.OK));
         //when
         ResultActions perform = mockMvc.perform(
@@ -362,10 +364,10 @@ class ItemControllerTest {
             Boolean value;
             ItemStatus itemStatus;
             if (i % 2 == 0) {
-                value = false;
+                value = Boolean.FALSE;
                 itemStatus = ItemStatus.BOUGHT;
             } else {
-                value = true;
+                value = Boolean.TRUE;
                 itemStatus = ItemStatus.POST;
             }
             data.add(ItemDto.ResponseSimpleItem.builder()
@@ -380,9 +382,15 @@ class ItemControllerTest {
                     .price(1000)
                     .build());
         }
+        UserDto.ResponseSimpleUser responseSimpleUser = UserDto.ResponseSimpleUser.builder()
+                .userId(1L)
+                .name("홍길동")
+                .image("remote image")
+                .build();
         PageRequest pageable = PageRequest.of(0, 5, Sort.by("itemStatus").descending());
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 5);
-        ResponseMultiPageDto responseMultiPageDto = new ResponseMultiPageDto(data, responseSimpleItems);
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto =
+                new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems, responseSimpleUser);
 
         given(itemService.getSimpleItems(any(), any(), any())).willReturn(responseMultiPageDto);
         //when
@@ -394,6 +402,9 @@ class ItemControllerTest {
         //then
         perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.user.userId").value(1))
+                .andExpect(jsonPath("$.user.name").value("홍길동"))
+                .andExpect(jsonPath("$.user.image").value("remote image"))
                 .andExpect(jsonPath("$.pageInfo.page").value(1))
                 .andExpect(jsonPath("$.pageInfo.size").value(5))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(5))
@@ -422,6 +433,9 @@ class ItemControllerTest {
                                         fieldWithPath("data[].itemStatus").type(JsonFieldType.STRING).description("아이템의 상태입니다."),
                                         fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("아이템을 등록한 날자입니다."),
                                         fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("아이템을 최종 수정한 날짜 입니다."),
+                                        fieldWithPath("user.userId").type(JsonFieldType.NUMBER).description("아이템을 가지고 있는 유저의 아이디입니다."),
+                                        fieldWithPath("user.name").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이름입니다."),
+                                        fieldWithPath("user.image").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이미지 주소입니다."),
                                         fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 보여질 페이지 입니다."),
                                         fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("한페이지에 들어갈 게시글의 갯수 입니다."),
                                         fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 게시글의 갯수 입니다."),
@@ -432,7 +446,7 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    @DisplayName("리스트로 아이템 조회시 존재하지 않는 유저 아이디로 요청을 보낼때")
     public void getSimpleItems_fail() throws Exception {
         //given
 
@@ -446,7 +460,7 @@ class ItemControllerTest {
         );
         //then
         perform.andExpect(status().isNotFound())
-                .andDo(document("존재하지_않는_유저아이디로_요청_404",
+                .andDo(document("아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
@@ -462,7 +476,7 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저 아이디로 요청을 보낼때")
+    @DisplayName("파라미터를 작성하지 않고 요청을 보낼때")
     public void getSimpleItems_fail2() throws Exception {
         //given
         //when
@@ -471,11 +485,921 @@ class ItemControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("파라미터를_작성하지_않고_요청_400",
+                .andDo(document("아이템_리스트_조회_파라미터를_작성하지_않고_요청_400",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("user-id").description("아이템을 가져올 유저의 아이디값입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 BOUGHT로 변경할때 성공")
+    public void changeItemStatus_suc() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.BOUGHT)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1L))
+                .andDo(document("아이템_상태_BOUGHT로_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 RECEIVED로 변경할때 성공")
+    public void changeItemStatus_suc2() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RECEIVED)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1L))
+                .andDo(document("아이템_상태_RECEIVED로_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 RESERVE로 변경할때 성공")
+    public void changeItemStatus_suc3() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("reservedId", 2L)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1L))
+                .andDo(document("아이템_상태_RESERVE로_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("reservedId").description("예약하는 유저의 아이디 번호입니다. 예약시에만 필요함")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 POST로 변경할때 성공")
+    public void changeItemStatus_suc4() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1L))
+                .andDo(document("아이템_상태_POST로_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 존재하지 않는 유저의 아이템을 변경하려 할때 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemStatus_fail1() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(10000L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("존재하지_않는_유저가_아이템_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 존재하지 않는 아이템의 상태를 변경하려 할때 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemStatus_fail2() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(10000L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("존재하지_않는_아이템의_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템의 상태를 변경할때 요청값이 잘못되었을때 Bad_Request 400 리턴")
+    public void changeItemStatus_fail3() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(-1L)
+                .itemId(-1L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("요청값이_잘못되었을때_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("값이 양수이어야합니다. 값이 널이어서는 안됩니다."),
+                                        fieldWithPath("itemId").description("값이 양수이어야합니다. 값이 널이어서는 안됩니다."),
+                                        fieldWithPath("itemStatus").description("BOUGHT, RESERVE, RECEIVE 외에는 허용하지 않습니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 이미 아이템 상태가 RESERVE 일때 ITEM_ALREADY_RESERVED 409 리턴")
+    public void changeItemStatus_fail4() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_ALREADY_RESERVED));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("reservedId", 2L)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아이템의_상태가_이미_RESERVE상태_변경_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("reservedId").description("예약하는 유저의 아이디 번호입니다. 예약시에만 필요함")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 존재하지 않는 유저가 예약하려 할때 User_Not_Found 404 리턴")
+    public void changeItemStatus_fail5() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("reservedId", 50000L)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("reservedId").description("예약하는 유저의 아이디 번호입니다. 예약시에만 필요함")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 변경시 아이템 소유자의 유저아이디와 예약자의 유저아이디가 동일할 경우 RESERVE_USER_CONFLICT 409 리턴")
+    public void changeItemStatus_fail6() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.RESERVE)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.RESERVE_USER_CONFLICT));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("reservedId", 1L)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("reservedId").description("예약하는 유저의 아이디 번호입니다. 예약시에만 필요함")
+                        ),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템 상태를 POST로 변경하려할시 POST_NOT_ALLOW 409 리턴")
+    public void changeItemStatus_fail7() throws Exception {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(2L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
+        given(itemService.changeItemStatus(any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.POST_NOT_ALLOW));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아이템상태를_POST로_변경_시도_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
+                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 정확한 정보를 전달할 경우 204 No Content 리턴")
+    public void cancelReserve_suc() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isNoContent())
+                .andDo(document("예약된_아이템_예약취소_성공_204",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+
+        verify(itemService, times(1)).cancelReservedItem(any());
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 요청 값이 누락되었을 경우 400 Bad_Request 리턴")
+    public void cancelReserve_fail() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("예약된_아이템_예약취소시_요청값을_누락할_경우_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다. 필수값입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다. 필수값입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 요청 값이 음수일 경우 400 Bad_Request 리턴")
+    public void cancelReserve_fail2() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(-1L)
+                .itemId(-1L)
+                .reservedId(-1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("예약된_아이템_예약취소시_요청값이_음수일_경우_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다. 양수이어야합니다.."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다. 양수이어야합니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다. 양수이어야합니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 reservedId를 전달할 경우 USER_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail3() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(5000L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 itemId를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail4() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(5000L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 존재하지 않는 userId를 전달할 경우 USER_NOT_FOUND 404 리턴")
+    public void cancelReserve_fail5() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(5000L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 아이템의 상태가 RESERVE가 아닐 경우 ITEM_STATUS_NOT_RESERVE 409 리턴")
+    public void cancelReserve_fail6() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_RESERVE))
+                .when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("예약된 아이템 예약취소시 기존 reservedId 와 요청 reservedId가 다를 경우 USER_NOT_MATCH 403 리턴")
+    public void cancelReserve_fail7() throws Exception {
+        //given
+        ItemDto.RequestCancelReserveItem requestCancelReserveItem = ItemDto.RequestCancelReserveItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .reservedId(2L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestCancelReserveItem);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_MATCH))
+                .when(itemService).cancelReservedItem(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/statuses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isForbidden())
+                .andDo(document("예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관한 유저의 아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 번호입니다."),
+                                        fieldWithPath("reservedId").description("예약했었던 유저의 아이디 번호입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("사용자가 보관중인 POST상태인 아이템을 삭제시 204 No_Content 리턴")
+    public void deleteItem_suc() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        doNothing().when(itemService).deleteItemUser(requestSimpleItem);
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/storages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNoContent())
+                .andDo(document("POST_상태인_아이템_삭제시_성공_204",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관함에 갖고있는 유저아이디 입니다."),
+                                        fieldWithPath("itemId").description("해당 아이템의 아이디 입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("사용자가 보관중인 아이템 삭제시 잘못된 유저 아이디를 보낼경우 Item_Not_Found 404 리턴 리턴")
+    public void deleteItem_fail() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(5000L)
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND))
+                .when(itemService).deleteItemUser(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/storages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("아이템_삭제시_잘못된_유저_아이디_전달_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관함에 갖고있는 유저아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("해당 아이템의 아이디 입니다. 필수값입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("사용자가 보관중인 아이템 삭제시 잘못된 아이템 아이디를 보낼경우 Item_Not_Found 404 리턴 리턴")
+    public void deleteItem_fail2() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(1L)
+                .itemId(5000L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND))
+                .when(itemService).deleteItemUser(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/storages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("아이템_삭제시_잘못된_아이템_아이디_전달_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관함에 갖고있는 유저아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("해당 아이템의 아이디 입니다. 필수값입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("사용자가 보관중인 POST가 아닌 아이템을 삭제시 409 Item_Status_Not_Post 리턴")
+    public void deleteItem_fail3() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .userId(1L)
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        doThrow(new BusinessLogicException(ErrorCode.ITEM_STATUS_NOT_POST))
+                .when(itemService).deleteItemUser(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/items/storages")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("POST_상태가_아닌_아이템_삭제시_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관함에 갖고있는 유저아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("해당 아이템의 아이디 입니다. 필수값입니다.")
+                                )
+                        )));
+    }
+
+    @Test
+    @DisplayName("관심상품 아이템의 상태를 변경할떄 정확한 유저, 아이템 아이디를 전달할 경우 itemId와 200 리턴")
+    public void changeItemInterest_suc() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemInterest(any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/interests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1))
+                .andDo(document("관심아이템_상태_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 필수값입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 필수값입니다.")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("관심아이템 상태가 변경된 아이템 아이디 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("관심상품 아이템의 상태를 변경할떄 정확하지 않은 유저, 아이템 아이디를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemInterest_fail() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemInterest(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/interests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("관심아이템_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 정확한 값 필요"),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 정확한 값 필요")
+                                )
+                        )
+                ));
+    }
+
+
+    @Test
+    @DisplayName("비밀 아이템의 상태를 변경할떄 정확한 유저, 아이템 아이디를 전달할 경우 itemId와 200 리턴")
+    public void changeItemSecret_suc() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
+                .itemId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemSecret(any())).willReturn(responseItemId);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/secrets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.itemId").value(1))
+                .andDo(document("비밀아이템_상태_변경_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다."),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다.")
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("itemId").description("관심아이템 상태가 변경된 아이템 아이디 입니다.")
+                        )
+                ));
+
+    }
+
+    @Test
+    @DisplayName("비밀상품 아이템의 상태를 변경할떄 정확하지 않은 유저, 아이템 아이디를 전달할 경우 ITEM_NOT_FOUND 404 리턴")
+    public void changeItemSecret_fail() throws Exception {
+        //given
+        ItemDto.RequestSimpleItem requestSimpleItem = ItemDto.RequestSimpleItem.builder()
+                .itemId(1L)
+                .userId(1L)
+                .build();
+
+        String content = objectMapper.writeValueAsString(requestSimpleItem);
+        given(itemService.changeItemSecret(any()))
+                .willThrow(new BusinessLogicException(ErrorCode.ITEM_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/items/secrets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("비밀아이템_상태_변경_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("아이템을 보관중이 유저아이디 입니다. 정확한 값 필요"),
+                                        fieldWithPath("itemId").description("아이템의 아이디 입니다. 정확한 값 필요")
+                                )
                         )
                 ));
     }

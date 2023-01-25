@@ -53,11 +53,24 @@ public class ItemUser extends BaseTime {
 
     public void changeItemStatus(ItemStatus itemStatus, Long reservedUserId) {
         this.itemStatus = itemStatus;
-        this.reservedUserId = reservedUserId;
+        if (itemStatus.equals(ItemStatus.RESERVE)) {
+            this.reservedUserId = reservedUserId;
+        }
     }
 
     public void cancelReserveItem() {
         this.itemStatus = ItemStatus.POST;
         this.reservedUserId = null;
     }
+
+    public void changeItemInterest() {
+        this.interestedItem =
+                this.interestedItem ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+    public void changeItemSecret() {
+        this.secretItem =
+                this.secretItem ? Boolean.FALSE : Boolean.TRUE;
+    }
+
 }
