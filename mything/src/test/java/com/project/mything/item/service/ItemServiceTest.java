@@ -313,39 +313,6 @@ class ItemServiceTest {
     }
 
     @Test
-    @DisplayName("아이템의 상태를 POST로 변경 성공")
-    public void changeItemStatus_suc2() {
-        //given
-        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
-                .userId(1L)
-                .itemId(1L)
-                .itemStatus(ItemStatus.POST)
-                .build();
-        User dbUser = User.builder()
-                .id(1L)
-                .build();
-        Item dbItem = Item.builder()
-                .id(1L)
-                .build();
-        ItemUser dbItemUser = ItemUser.builder()
-                .id(1L)
-                .user(dbUser)
-                .item(dbItem)
-                .itemStatus(ItemStatus.BOUGHT)
-                .build();
-        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
-                .itemId(1L)
-                .build();
-        given(itemUserRepository.findItemUserByUserIdAndItemId(any(), any())).willReturn(Optional.of(dbItemUser));
-        given(itemMapper.toResponseItemId(any())).willReturn(responseItemId);
-        //when
-        ItemDto.ResponseItemId result = itemService.changeItemStatus(requestChangeItemStatus, null);
-        //then
-        assertThat(result.getItemId()).isEqualTo(responseItemId.getItemId());
-        assertThat(dbItemUser.getItemStatus()).isEqualTo(ItemStatus.POST);
-    }
-
-    @Test
     @DisplayName("아이템의 상태를 RECEIVED로 변경 성공")
     public void changeItemStatus_suc3() {
         //given
@@ -508,6 +475,24 @@ class ItemServiceTest {
                 .isInstanceOf(BusinessLogicException.class);
     }
 
+    @Test
+    @DisplayName("아이템의 상태를 POST로 변경시 POST_NOT_ALLOW 409 실패")
+    public void changeItemStatus_fail5() {
+        //given
+        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
+                .userId(1L)
+                .itemId(1L)
+                .itemStatus(ItemStatus.POST)
+                .build();
+        User reservedId = User.builder()
+                .id(1L)
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(() -> itemService.changeItemStatus(requestChangeItemStatus, reservedId.getId()))
+                .isInstanceOf(BusinessLogicException.class);
+    }
     @Test
     @DisplayName("아이템 예약을 취소하는 서비스로직 성공")
     public void cancelReservedItem_suc() {
