@@ -613,44 +613,6 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("아이템 상태를 변경시 POST로 변경할때 성공")
-    public void changeItemStatus_suc4() throws Exception {
-        //given
-        ItemDto.RequestChangeItemStatus requestChangeItemStatus = ItemDto.RequestChangeItemStatus.builder()
-                .userId(1L)
-                .itemId(1L)
-                .itemStatus(ItemStatus.RESERVE)
-                .build();
-        ItemDto.ResponseItemId responseItemId = ItemDto.ResponseItemId.builder()
-                .itemId(1L)
-                .build();
-        String content = objectMapper.writeValueAsString(requestChangeItemStatus);
-        given(itemService.changeItemStatus(any(), any())).willReturn(responseItemId);
-        //when
-        ResultActions perform = mockMvc.perform(
-                patch("/items/statuses")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-        //then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("$.itemId").value(1L))
-                .andDo(document("아이템_상태_POST로_변경_성공_200",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                List.of(
-                                        fieldWithPath("userId").description("아이템 소유자 유저 아이디 입니다."),
-                                        fieldWithPath("itemId").description("아이템 아이디 입니다."),
-                                        fieldWithPath("itemStatus").description("변경하고싶은 아이템 상태명 입니다. (대문자)")
-                                )
-                        ),
-                        responseFields(
-                                fieldWithPath("itemId").description("변경된 아이템의 아이디 입니다.")
-                        )));
-    }
-
-    @Test
     @DisplayName("아이템 상태를 변경시 존재하지 않는 유저의 아이템을 변경하려 할때 ITEM_NOT_FOUND 404 리턴")
     public void changeItemStatus_fail1() throws Exception {
         //given
