@@ -11,12 +11,11 @@ struct WishListDetailView: View {
   var itemId: Int
   var userId: Int
   @ObservedObject var viewModel: WishListDetailViewModel
-//  @State var manager = DataPost()
+  @State var manager = Network()
   init(viewModel: WishListDetailViewModel, itemId: Int, userId: Int) {
     self.itemId = itemId
     self.userId = userId
     self.viewModel = viewModel
-//    self.manager = manager
   }
   
   var body : some View {
@@ -49,13 +48,14 @@ struct WishListDetailView: View {
         Spacer()
         HStack {
           Button {
-            print("fire~~더사고싶어")
+            self.manager.changeInterestStatus(userId: 1, itemId: viewModel.item.first!.itemId)
+            print("cli>>> \(viewModel.item.first!.interestedItem)")
           } label: {
-            Image(systemName: "heart")
+            Image(systemName: viewModel.item.first!.interestedItem ? "heart.fill" : "heart")
               .resizable()
               .aspectRatio(contentMode: .fit)
               .frame(width: 30)
-              .foregroundColor(.gray)
+              .foregroundColor(viewModel.item.first!.interestedItem ? .red : .gray)
               .padding()
           }
           Link(destination: URL(string: viewModel.item.first!.link)!) {
@@ -67,13 +67,18 @@ struct WishListDetailView: View {
           .background(.blue)
           .cornerRadius(10)
           Button {
-            //            self.manager.checkDetails(userId: 1, productId: Int(model.productId)!, title: model.title, link: model.link, image: model.image, price: Int( model.lprice)!)
+            viewModel.getWishListDetail(itemId: 1, userId: 1)
+            if viewModel.item.first!.itemStatus != "BOUGHT" {
+              self.manager.changeItemStatus(userId: 1, itemId: viewModel.item.first!.itemId, itemStatus: "BOUGHT")
+            } else if viewModel.item.first!.itemStatus != "RESERVE" {
+              self.manager.changeItemStatus(userId: 1, itemId: viewModel.item.first!.itemId, itemStatus: "RECEIVED")
+            }
           } label: {
             Text("상품 구매하기")
               .foregroundColor(.white)
           }
           .frame(width: 80, height: 50)
-          .background(.blue)
+          .background(viewModel.item.first!.itemStatus == "BOUGHT" ? .gray : .blue)
           .cornerRadius(10)
         }
         .padding()

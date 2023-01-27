@@ -19,13 +19,12 @@ struct LoginView: View {
     formatter.dateStyle = .full
     return formatter
   }
-  
   var body: some View {
     VStack(alignment: .center, spacing: 30) {
       Spacer()
       Text("MyThing과 함께 위시리스트를 공유해봐요!")
         .fontWeight(.bold)
-        .font(.title2)
+        .font(.title)
       Spacer()
       TextField("이름을 입력해주세요.", text: $name)
         .padding()
@@ -44,7 +43,6 @@ struct LoginView: View {
       HStack {
         TextField("핸드폰 번호를 입력해주세요.", text: $phoneNumber)
           .onReceive(Just(phoneNumber)) { location in
-               print("location")
           }
           .padding()
           .background(Color(uiColor: .secondarySystemBackground))
@@ -75,9 +73,10 @@ struct LoginView: View {
         .cornerRadius(10)
       }
       Spacer()
-      Button {
+      NavigationLink {
+        MainTabView()
       } label: {
-        Text("로그인하기")
+        Text("회원가입하기")
           .foregroundColor(.white)
           .padding(20)
       }
@@ -86,6 +85,7 @@ struct LoginView: View {
       .cornerRadius(10)
     }
     .padding(15)
+    .navigationBarHidden(true)
   }
 }
 

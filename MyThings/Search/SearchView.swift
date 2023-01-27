@@ -9,7 +9,6 @@ import Combine
 
 struct ContentoneView: View {
   @ObservedObject private var viewModel = SearchViewModel(network: NetworkService(configuration: .default))
-  
   var body: some View {
     NavigationView{
       VStack {
@@ -33,20 +32,15 @@ struct ContentoneView: View {
                   Text(item.lprice)
                   Text("원")
                 }
-                Image(systemName: "heart")
               }
               .padding()
             }
           }
         }
-        //            .navigationTitle("뉴스 둘러보기")
       }
-      //        .onAppear {
-      //          network.search()
     }
   }
 }
-
 
 struct ContentViewone_Previews: PreviewProvider {
   static var previews: some View {

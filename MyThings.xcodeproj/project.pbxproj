@@ -17,13 +17,12 @@
 		AE07B52F297BC9BB00EA6530 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B52E297BC9BB00EA6530 /* NetworkError.swift */; };
 		AE07B533297BD6EB00EA6530 /* UserWishListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B532297BD6EB00EA6530 /* UserWishListModel.swift */; };
 		AE07B535297BD8C200EA6530 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B534297BD8C200EA6530 /* SearchViewModel.swift */; };
-		AE07B53B297E8CDE00EA6530 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B53A297E8CDE00EA6530 /* ImageCacheManager.swift */; };
-		AE07B53D297E8D0A00EA6530 /* ImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B53C297E8D0A00EA6530 /* ImageView+Extension.swift */; };
-		AE07B53F297EAD9800EA6530 /* DataPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B53E297EAD9800EA6530 /* DataPost.swift */; };
 		AE07B541297EB83200EA6530 /* MyWishListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B540297EB83200EA6530 /* MyWishListViewModel.swift */; };
 		AE07B543297EC7E900EA6530 /* WishListDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B542297EC7E900EA6530 /* WishListDetailView.swift */; };
 		AE07B545297EC86F00EA6530 /* WishListDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B544297EC86F00EA6530 /* WishListDetailModel.swift */; };
 		AE07B54C297FE12F00EA6530 /* WishListDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B54B297FE12F00EA6530 /* WishListDetailViewModel.swift */; };
+		AE07B54E298026AA00EA6530 /* DataPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B54D298026AA00EA6530 /* DataPatch.swift */; };
+		AE07B55029838AD600EA6530 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B54F29838AD600EA6530 /* Endpoint.swift */; };
 		AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A4297329FF00111B19 /* MyThingsApp.swift */; };
 		AE3B12A7297329FF00111B19 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* MainTabView.swift */; };
 		AE3B12A929732A0100111B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12A829732A0100111B19 /* Assets.xcassets */; };
@@ -51,13 +50,12 @@
 		AE07B52E297BC9BB00EA6530 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		AE07B532297BD6EB00EA6530 /* UserWishListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserWishListModel.swift; sourceTree = "<group>"; };
 		AE07B534297BD8C200EA6530 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
-		AE07B53A297E8CDE00EA6530 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
-		AE07B53C297E8D0A00EA6530 /* ImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageView+Extension.swift"; sourceTree = "<group>"; };
-		AE07B53E297EAD9800EA6530 /* DataPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPost.swift; sourceTree = "<group>"; };
 		AE07B540297EB83200EA6530 /* MyWishListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishListViewModel.swift; sourceTree = "<group>"; };
 		AE07B542297EC7E900EA6530 /* WishListDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListDetailView.swift; sourceTree = "<group>"; };
 		AE07B544297EC86F00EA6530 /* WishListDetailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListDetailModel.swift; sourceTree = "<group>"; };
 		AE07B54B297FE12F00EA6530 /* WishListDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WishListDetailViewModel.swift; sourceTree = "<group>"; };
+		AE07B54D298026AA00EA6530 /* DataPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPatch.swift; sourceTree = "<group>"; };
+		AE07B54F29838AD600EA6530 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		AE3B12A1297329FF00111B19 /* MyThings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyThings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE3B12A4297329FF00111B19 /* MyThingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyThingsApp.swift; sourceTree = "<group>"; };
 		AE3B12A6297329FF00111B19 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -86,46 +84,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AE07B51F297BC24000EA6530 /* View */ = {
+		AE07B51F297BC24000EA6530 /* MainView */ = {
 			isa = PBXGroup;
 			children = (
-				AE07B519297AADD800EA6530 /* BirthdayListView.swift */,
-				AE3B12C32974382000111B19 /* MyPageView.swift */,
 				AE3B12CD297A7CA700111B19 /* FirstInitView.swift */,
-				AE07B53A297E8CDE00EA6530 /* ImageCacheManager.swift */,
-				AE07B53C297E8D0A00EA6530 /* ImageView+Extension.swift */,
-				AE3B12BB29732FAB00111B19 /* LoginView.swift */,
 				AE3B12A6297329FF00111B19 /* MainTabView.swift */,
-				AE3B12BF2974352500111B19 /* FriendListView.swift */,
-				AE3B12C729792FFD00111B19 /* FriendCell.swift */,
-				AE3B12C12974380A00111B19 /* ChattingView.swift */,
+				AE3B12BB29732FAB00111B19 /* LoginView.swift */,
 			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		AE07B520297BC25000EA6530 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				AE07B522297BC5AA00EA6530 /* SearchModel.swift */,
-				AE07B532297BD6EB00EA6530 /* UserWishListModel.swift */,
-				AE07B544297EC86F00EA6530 /* WishListDetailModel.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		AE07B521297BC25C00EA6530 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				AE07B53E297EAD9800EA6530 /* DataPost.swift */,
-			);
-			path = ViewModel;
+			path = MainView;
 			sourceTree = "<group>";
 		};
 		AE07B525297BC67400EA6530 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				AE07B526297BC6A700EA6530 /* NetworkService.swift */,
+				AE07B54F29838AD600EA6530 /* Endpoint.swift */,
+				AE07B52E297BC9BB00EA6530 /* NetworkError.swift */,
 				AE07B528297BC6C900EA6530 /* Resource.swift */,
+				AE07B526297BC6A700EA6530 /* NetworkService.swift */,
+				AE07B54D298026AA00EA6530 /* DataPatch.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -138,17 +114,10 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		AE07B52D297BC9A600EA6530 /* Enum */ = {
-			isa = PBXGroup;
-			children = (
-				AE07B52E297BC9BB00EA6530 /* NetworkError.swift */,
-			);
-			path = Enum;
-			sourceTree = "<group>";
-		};
 		AE07B549297FDFB900EA6530 /* Search */ = {
 			isa = PBXGroup;
 			children = (
+				AE07B522297BC5AA00EA6530 /* SearchModel.swift */,
 				AE07B51D297BC02800EA6530 /* SearchBar.swift */,
 				AE07B51B297ABF6000EA6530 /* SearchView.swift */,
 				AE3B12C52974416200111B19 /* SearchItemDetailView.swift */,
@@ -160,13 +129,48 @@
 		AE07B54A297FDFE800EA6530 /* MyWishList */ = {
 			isa = PBXGroup;
 			children = (
+				AE07B532297BD6EB00EA6530 /* UserWishListModel.swift */,
 				AE3B12C9297A7B4200111B19 /* MyWishListView.swift */,
-				AE07B542297EC7E900EA6530 /* WishListDetailView.swift */,
 				AE07B540297EB83200EA6530 /* MyWishListViewModel.swift */,
-				AE07B54B297FE12F00EA6530 /* WishListDetailViewModel.swift */,
 			);
 			name = MyWishList;
 			path = Search;
+			sourceTree = "<group>";
+		};
+		AE07B5512983C4A300EA6530 /* WishListDetail */ = {
+			isa = PBXGroup;
+			children = (
+				AE07B544297EC86F00EA6530 /* WishListDetailModel.swift */,
+				AE07B542297EC7E900EA6530 /* WishListDetailView.swift */,
+				AE07B54B297FE12F00EA6530 /* WishListDetailViewModel.swift */,
+			);
+			path = WishListDetail;
+			sourceTree = "<group>";
+		};
+		AE07B5522983C5FA00EA6530 /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				AE3B12BF2974352500111B19 /* FriendListView.swift */,
+				AE3B12C729792FFD00111B19 /* FriendCell.swift */,
+				AE07B519297AADD800EA6530 /* BirthdayListView.swift */,
+			);
+			path = Friend;
+			sourceTree = "<group>";
+		};
+		AE07B5532983C62F00EA6530 /* Chatting */ = {
+			isa = PBXGroup;
+			children = (
+				AE3B12C12974380A00111B19 /* ChattingView.swift */,
+			);
+			path = Chatting;
+			sourceTree = "<group>";
+		};
+		AE07B5542983C64100EA6530 /* Mypage */ = {
+			isa = PBXGroup;
+			children = (
+				AE3B12C32974382000111B19 /* MyPageView.swift */,
+			);
+			path = Mypage;
 			sourceTree = "<group>";
 		};
 		AE3B1298297329FF00111B19 = {
@@ -189,13 +193,14 @@
 			isa = PBXGroup;
 			children = (
 				AE3B12A4297329FF00111B19 /* MyThingsApp.swift */,
-				AE07B51F297BC24000EA6530 /* View */,
+				AE07B51F297BC24000EA6530 /* MainView */,
 				AE07B54A297FDFE800EA6530 /* MyWishList */,
+				AE07B5512983C4A300EA6530 /* WishListDetail */,
 				AE07B549297FDFB900EA6530 /* Search */,
-				AE07B521297BC25C00EA6530 /* ViewModel */,
-				AE07B520297BC25000EA6530 /* Model */,
+				AE07B5522983C5FA00EA6530 /* Friend */,
+				AE07B5542983C64100EA6530 /* Mypage */,
+				AE07B5532983C62F00EA6530 /* Chatting */,
 				AE07B52A297BC8F100EA6530 /* Utils */,
-				AE07B52D297BC9A600EA6530 /* Enum */,
 				AE07B525297BC67400EA6530 /* Network */,
 				AE3B12A829732A0100111B19 /* Assets.xcassets */,
 				AE3B12AD29732A0100111B19 /* Persistence.swift */,
@@ -288,8 +293,7 @@
 				AE3B12C62974416200111B19 /* SearchItemDetailView.swift in Sources */,
 				AE07B523297BC5AA00EA6530 /* SearchModel.swift in Sources */,
 				AE07B51A297AADD800EA6530 /* BirthdayListView.swift in Sources */,
-				AE07B53F297EAD9800EA6530 /* DataPost.swift in Sources */,
-				AE07B53D297E8D0A00EA6530 /* ImageView+Extension.swift in Sources */,
+				AE07B55029838AD600EA6530 /* Endpoint.swift in Sources */,
 				AE07B527297BC6A700EA6530 /* NetworkService.swift in Sources */,
 				AE3B12CA297A7B4200111B19 /* MyWishListView.swift in Sources */,
 				AE07B52C297BC90B00EA6530 /* Publisher+Utils.swift in Sources */,
@@ -307,10 +311,10 @@
 				AE07B51E297BC02800EA6530 /* SearchBar.swift in Sources */,
 				AE07B51C297ABF6000EA6530 /* SearchView.swift in Sources */,
 				AE3B12A7297329FF00111B19 /* MainTabView.swift in Sources */,
-				AE07B53B297E8CDE00EA6530 /* ImageCacheManager.swift in Sources */,
 				AE3B12BC29732FAB00111B19 /* LoginView.swift in Sources */,
 				AE07B533297BD6EB00EA6530 /* UserWishListModel.swift in Sources */,
 				AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */,
+				AE07B54E298026AA00EA6530 /* DataPatch.swift in Sources */,
 				AE07B541297EB83200EA6530 /* MyWishListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
