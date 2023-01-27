@@ -10,7 +10,6 @@ import Combine
 
 final class NetworkService {
   let session: URLSession
-  
   init(configuration: URLSessionConfiguration) {
     session = URLSession(configuration: configuration)
   }
@@ -31,6 +30,7 @@ final class NetworkService {
         return result.data
       }
       .decode(type: T.self, decoder: JSONDecoder())
+      .map { $0 }
       .eraseToAnyPublisher()
   }
 }

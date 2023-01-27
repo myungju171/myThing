@@ -27,11 +27,11 @@ struct FirstInitView: View {
         } label: {
           Button {
           } label: {
-            Text("로그인하기")
+            Text("시작하기")
               .foregroundColor(.white)
               .padding(20)
           }
-          .frame(minWidth: 350)
+          .frame(width: 300)
           .background(Color(.systemBlue))
           .cornerRadius(10)
         }

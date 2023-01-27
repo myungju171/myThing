@@ -8,7 +8,6 @@
 import Foundation
 
 struct TotalInfo: Codable, Hashable {
-  //  var id: UUID
   var lastBuildDate : String
   var total : Int
   var start : Int
@@ -16,7 +15,6 @@ struct TotalInfo: Codable, Hashable {
   var items : [SearchItem]
 }
 struct SearchItem: Codable, Hashable {
-  //  var id: UUID
   var title : String
   var link: String
   var image: String

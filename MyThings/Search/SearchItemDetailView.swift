@@ -9,10 +9,8 @@ import SwiftUI
 
 struct SearchItemDetailView: View {
   var model: SearchItem
-  @State var manager = DataPost()
-  
+  @State var manager = Network()
   var body : some View {
-    //       Color.yellow.edgesIgnoringSafeArea(.all)
     ScrollView(Axis.Set.vertical, showsIndicators: true) {
       VStack(alignment: .leading, spacing: 10) {
         AsyncImage(url: URL(string: model.image), content: { image in
@@ -40,16 +38,6 @@ struct SearchItemDetailView: View {
         .padding()
         Spacer()
         HStack {
-          Button {
-            print("fire~~더사고싶어")
-          } label: {
-            Image(systemName: "heart")
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(width: 30)
-              .foregroundColor(.gray)
-              .padding()
-          }
           Link(destination: URL(string: model.link)!) {
             HStack {
               Text("사이트로 이동하기")
@@ -70,7 +58,6 @@ struct SearchItemDetailView: View {
         }
         .padding()
       }
-      //      .navigationBarHidden(true)
     }
     //     .toolbar {
     //       ToolbarItem(placement: .navigationBarLeading) {
@@ -83,9 +70,3 @@ struct SearchItemDetailView: View {
     //     }
   }
 }
-
-//struct MyWishDetail_Previews: PreviewProvider {
-//  static var previews: some View {
-//    MyWishDetailView(model: <#T##SearchItem#>)
-//  }
-//}

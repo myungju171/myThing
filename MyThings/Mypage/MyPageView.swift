@@ -22,7 +22,6 @@ struct MyPageView: View {
         Text("내 한줄 소개 좋아좋아좋아 선물 좋아")
       }
     }
-    .navigationBarItems(trailing: tra)
   }
 }
 

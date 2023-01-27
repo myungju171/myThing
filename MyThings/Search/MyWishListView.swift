@@ -28,7 +28,12 @@ struct MyWishListView: View {
               Text(String(item.price))
               Text("원")
             }
-            Image(systemName: "heart")
+            Image(systemName: item.interestedItem ? "heart.fill" : "heart")
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .frame(width: 30)
+              .foregroundColor(item.interestedItem ? .red : .gray)
+              .padding()
           }
           .padding()
         }

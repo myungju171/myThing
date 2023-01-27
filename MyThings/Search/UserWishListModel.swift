@@ -28,7 +28,7 @@ struct UserItem: Codable {
 struct User: Codable {
   var userId: Int
   var name: String
-  var image: String
+  var image: String?
 }
 
 struct PageInfo: Codable {
