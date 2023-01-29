@@ -65,7 +65,7 @@ class PhoneAuthControllerTest {
         //then
         perform.andExpect(status().isCreated())
                 .andExpect(content().string("true"))
-                .andDo(document("인증번호 요청 성공 200",
+                .andDo(document("인증번호_요청_성공_200",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -95,7 +95,7 @@ class PhoneAuthControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("11자리의 휴대폰 번호가 아닐시 실패 400",
+                .andDo(document("11자리의_휴대폰_번호가_아닐시_실패_400",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -132,7 +132,7 @@ class PhoneAuthControllerTest {
         //then
         perform.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(responseUserId.getUserId()))
-                .andDo(document("회원가입 성공 200",
+                .andDo(document("회원가입_성공_200",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -211,7 +211,7 @@ class PhoneAuthControllerTest {
         );
         //then
         perform.andExpect(status().isNotFound())
-                .andDo(document("회원가입시 인증번호가 다름 실패 404",
+                .andDo(document("회원가입시_인증번호가_다름_실패_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -245,7 +245,7 @@ class PhoneAuthControllerTest {
         );
         //then
         perform.andExpect(status().isNotFound())
-                .andDo(document("회원가입시 해당 핸드폰으로 인증번호를 받은 기록이 없음 실패 404",
+                .andDo(document("회원가입시_해당_핸드폰으로_인증번호를_받은_기록이_없음_실패_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
