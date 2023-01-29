@@ -31,8 +31,7 @@ public class UserService {
     }
 
     public User uploadImage(MultipartFile multipartFile, Long userId) {
-        User dbUser = userRepository.findUserWithAvatar(userId)
-                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        User dbUser = findUserWithAvatar(userId);
         try {
             Avatar dbAvatar = avatarService.getDbAvatar(multipartFile, dbUser);
             return dbAvatar.getUser();
@@ -42,4 +41,21 @@ public class UserService {
         }
     }
 
+    private User findUserWithAvatar(Long userId) {
+        return userRepository.findUserWithAvatar(userId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+
+    }
+
+    public void deleteAvatar(Long userId) {
+        User dbUser = findUserWithAvatar(userId);
+        checkAvatarIsNotNull(dbUser);
+        avatarService.deleteAvatar(dbUser.getAvatar());
+    }
+
+    private void checkAvatarIsNotNull(User dbUser) {
+        if (dbUser.getAvatar() == null) {
+            throw new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL);
+        }
+    }
 }
