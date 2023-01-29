@@ -41,19 +41,19 @@ jobs:
           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
           
-          server.port: ${{ secrets.SERVER.POSRT }}
+          server.port: ${{ secrets.SERVER_PORT }}
           
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
           cloud.aws.s3.region: ${{ secrets.AWS_REGION }}
           
-          nurigo.public: ${{ secrets.NURIGO.PUBLIC }}
-          nurigo.secret: ${{ secrets.NURIGO.SECRET }}
-          nurigo.number: ${{ secrets.NURIGO.NUMBER }}
+          nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
+          nurigo.secret: ${{ secrets.NURIGO_SECRET }}
+          nurigo.number: ${{ secrets.NURIGO_NUMBER }}
           
-          naver.X-Naver-Client-Id: ${{ serets.NAVER.ID }}
-          naver.X-Naver-Client-Secret: ${{ secrets.NAVER.SECRET }}        
+          naver.X-Naver-Client-Id: ${{ serets.NAVER_ID }}
+          naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
