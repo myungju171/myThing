@@ -1,5 +1,6 @@
 package com.project.mything.user.controller;
 
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +36,9 @@ public class UserController {
         return dbUser.getAvatar().getRemotePath();
     }
 
+    @DeleteMapping("/avatars")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAvatar(@RequestBody UserDto.RequestUserId requestUserId) {
+        userService.deleteAvatar(requestUserId.getUserId());
+    }
 }

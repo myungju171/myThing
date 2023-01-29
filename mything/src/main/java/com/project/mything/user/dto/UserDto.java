@@ -53,4 +53,15 @@ public class UserDto {
         private Long userId;
         private String remotePath;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestUserId {
+        @NotNull
+        @Positive
+        private Long userId;
+    }
+
 }
