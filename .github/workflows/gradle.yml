@@ -1,0 +1,93 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches:
+      - 'dev/server'
+
+env:
+  S3_BUCKET_NAME: morakmorak
+  RESOURCE_PATH: ./mything/src/main/resources/application.yml
+  CODE_DEPLOY_APPLICATION_NAME: morak
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: morak-group
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+       # [1] application.yml 생성
+      - name: Set yaml file 
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }} 
+        env:
+          spring.datasource.url: ${{ secrets.RDS_URL }}
+          spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+          spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+          
+          server.port: ${{ secrets.SERVER_PORT }}
+          
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
+          cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
+          cloud.aws.s3.region: ${{ secrets.AWS_REGION }}
+          
+          nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
+          nurigo.secret: ${{ secrets.NURIGO_SECRET }}
+          nurigo.number: ${{ secrets.NURIGO_NUMBER }}
+          
+          naver.X-Naver-Client-Id: ${{ serets.NAVER_ID }}
+          naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+    
+      - name: Build with Gradle
+        run: ./gradlew clean 
+        
+      - name: Build with Gradle
+        run: ./gradlew build
+      
+        # [3] save build
+      - name: Make zip file
+        run: zip -r ./mything.zip .
+        shell: bash
+      
+      
+        # [4] aws 권한
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+        # [5] upload
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./morak.zip s3://$S3_BUCKET_NAME/mything.zip
+
+        # [6] deploy
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip
