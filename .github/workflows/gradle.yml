@@ -54,15 +54,18 @@ jobs:
           
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
-
-#       - name: Grant execute permission for gradlew
-#         run: chmod +x ./gradlew
-    
-#       - name: Build with Gradle
-#         run: ./gradlew clean 
         
-#       - name: Build with Gradle
-#         run: ./gradlew build
+      - name: Look for gradlew
+        run: find / -type f -name "gradlew"
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+    
+      - name: Build with Gradle
+        run: ./gradlew clean 
+        
+      - name: Build with Gradle
+        run: ./gradlew build
       
         # [3] save build
       - name: Make zip file
