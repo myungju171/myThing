@@ -64,4 +64,14 @@ public class User extends BaseTime {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<BirthDay> birthDays = new ArrayList<>();
+
+    public void editProfile(String userName, String userInfoMessage, LocalDate userBirthDay) {
+        name = userName;
+        infoMessage = userInfoMessage;
+        birthDay = userBirthDay;
+    }
+
+    public void addAvatar(Avatar avatar) {
+        this.avatar = avatar;
+    }
 }
