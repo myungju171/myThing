@@ -1,5 +1,6 @@
 package com.project.mything.user.controller;
 
+import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,9 +30,9 @@ public class UserController {
                               @RequestParam @NotBlank String infoMessage,
                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDay) {
 
-        String remotePath = userService.uploadImage(multipartFile, userId);
-        userService.editUserProfile(userId, name, infoMessage, birthDay);
-        return remotePath;
+        User dbUser = userService.uploadImage(multipartFile, userId);
+        userService.editUserProfile(dbUser, name, infoMessage, birthDay);
+        return dbUser.getAvatar().getRemotePath();
     }
 
 }
