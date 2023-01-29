@@ -52,7 +52,7 @@ jobs:
           nurigo.secret: ${{ secrets.NURIGO_SECRET }}
           nurigo.number: ${{ secrets.NURIGO_NUMBER }}
           
-          naver.X-Naver-Client-Id: ${{ serets.NAVER_ID }}
+          naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
       - name: Grant execute permission for gradlew
