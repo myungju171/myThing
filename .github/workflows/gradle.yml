@@ -31,10 +31,6 @@ jobs:
         with:
           java-version: 11
           
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        shell: bash
-
        # [1] application.yml 생성
       - name: Set yaml file 
         uses: microsoft/variable-substitution@v1
@@ -59,12 +55,14 @@ jobs:
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
-      
+#       - name: Grant execute permission for gradlew
+#         run: chmod +x ./gradlew
+#         shell: bash
 
-        # [2] build
-      - name: Build with Gradle
-        run: ./gradlew build
-        shell: bash
+#         # [2] build
+#       - name: Build with Gradle
+#         run: ./gradlew build
+#         shell: bash
         
         # [3] save build
       - name: Make zip file
