@@ -64,8 +64,8 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
-	// s3
-//	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.315'
+	//s3
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.315'
 
 	// aop
 //	implementation 'org.springframework.boot:spring-boot-starter-aop'
