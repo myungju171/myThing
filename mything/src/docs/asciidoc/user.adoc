@@ -43,9 +43,6 @@ include::{snippets}/프로필_이미지와_상태메세지_포함_수정_성공_
 .Request-parts
 include::{snippets}/프로필_이미지와_상태메세지_포함_수정_성공_201/request-parts.adoc[]
 
-.Request parameters
-include::{snippets}/프로필_이미지와_상태메세지_포함_수정_성공_201/request-parameters.adoc[]
-
 .response-fields
 include::{snippets}/프로필_이미지와_상태메세지_포함_수정_성공_201/response-fields.adoc[]
 
@@ -57,8 +54,8 @@ include::{snippets}/프로필_이미지와_상태메세지_포함_수정_성공_
 .http-request
 include::{snippets}/프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201/http-request.adoc[]
 
-.Request parameters
-include::{snippets}/프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201/request-parameters.adoc[]
+.Request-parts
+include::{snippets}/프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201/request-parts.adoc[]
 
 .response-fields
 include::{snippets}/프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201/response-fields.adoc[]
@@ -71,8 +68,8 @@ include::{snippets}/프로필_이미지와_상태메세지_포함하지_않고_�
 .http-request
 include::{snippets}/존재하지_않는_유저_프로필_수정_실패_404/http-request.adoc[]
 
-.Request parameters
-include::{snippets}/존재하지_않는_유저_프로필_수정_실패_404/request-parameters.adoc[]
+.Request-parts
+include::{snippets}/존재하지_않는_유저_프로필_수정_실패_404/request-parts.adoc[]
 
 .http-response
 include::{snippets}/존재하지_않는_유저_프로필_수정_실패_404/http-response.adoc[]
@@ -82,8 +79,41 @@ include::{snippets}/존재하지_않는_유저_프로필_수정_실패_404/http-
 .http-request
 include::{snippets}/프로필_수정시_이미지_업로드_실패_500/http-request.adoc[]
 
-.Request parameters
-include::{snippets}/프로필_수정시_이미지_업로드_실패_500/request-parameters.adoc[]
+.Request-parts
+include::{snippets}/프로필_수정시_이미지_업로드_실패_500/request-parts.adoc[]
 
 .http-response
 include::{snippets}/프로필_수정시_이미지_업로드_실패_500/http-response.adoc[]
+
+=== 프로필_수정시_유저_아디디_보내지_않음_실패_400
+
+.http-request
+include::{snippets}/프로필_수정시_유저_아디디_보내지_않음_실패_400/http-request.adoc[]
+
+.Request-parts
+include::{snippets}/프로필_수정시_유저_아디디_보내지_않음_실패_400/request-parts.adoc[]
+
+.http-response
+include::{snippets}/프로필_수정시_유저_아디디_보내지_않음_실패_400/http-response.adoc[]
+
+=== 프로필_수정시_유저_이름_보내지_않음_실패_400
+
+.http-request
+include::{snippets}/프로필_수정시_유저_이름_보내지_않음_실패_400/http-request.adoc[]
+
+.Request-parts
+include::{snippets}/프로필_수정시_유저_이름_보내지_않음_실패_400/request-parts.adoc[]
+
+.http-response
+include::{snippets}/프로필_수정시_유저_이름_보내지_않음_실패_400/http-response.adoc[]
+
+=== 프로필_수정시_유저_생년월일_보내지_않음_실패_400
+
+.http-request
+include::{snippets}/프로필_수정시_유저_생년월일_보내지_않음_실패_400/http-request.adoc[]
+
+.Request-parts
+include::{snippets}/프로필_수정시_유저_생년월일_보내지_않음_실패_400/request-parts.adoc[]
+
+.http-response
+include::{snippets}/프로필_수정시_유저_생년월일_보내지_않음_실패_400/http-response.adoc[]
