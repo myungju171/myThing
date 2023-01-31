@@ -61,7 +61,7 @@ class ItemUserQueryRepositoryImplTest {
         }
         //when
         Pageable pageable = PageRequest.of(0, 10);
-        Page<ItemDto.ResponseSimpleItem> result = itemUserRepository.searchSimpleItem(dbUser.getId(), pageable);
+        Page<ItemDto.ResponseSimpleItem> result = itemUserRepository.searchSimpleItem(dbUser.getId(), false, pageable);
         //then
         assertThat(result.getContent().size()).isEqualTo(10);
         assertThat(result.getContent().get(0).getInterestedItem()).isEqualTo(true);
@@ -101,9 +101,50 @@ class ItemUserQueryRepositoryImplTest {
         }
         //when
         Pageable pageable = PageRequest.of(0, 5);
-        Page<ItemDto.ResponseSimpleItem> result = itemUserRepository.searchSimpleItem(dbUser.getId(), pageable);
+        Page<ItemDto.ResponseSimpleItem> result = itemUserRepository.searchSimpleItem(dbUser.getId(), false, pageable);
         //then
         assertThat(result.getTotalPages()).isEqualTo(0);
-        assertThat(result.getTotalPages()).isEqualTo(0);
+        assertThat(result.getSize()).isEqualTo(5);
     }
+
+    @Test
+    @DisplayName("친구의 리스트를 조회시 secretItem이 true인 상품은 보이지 않는다. ")
+    public void searchSimpleItem_suc3() {
+        //given
+        User user = User.builder()
+                .name("홍길동")
+                .build();
+        User dbUser = userRepository.save(user);
+
+        for (int i = 0; i < 10; i++) {
+            Boolean interest = false;
+            if (i == 9) {
+                interest = true;
+            }
+            Item item = Item.builder()
+                    .productId((long) i)
+                    .title("테스트 타이틀")
+                    .price(1000)
+                    .image("imageLink")
+                    .link("link")
+                    .build();
+            itemRepository.save(item);
+            ItemUser itemUser = ItemUser.builder()
+                    .user(user)
+                    .item(item)
+                    .itemStatus(ItemStatus.POST)
+                    .interestedItem(interest)
+                    .secretItem(true)
+                    .build()
+                    .addItemUser();
+            itemUserRepository.save(itemUser);
+        }
+        //when
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ItemDto.ResponseSimpleItem> result = itemUserRepository.searchSimpleItem(dbUser.getId(), true, pageable);
+        //then
+        assertThat(result.getTotalPages()).isEqualTo(0);
+        assertThat(result.getSize()).isEqualTo(10);
+    }
+
 }

@@ -355,12 +355,12 @@ class ItemControllerTest {
     }
 
     @Test
-    @DisplayName("리스트로 아이템을 조회할때 성공시 200과 ResponseSimpleItem를 리스트로 전달받는다.")
+    @DisplayName("리스트로 본인의 아이템을 조회할때 성공시 200과 ResponseSimpleItem를 리스트로 전달받는다.")
     public void getSimpleItems_suc() throws Exception {
         //given
         List<ItemDto.ResponseSimpleItem> data = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i <= 5; i++) {
             Boolean value;
             ItemStatus itemStatus;
             if (i % 2 == 0) {
@@ -392,10 +392,11 @@ class ItemControllerTest {
         ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto =
                 new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems, responseSimpleUser);
 
-        given(itemService.getSimpleItems(any(), any(), any())).willReturn(responseMultiPageDto);
+        given(itemService.getSimpleItems(any(), any(), any(), any())).willReturn(responseMultiPageDto);
         //when
         ResultActions perform = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/items/users/{user-id}", 1)
+                        .param("isFriend", "false")
                         .param("start", "1")
                         .param("size", "5")
         );
@@ -409,7 +410,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.pageInfo.size").value(5))
                 .andExpect(jsonPath("$.pageInfo.totalElements").value(5))
                 .andExpect(jsonPath("$.pageInfo.totalPages").value(1))
-                .andDo(document("아이템_리스트_조회_성공_200",
+                .andDo(document("본인의_아이템_리스트_조회_성공_200",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
@@ -417,6 +418,100 @@ class ItemControllerTest {
                         ),
                         requestParameters(
                                 List.of(
+                                        parameterWithName("isFriend").description("필수값이 아닙니다. 디폴트값 false, 친구의 아이템 리스트 조회시 true를 작성해주세요."),
+                                        parameterWithName("start").description("현재 보여질 페이지 번호입니다."),
+                                        parameterWithName("size").description("한페이지에 보여질 게시글의 갯수입니다.")
+                                )
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data[]").type(JsonFieldType.ARRAY).description("아이템을 리스트 형태로 보여줍니다."),
+                                        fieldWithPath("data[].itemId").type(JsonFieldType.NUMBER).description("아이템의 아이디 번호 입니다."),
+                                        fieldWithPath("data[].title").type(JsonFieldType.STRING).description("아이템의 타이틀입니다."),
+                                        fieldWithPath("data[].price").type(JsonFieldType.NUMBER).description("아이템의 가격입니다."),
+                                        fieldWithPath("data[].image").type(JsonFieldType.STRING).description("아이템의 이미지 주소입니다."),
+                                        fieldWithPath("data[].interestedItem").type(JsonFieldType.BOOLEAN).description("관심상품 유무입니다.true 관심, false 관심없음"),
+                                        fieldWithPath("data[].secretItem").type(JsonFieldType.BOOLEAN).description("공개/비공개 상품 유무입니다. ture 비공개, false 공개"),
+                                        fieldWithPath("data[].itemStatus").type(JsonFieldType.STRING).description("아이템의 상태입니다."),
+                                        fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("아이템을 등록한 날자입니다."),
+                                        fieldWithPath("data[].lastModifiedAt").type(JsonFieldType.STRING).description("아이템을 최종 수정한 날짜 입니다."),
+                                        fieldWithPath("user.userId").type(JsonFieldType.NUMBER).description("아이템을 가지고 있는 유저의 아이디입니다."),
+                                        fieldWithPath("user.name").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이름입니다."),
+                                        fieldWithPath("user.image").type(JsonFieldType.STRING).description("아이템을 가지고 있는 유저의 이미지 주소입니다."),
+                                        fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("현재 보여질 페이지 입니다."),
+                                        fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("한페이지에 들어갈 게시글의 갯수 입니다."),
+                                        fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 게시글의 갯수 입니다."),
+                                        fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 숫자입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("리스트로 친구의 아이템을 조회할때 성공시 200과 ResponseSimpleItem를 리스트로 전달받는다.")
+    public void getSimpleItems_suc2() throws Exception {
+        //given
+        List<ItemDto.ResponseSimpleItem> data = new ArrayList<>();
+
+        for (int i = 1; i <= 3; i++) {
+            Boolean value;
+            ItemStatus itemStatus;
+            if (i % 2 == 0) {
+                value = Boolean.FALSE;
+                itemStatus = ItemStatus.BOUGHT;
+            } else {
+                value = Boolean.TRUE;
+                itemStatus = ItemStatus.POST;
+            }
+            data.add(ItemDto.ResponseSimpleItem.builder()
+                    .itemId((long) i)
+                    .itemStatus(itemStatus)
+                    .secretItem(false)
+                    .interestedItem(value)
+                    .title("test")
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .image("imageLInk")
+                    .price(1000)
+                    .build());
+        }
+        UserDto.ResponseSimpleUser responseSimpleUser = UserDto.ResponseSimpleUser.builder()
+                .userId(1L)
+                .name("홍길동")
+                .image("remote image")
+                .build();
+        PageRequest pageable = PageRequest.of(0, 3, Sort.by("itemStatus").descending());
+        Page<ItemDto.ResponseSimpleItem> responseSimpleItems = new PageImpl<>(data, pageable, 3);
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> responseMultiPageDto =
+                new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems, responseSimpleUser);
+
+        given(itemService.getSimpleItems(any(), any(), any(), any())).willReturn(responseMultiPageDto);
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/items/users/{user-id}", 1)
+                        .param("isFriend", "true")
+                        .param("start", "1")
+                        .param("size", "3")
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.user.userId").value(1))
+                .andExpect(jsonPath("$.user.name").value("홍길동"))
+                .andExpect(jsonPath("$.user.image").value("remote image"))
+                .andExpect(jsonPath("$.pageInfo.page").value(1))
+                .andExpect(jsonPath("$.pageInfo.size").value(3))
+                .andExpect(jsonPath("$.pageInfo.totalElements").value(3))
+                .andExpect(jsonPath("$.pageInfo.totalPages").value(1))
+                .andDo(document("친구의_아이템_리스트_조회_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("아이템을 가져올 유저의 아이디값입니다.")
+                        ),
+                        requestParameters(
+                                List.of(
+                                        parameterWithName("isFriend").description("필수값이 아닙니다. 디폴트값 false, 친구의 아이템 리스트 조회시 true를 작성해주세요."),
                                         parameterWithName("start").description("현재 보여질 페이지 번호입니다."),
                                         parameterWithName("size").description("한페이지에 보여질 게시글의 갯수입니다.")
                                 )
@@ -450,11 +545,12 @@ class ItemControllerTest {
     public void getSimpleItems_fail() throws Exception {
         //given
 
-        given(itemService.getSimpleItems(any(), any(), any()))
+        given(itemService.getSimpleItems(any(), any(), any(), any()))
                 .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         ResultActions perform = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/items/users/{user-id}", -1)
+                        .param("isFriend", "false")
                         .param("start", "1")
                         .param("size", "5")
         );
@@ -468,6 +564,7 @@ class ItemControllerTest {
                         ),
                         requestParameters(
                                 List.of(
+                                        parameterWithName("isFriend").description("친구의 리스트라면 true, 본인의 리스트를 확인한다면 false를 전달해주세요"),
                                         parameterWithName("start").description("현재 보여질 페이지 번호입니다."),
                                         parameterWithName("size").description("한페이지에 보여질 게시글의 갯수입니다.")
                                 )

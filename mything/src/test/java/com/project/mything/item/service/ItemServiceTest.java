@@ -255,10 +255,10 @@ class ItemServiceTest {
                 new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(data, responseSimpleItems, responseSimpleUser);
 
         given(userService.findVerifiedUser(any())).willReturn(User.builder().build());
-        given(itemUserRepository.searchSimpleItem(any(), any())).willReturn(responseSimpleItems);
+        given(itemUserRepository.searchSimpleItem(any(), any(), any())).willReturn(responseSimpleItems);
         given(userMapper.toResponseSimpleUser(any())).willReturn(responseSimpleUser);
         //when
-        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> result = itemService.getSimpleItems(1L, 1, 5);
+        ResponseMultiPageDto<ItemDto.ResponseSimpleItem> result = itemService.getSimpleItems(1L, false,1, 5);
         //then
         assertThat(result.getData()).isEqualTo(responseMultiPageDto.getData());
         assertThat(result.getPageInfo().getPage()).isEqualTo(responseMultiPageDto.getPageInfo().getPage());
@@ -276,7 +276,7 @@ class ItemServiceTest {
                 .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         //then
-        assertThatThrownBy(() -> itemService.getSimpleItems(1L, 1, 1)).isInstanceOf(BusinessLogicException.class);
+        assertThatThrownBy(() -> itemService.getSimpleItems(1L, false,1, 1)).isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
