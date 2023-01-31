@@ -117,3 +117,38 @@ include::{snippets}/프로필_수정시_유저_생년월일_보내지_않음_실
 
 .http-response
 include::{snippets}/프로필_수정시_유저_생년월일_보내지_않음_실패_400/http-response.adoc[]
+
+***
+== 아바타 삭제
+=== 아바타_삭제_성공_204
+
+.http-request
+include::{snippets}/아바타_삭제_성공_204/http-request.adoc[]
+
+.request-field
+include::{snippets}/아바타_삭제_성공_204/request-fields.adoc[]
+
+.http-response
+include::{snippets}/아바타_삭제_성공_204/http-response.adoc[]
+
+=== 아바타_삭제시_존재하지_않는_유저_실패_404
+
+.http-request
+include::{snippets}/아바타_삭제시_존재하지_않는_유저_실패_404/http-request.adoc[]
+
+.request-field
+include::{snippets}/아바타_삭제시_존재하지_않는_유저_실패_404/request-fields.adoc[]
+
+.http-response
+include::{snippets}/아바타_삭제시_존재하지_않는_유저_실패_404/http-response.adoc[]
+
+=== 아바타_삭제시_유저의_기존_아바타가_null일때_실패_409
+
+.http-request
+include::{snippets}/아바타_삭제시_유저의_기존_아바타가_null일때_실패_409/http-request.adoc[]
+
+.request-field
+include::{snippets}/아바타_삭제시_유저의_기존_아바타가_null일때_실패_409/request-fields.adoc[]
+
+.http-response
+include::{snippets}/아바타_삭제시_유저의_기존_아바타가_null일때_실패_409/http-response.adoc[]
