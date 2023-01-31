@@ -5,5 +5,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemUserQueryRepository {
-    public abstract Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId,Pageable pageable);
+    public abstract Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId, Boolean isFriend, Pageable pageable);
 }
