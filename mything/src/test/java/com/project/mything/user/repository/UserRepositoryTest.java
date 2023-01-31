@@ -30,4 +30,36 @@ class UserRepositoryTest {
         //then
         assertThat(result.getPhone()).isEqualTo(user.getPhone());
     }
+
+    @Test
+    @DisplayName("핸드폰 번호로 유저와 아이템유저 객체를 한번에 조회 ")
+    public void findUserWithItemUserByPhone_suc(){
+        //given
+        User user = User.builder()
+                .phone("01012345678")
+                .build();
+        User dbUser = userRepository.save(user);
+        //when
+        User result = userRepository.findUserWithItemUserByPhone("01012345678")
+                .orElseThrow(RuntimeException::new);
+        //then
+        assertThat(result.getPhone()).isEqualTo(user.getPhone());
+    }
+
+    @Test
+    @DisplayName("유저 아이디로 유저와 아바타 객체를 한번에 조회")
+    public void findUserWithAvatar_suc(){
+        //given
+        User user = User.builder()
+                .id(1L)
+                .build();
+        User dbUser = userRepository.save(user);
+        //when
+        User result = userRepository.findUserWithAvatar(user.getId())
+                .orElseThrow(RuntimeException::new);
+        //then
+        assertThat(result.getId()).isEqualTo(user.getId());
+
+    }
+    
 }
