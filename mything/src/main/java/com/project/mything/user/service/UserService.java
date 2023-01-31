@@ -77,4 +77,9 @@ public class UserService {
             throw new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL);
         }
     }
+
+    public User findUserWithItemUserByPhone(String phone) {
+        return userRepository.findUserWithItemUserByPhone(phone)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+    }
 }
