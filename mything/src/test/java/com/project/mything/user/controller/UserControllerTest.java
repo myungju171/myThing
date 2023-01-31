@@ -14,10 +14,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
@@ -67,10 +69,10 @@ class UserControllerTest {
         ResultActions perform = mockMvc.perform(
                 multipart("/users/profiles")
                         .file(mockMultipartFile)
-                        .param("userId", "1")
-                        .param("name", "testName")
-                        .param("infoMessage", "hello")
-                        .param("birthDay", "1999-04-08")
+                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
 
         );
@@ -82,13 +84,11 @@ class UserControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParts(
-                                partWithName("multipartFile").description("업로드할 유저 프로필 이미지 입니다. 필수가 아닙니다.")
-                        ),
-                        requestParameters(
-                                parameterWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                parameterWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                parameterWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                parameterWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                                partWithName("multipartFile").description("업로드할 유저 프로필 이미지 입니다. 필수가 아닙니다."),
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
                         ),
                         responseFields(
                                 fieldWithPath("userId").description("유저 아이디 입니다."),
@@ -114,9 +114,9 @@ class UserControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 multipart("/users/profiles")
-                        .param("userId", "1")
-                        .param("name", "testName")
-                        .param("birthDay", "1999-04-08")
+                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
 
         );
@@ -127,10 +127,10 @@ class UserControllerTest {
                 .andDo(document("프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                parameterWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                parameterWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                        requestParts(
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
                         ),
                         responseFields(
                                 fieldWithPath("userId").description("유저 아이디 입니다."),
@@ -161,10 +161,10 @@ class UserControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 multipart("/users/profiles")
-                        .param("userId", "5000")
-                        .param("name", "testName")
-                        .param("infoMessage", "hello")
-                        .param("birthDay", "1999-04-08")
+                        .part(new MockPart("userId", "5000".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
 
         );
@@ -174,13 +174,12 @@ class UserControllerTest {
                 .andDo(document("존재하지_않는_유저_프로필_수정_실패_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                parameterWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                parameterWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                parameterWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                        requestParts(
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
                         )
-
                 ));
     }
 
@@ -205,10 +204,10 @@ class UserControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 multipart("/users/profiles")
-                        .param("userId", "1")
-                        .param("name", "testName")
-                        .param("infoMessage", "hello")
-                        .param("birthDay", "1999-04-08")
+                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
 
         );
@@ -218,12 +217,98 @@ class UserControllerTest {
                 .andDo(document("프로필_수정시_이미지_업로드_실패_500",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestParts(
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                        )
 
-                        requestParameters(
-                                parameterWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                parameterWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                parameterWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                parameterWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                ));
+    }
+
+    @Test
+    @DisplayName("프로필 수정시 유저아이디를 보내지 않음 실패 400")
+    public void editProfile_fail3() throws Exception {
+        //given
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                multipart("/users/profiles")
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+
+        );
+
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("프로필_수정시_유저_아디디_보내지_않음_실패_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParts(
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                        )
+
+                ));
+    }
+
+    @Test
+    @DisplayName("프로필 수정시 유저 이름을 보내지 않음 실패 400")
+    public void editProfile_fail4() throws Exception {
+        //given
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                multipart("/users/profiles")
+                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+
+        );
+
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("프로필_수정시_유저_이름_보내지_않음_실패_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParts(
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
+                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
+                        )
+
+                ));
+    }
+
+    @Test
+    @DisplayName("프로필 수정시 유저 생년월일을 보내지 않음 실패 400")
+    public void editProfile_fail5() throws Exception {
+        //given
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                multipart("/users/profiles")
+                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
+                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+
+        );
+
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("프로필_수정시_유저_생년월일_보내지_않음_실패_400",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParts(
+                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
+                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
+                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다.")
                         )
 
                 ));
