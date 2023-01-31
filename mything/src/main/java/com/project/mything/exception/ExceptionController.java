@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -39,5 +41,13 @@ public class ExceptionController {
             HttpRequestMethodNotSupportedException httpRequestMethodNotSupportedException
     ) {
         return ResponseException.toResponseEntity(httpRequestMethodNotSupportedException);
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ResponseException> constraintViolationException(
+            ConstraintViolationException constraintViolationException
+    ) {
+        return ResponseException.toResponseEntity(constraintViolationException);
     }
 }
