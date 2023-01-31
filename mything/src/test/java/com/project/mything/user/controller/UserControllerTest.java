@@ -1,5 +1,6 @@
 package com.project.mything.user.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.exception.ExceptionController;
@@ -18,16 +19,21 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,10 +45,10 @@ class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
     @MockBean
     UserService userService;
-
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("프로필 이미지와 상태메세지 포함 수정 성공 201")
@@ -311,6 +317,89 @@ class UserControllerTest {
                                 partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다.")
                         )
 
+                ));
+    }
+
+    @Test
+    @DisplayName("아바타 삭제시 성공 204")
+    public void deleteAvatar_suc() throws Exception {
+    //given
+        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
+                .userId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestUserId);
+        doNothing().when(userService).deleteAvatar(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/users/avatars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNoContent())
+                .andDo(document("아바타_삭제_성공_204",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("유저의 아이디입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("아바타 삭제시 존재하지 않는 유저 실패 404")
+    public void deleteAvatar_fail() throws Exception {
+        //given
+        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
+                .userId(5000L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestUserId);
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(userService).deleteAvatar(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/users/avatars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("아바타_삭제시_존재하지_않는_유저_실패_404",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("유저의 아이디입니다.")
+                                )
+                        )
+                ));
+    }
+    @Test
+    @DisplayName("아바타 삭제시 유저의 기존 아바타가 null일때 실패 409")
+    public void deleteAvatar_fail2() throws Exception {
+        //given
+        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
+                .userId(1L)
+                .build();
+        String content = objectMapper.writeValueAsString(requestUserId);
+        doThrow(new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL)).when(userService).deleteAvatar(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/users/avatars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("아바타_삭제시_유저의_기존_아바타가_null일때_실패_409",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("유저의 아이디입니다.")
+                                )
+                        )
                 ));
     }
 }
