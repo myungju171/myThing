@@ -167,22 +167,39 @@ include::{snippets}/아이템_상세조회시_존재하지_않는_아이템_실�
 
 ***
 == 아이템 리스트 조회
-=== 아이템_리스트_조회_성공_200
+=== 본인의_아이템_리스트_조회_성공_200
 
 .http-request
-include::{snippets}/아이템_리스트_조회_성공_200/http-request.adoc[]
+include::{snippets}/본인의_아이템_리스트_조회_성공_200/http-request.adoc[]
 
 .Path parameters
-include::{snippets}/아이템_리스트_조회_성공_200/path-parameters.adoc[]
+include::{snippets}/본인의_아이템_리스트_조회_성공_200/path-parameters.adoc[]
 
 .Request parameters
-include::{snippets}/아이템_리스트_조회_성공_200/request-parameters.adoc[]
+include::{snippets}/본인의_아이템_리스트_조회_성공_200/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_리스트_조회_성공_200/http-response.adoc[]
+include::{snippets}/본인의_아이템_리스트_조회_성공_200/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_리스트_조회_성공_200/response-fields.adoc[]
+include::{snippets}/본인의_아이템_리스트_조회_성공_200/response-fields.adoc[]
+
+=== 친구의_아이템_리스트_조회_성공_200
+
+.http-request
+include::{snippets}/친구의_아이템_리스트_조회_성공_200/http-request.adoc[]
+
+.Path parameters
+include::{snippets}/친구의_아이템_리스트_조회_성공_200/path-parameters.adoc[]
+
+.Request parameters
+include::{snippets}/친구의_아이템_리스트_조회_성공_200/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구의_아이템_리스트_조회_성공_200/http-response.adoc[]
+
+.response-fields
+include::{snippets}/친구의_아이템_리스트_조회_성공_200/response-fields.adoc[]
 
 
 === 아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404

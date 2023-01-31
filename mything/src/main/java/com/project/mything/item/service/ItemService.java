@@ -80,13 +80,13 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Integer start, Integer size) {
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Boolean isFriend, Integer start, Integer size) {
         User dbUser = userService.findVerifiedUser(userId);
 
         PageRequest pageRequest = PageRequest.of(start - 1, size);
 
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems =
-                itemUserRepository.searchSimpleItem(userId, pageRequest);
+                itemUserRepository.searchSimpleItem(userId, isFriend, pageRequest);
 
         List<ItemDto.ResponseSimpleItem> content =
                 responseSimpleItems.getContent();

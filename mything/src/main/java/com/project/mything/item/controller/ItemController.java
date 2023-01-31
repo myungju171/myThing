@@ -49,10 +49,11 @@ public class ItemController {
 
     @GetMapping("/users/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(@PathVariable("user-id") Long userId,
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@PathVariable("user-id") Long userId,
+                                                                           @RequestParam(required = false, defaultValue = "false") Boolean isFriend,
                                                                            @RequestParam Integer start,
                                                                            @RequestParam Integer size) {
-        return itemService.getSimpleItems(userId, start, size);
+        return itemService.getSimpleItems(userId, isFriend, start, size);
     }
 
     @PatchMapping("/statuses")
