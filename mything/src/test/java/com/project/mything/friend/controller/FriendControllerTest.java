@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,8 +29,7 @@ import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -173,15 +173,23 @@ class FriendControllerTest {
                 .image("remotePath")
                 .build();
 
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+        String content = objectMapper.writeValueAsString(requestFriendList);
+
         FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result =
                 new FriendDto.ResponseMultiFriend<>(responseSimpleFriends, responseSimpleUser);
 
-        given(friendService.getFriends(any())).willReturn(result);
+        given(friendService.getFriendInfo(any())).willReturn(result);
     //when
         ResultActions perform = mockMvc.perform(
                 get("/friends/charts")
-                        .param("userId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
         );
+
         //then
         perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
@@ -191,8 +199,11 @@ class FriendControllerTest {
                 .andDo(document("친구리스트_불러오기_성공_200",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("userId").description("해당 유저아이디의 친구목록을 불러옵니다.")
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("친구 목록을 확인할 유저아이디 입니다."),
+                                        fieldWithPath("isBirthDay").description("생일인 친구만 조회하고 싶다면 true로 변경하세요. 아니라면 false를 적어주세요.")
+                                )
                         ),
                         responseFields(
                                 List.of(
@@ -223,15 +234,23 @@ class FriendControllerTest {
                 .image("remotePath")
                 .build();
 
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+        String content = objectMapper.writeValueAsString(requestFriendList);
+
         FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result =
                 new FriendDto.ResponseMultiFriend<>(responseSimpleFriends, responseSimpleUser);
 
-        given(friendService.getFriends(any())).willReturn(result);
+        given(friendService.getFriendInfo(any())).willReturn(result);
         //when
         ResultActions perform = mockMvc.perform(
                 get("/friends/charts")
-                        .param("userId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
         );
+
         //then
         perform.andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isArray())
@@ -241,8 +260,11 @@ class FriendControllerTest {
                 .andDo(document("친구리스트_불러오기_존재하는_친구_없음_성공_200",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("userId").description("해당 유저아이디의 친구목록을 불러옵니다.")
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("친구 목록을 확인할 유저아이디 입니다."),
+                                        fieldWithPath("isBirthDay").description("생일인 친구만 조회하고 싶다면 true로 변경하세요. 아니라면 false를 적어주세요.")
+                                )
                         ),
                         responseFields(
                                 List.of(
@@ -256,13 +278,81 @@ class FriendControllerTest {
     }
 
     @Test
-    @DisplayName("친구리스트를 불러올때 파라미터 없음 400 리턴")
+    @DisplayName("친구리스트를 생일인 친구만 조회 리턴")
+    public void getFriends_suc3() throws Exception {
+        //given
+        List<FriendDto.ResponseSimpleFriend> responseSimpleFriends = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            responseSimpleFriends.add(FriendDto.ResponseSimpleFriend.builder()
+                    .userId((long) i)
+                    .name("test"+i)
+                    .infoMessage("hello")
+                    .birthDay(LocalDate.of(1999, 4, 8))
+                    .avatarId((long)i)
+                    .remotePath("remotePath").build());
+        }
+        UserDto.ResponseSimpleUser responseSimpleUser = UserDto.ResponseSimpleUser.builder()
+                .userId(1L)
+                .name("testName")
+                .image("remotePath")
+                .build();
+
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+        String content = objectMapper.writeValueAsString(requestFriendList);
+
+        FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result =
+                new FriendDto.ResponseMultiFriend<>(responseSimpleFriends, responseSimpleUser);
+
+        given(friendService.getFriendInfo(any())).willReturn(result);
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/friends/charts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.userInfo.userId").value(1))
+                .andExpect(jsonPath("$.userInfo.name").value("testName"))
+                .andExpect(jsonPath("$.userInfo.image").value("remotePath"))
+                .andDo(document("친구리스트_불러오기_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("친구 목록을 확인할 유저아이디 입니다."),
+                                        fieldWithPath("isBirthDay").description("생일인 친구만 조회하고 싶다면 true로 변경하세요. 아니라면 false를 적어주세요.")
+                                )
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data[].userId").description("친구의 아이디 번호입니다."),
+                                        fieldWithPath("data[].name").description("친구의 이름 입니다."),
+                                        fieldWithPath("data[].infoMessage").description("친구의 상태메세지 입니다."),
+                                        fieldWithPath("data[].birthDay").description("친구의 생일 입니다."),
+                                        fieldWithPath("data[].itemCount").description("친구의 아이템 갯수 입니다."),
+                                        fieldWithPath("data[].avatarId").description("친구의 아바타 아이디 입니다."),
+                                        fieldWithPath("data[].remotePath").description("친구의 이미지 주소 입니다."),
+                                        fieldWithPath("userInfo.userId").description("친구목록을 불러온 유저의 아이디 입니다."),
+                                        fieldWithPath("userInfo.name").description("친구목록을 불러온 유저의 이름입니다."),
+                                        fieldWithPath("userInfo.image").description("친구목록을 불러온 유저의 이미지 주소 입니다.")
+                                )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("친구리스트를 불러올때 userId, isBirthDay json 없음 없음 400 리턴")
     public void getFriends_fail1() throws Exception {
         //given
         //when
         ResultActions perform = mockMvc.perform(
                 get("/friends/charts")
-
         );
         //then
         perform.andExpect(status().isBadRequest())
@@ -276,21 +366,30 @@ class FriendControllerTest {
     @DisplayName("친구리스트를 불러올때 존재하지 않는 유저아이디 404 리턴")
     public void getFriends_fail2() throws Exception {
         //given
-
-        given(friendService.getFriends(any()))
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+        String content = objectMapper.writeValueAsString(requestFriendList);
+        given(friendService.getFriendInfo(any()))
                 .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         ResultActions perform = mockMvc.perform(
                 get("/friends/charts")
-                        .param("userId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
         );
+
         //then
         perform.andExpect(status().isNotFound())
                 .andDo(document("친구리스트_불러오기_존재하지_않는_유저아이디_실패_404",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("userId").description("해당 유저아이디의 친구목록을 불러옵니다.")
+                        requestFields(
+                                List.of(
+                                        fieldWithPath("userId").description("친구 목록을 확인할 유저아이디 입니다."),
+                                        fieldWithPath("isBirthDay").description("생일인 친구만 조회하고 싶다면 true로 변경하세요. 아니라면 false를 적어주세요.")
+                                )
                         )
                 ));
 

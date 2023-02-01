@@ -1,6 +1,7 @@
 package com.project.mything.friend.service;
 
 import com.project.mything.friend.dto.FriendDto;
+import com.project.mything.friend.entity.Friend;
 import com.project.mything.friend.mapper.FriendMapper;
 import com.project.mything.friend.repository.FriendRepository;
 import com.project.mything.user.dto.UserDto;
@@ -11,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -32,20 +35,47 @@ public class FriendService {
         return friendMapper.toResponseFindUserResult(dbFriend, ItemCountOfDbFriend);
     }
 
-    public FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> getFriends(Long userId) {
-        User dbUser = userService.findUserWithAvatar(userId);
+    public FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> getFriendInfo(FriendDto.RequestFriendList requestFriendList) {
+        User dbUser = userService.findUserWithAvatar(requestFriendList.getUserId());
 
-        List<FriendDto.ResponseSimpleFriend> data = getResponseSimpleFriendList(dbUser);
+        List<FriendDto.ResponseSimpleFriend> responseSimpleFriends
+                = makeSimpleFriendDtoList(requestFriendList.getIsBirthDay(), dbUser);
 
-        UserDto.ResponseSimpleUser userInfo = userMapper.toResponseSimpleUser(dbUser);
+        return  new FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend>(responseSimpleFriends, getUserInfoDto(dbUser));
 
-        return new FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend>(data, userInfo);
     }
 
-    private List<FriendDto.ResponseSimpleFriend> getResponseSimpleFriendList(User dbUser) {
-        return dbUser.getFriendList().stream().map(friend -> {
+    private UserDto.ResponseSimpleUser getUserInfoDto(User dbUser) {
+        return userMapper.toResponseSimpleUser(dbUser);
+    }
+
+    private List<FriendDto.ResponseSimpleFriend> makeSimpleFriendDtoList(Boolean birthDay, User dbUser) {
+        List<FriendDto.ResponseSimpleFriend> simpleFriendDtoList = new ArrayList<FriendDto.ResponseSimpleFriend>();
+
+        for (int i = 0; i < dbUser.getFriendList().size(); i++) {
+            Friend friend = dbUser.getFriendList().get(i);
             User userFriend = userService.findVerifiedUser(friend.getUserFriendId());
-            return friendMapper.toResponseFindUserResult(userFriend, userFriend.getItemUserList().size());
-        }).collect(Collectors.toList());
+            if (birthDay) {
+                distinguishBirthDayUser(simpleFriendDtoList, userFriend);
+            } else {
+                addFriendInfoToResult(simpleFriendDtoList, userFriend);
+            }
+        }
+        return simpleFriendDtoList;
     }
+
+    private void distinguishBirthDayUser(List<FriendDto.ResponseSimpleFriend> simpleFriendDtoList, User userFriend) {
+        LocalDate now = LocalDate.now();
+
+        boolean month = Objects.equals(userFriend.getBirthDay().getMonth(), now.getMonth());
+        boolean day = userFriend.getBirthDay().getDayOfMonth() == now.getDayOfMonth();
+        if ( day && month) {
+            addFriendInfoToResult(simpleFriendDtoList, userFriend);
+        }
+    }
+
+    private void addFriendInfoToResult(List<FriendDto.ResponseSimpleFriend> simpleFriendDtoList, User userFriend) {
+        simpleFriendDtoList.add(friendMapper.toResponseFindUserResult(userFriend, userFriend.getItemUserList().size()));
+    }
+
 }
