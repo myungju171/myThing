@@ -3,6 +3,8 @@ package com.project.mything.friend.dto;
 import com.project.mything.user.dto.UserDto;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,5 +43,17 @@ public class FriendDto {
             this.data = data;
             userInfo = responseSimpleUser;
         }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestFriendList {
+        @NotNull
+        @Positive
+        private Long userId;
+        @NotNull
+        private Boolean isBirthDay;
     }
 }
