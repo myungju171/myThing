@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @RestController
 @RequestMapping("/friends")
@@ -27,7 +26,7 @@ public class FriendController {
 
     @GetMapping("/charts")
     @ResponseStatus(HttpStatus.OK)
-    public List<FriendDto.ResponseSimpleFriend> getFriends(@RequestParam Long userId) {
+    public FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> getFriends(@RequestParam Long userId) {
         return friendService.getFriends(userId);
     }
 
