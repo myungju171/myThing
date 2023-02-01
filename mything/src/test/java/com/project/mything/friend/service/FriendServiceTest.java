@@ -6,6 +6,7 @@ import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.friend.mapper.FriendMapper;
 import com.project.mything.friend.repository.FriendRepository;
 import com.project.mything.item.entity.ItemUser;
+import com.project.mything.user.entity.Avatar;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -51,23 +52,27 @@ class FriendServiceTest {
                 .name("홍길동")
                 .birthDay(LocalDate.of(1999, 4, 8))
                 .itemUserList(itemUserList)
+                .avatar(Avatar.builder().id(1L).remotePath("remotePath").build())
                 .build();
-
-        FriendDto.ResponseFindUserResult responseFindUserResult = FriendDto.ResponseFindUserResult.builder()
+        FriendDto.ResponseSimpleFriend responseSimpleFriend = FriendDto.ResponseSimpleFriend.builder()
                 .userId(1L)
                 .name("홍길동")
                 .birthDay(LocalDate.of(1999, 4, 8))
                 .itemCount(3)
+                .avatarId(1L)
+                .remotePath("remotePath")
                 .build();
         given(userService.findUserWithItemUserByPhone(any())).willReturn(dbUser);
-        given(friendMapper.toResponseFindUserResult(any(), any())).willReturn(responseFindUserResult);
+        given(friendMapper.toResponseFindUserResult(any(), any())).willReturn(responseSimpleFriend);
         //when
-        FriendDto.ResponseFindUserResult result = friendService.searchFriend(friendPhone);
+        FriendDto.ResponseSimpleFriend result = friendService.searchFriend(friendPhone);
         //then
         assertThat(result.getName()).isEqualTo(dbUser.getName());
         assertThat(result.getBirthDay()).isNotNull();
         assertThat(result.getInfoMessage()).isEqualTo(dbUser.getInfoMessage());
         assertThat(result.getItemCount()).isEqualTo(dbUser.getItemUserList().size());
+        assertThat(result.getAvatarId()).isEqualTo(dbUser.getAvatar().getId());
+        assertThat(result.getRemotePath()).isEqualTo(dbUser.getAvatar().getRemotePath());
     }
 
     @Test
@@ -82,4 +87,5 @@ class FriendServiceTest {
         //then
         assertThatThrownBy(() -> friendService.searchFriend(friendPhone)).isInstanceOf(BusinessLogicException.class);
     }
+
 }

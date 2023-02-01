@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -17,7 +20,7 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final FriendMapper friendMapper;
     private final UserService userService;
-    public FriendDto.ResponseFindUserResult searchFriend(String friendPhone) {
+    public FriendDto.ResponseSimpleFriend searchFriend(String friendPhone) {
         User dbFriend
                 = userService.findUserWithItemUserByPhone(friendPhone);
 
@@ -25,4 +28,12 @@ public class FriendService {
         return friendMapper.toResponseFindUserResult(dbFriend, ItemCountOfDbFriend);
     }
 
+    public List<FriendDto.ResponseSimpleFriend> getFriends(Long userId) {
+        User dbUser = userService.findVerifiedUser(userId);
+
+        return  dbUser.getFriendList().stream().map(friend -> {
+            User userFriend = userService.findVerifiedUser(friend.getUserFriendId());
+            return friendMapper.toResponseFindUserResult(userFriend, userFriend.getItemUserList().size());
+        }).collect(Collectors.toList());
+    }
 }

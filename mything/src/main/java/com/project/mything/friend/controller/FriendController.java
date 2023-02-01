@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @RestController
 @RequestMapping("/friends")
@@ -20,8 +21,15 @@ public class FriendController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public FriendDto.ResponseFindUserResult searchFriend(@NotBlank @Size(min = 11,max = 11) @RequestParam String friendPhone) {
+    public FriendDto.ResponseSimpleFriend searchFriend(@NotBlank @Size(min = 11, max = 11) @RequestParam String friendPhone) {
         return friendService.searchFriend(friendPhone);
     }
+
+    @GetMapping("/charts")
+    @ResponseStatus(HttpStatus.OK)
+    public List<FriendDto.ResponseSimpleFriend> getFriends(@RequestParam Long userId) {
+        return friendService.getFriends(userId);
+    }
+
 
 }

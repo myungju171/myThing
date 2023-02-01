@@ -18,12 +18,14 @@ public class FriendDto {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ResponseFindUserResult {
+    public static class ResponseSimpleFriend {
         private Long userId;
         private String name;
         private String infoMessage;
         private LocalDate birthDay;
         private Integer itemCount;
+        private Long avatarId;
+        private String remotePath;
     }
 
 }

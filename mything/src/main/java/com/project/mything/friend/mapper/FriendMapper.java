@@ -13,6 +13,8 @@ public interface FriendMapper {
     @Mapping(source = "user.name", target = "name")
     @Mapping(source = "user.infoMessage", target = "infoMessage")
     @Mapping(source = "user.birthDay", target = "birthDay")
-    FriendDto.ResponseFindUserResult toResponseFindUserResult(User user, Integer itemCount);
+    @Mapping(source = "user.avatar.id", target = "avatarId")
+    @Mapping(source = "user.avatar.remotePath", target = "remotePath")
+    FriendDto.ResponseSimpleFriend toResponseFindUserResult(User user, Integer itemCount);
 
 }
