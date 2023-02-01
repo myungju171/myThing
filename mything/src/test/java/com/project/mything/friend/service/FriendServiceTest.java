@@ -142,12 +142,17 @@ class FriendServiceTest {
                 .itemCount(1)
                 .build();
 
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+
         given(userService.findUserWithAvatar(any())).willReturn(dbUser);
         given(userService.findVerifiedUser(any())).willReturn(friendUser);
         given(friendMapper.toResponseFindUserResult(any(), any())).willReturn(responseSimpleFriend);
         given(userMapper.toResponseSimpleUser(any())).willReturn(responseSimpleUser);
         //when
-        FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result = friendService.getFriends(1L);
+        FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result = friendService.getFriendInfo(requestFriendList);
         //then
         assertThat(result.getData().size()).isEqualTo(1);
         assertThat(result.getData().get(0).getUserId()).isEqualTo(2);
@@ -191,10 +196,15 @@ class FriendServiceTest {
                 .itemCount(1)
                 .build();
 
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
+
         given(userService.findUserWithAvatar(any())).willReturn(dbUser);
         given(userMapper.toResponseSimpleUser(any())).willReturn(responseSimpleUser);
         //when
-        FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result = friendService.getFriends(1L);
+        FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> result = friendService.getFriendInfo(requestFriendList);
         //then
         assertThat(result.getData().size()).isEqualTo(0);
         assertThat(result.getUserInfo().getUserId()).isEqualTo(1L);
@@ -206,11 +216,15 @@ class FriendServiceTest {
     @DisplayName("유저 친구 목록 조회시 존재하지 않는 유저일시 404 리턴")
     public void getFriends_fail() {
         //given
+        FriendDto.RequestFriendList requestFriendList = FriendDto.RequestFriendList.builder()
+                .userId(1L)
+                .isBirthDay(false)
+                .build();
 
         given(userService.findUserWithAvatar(any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         //then
-        assertThatThrownBy(() -> friendService.getFriends(1L)).isInstanceOf(BusinessLogicException.class);
+        assertThatThrownBy(() -> friendService.getFriendInfo(requestFriendList)).isInstanceOf(BusinessLogicException.class);
     }
 
 }
