@@ -60,7 +60,7 @@ public class UserService {
         return dbUser;
     }
 
-    private User findUserWithAvatar(Long userId) {
+    public User findUserWithAvatar(Long userId) {
         return userRepository.findUserWithAvatar(userId)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
 
