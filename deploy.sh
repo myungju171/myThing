@@ -6,7 +6,7 @@ PROJECT_NAME=mything
 # git clone 받은 위치로 이동
 cd $REPOSITORY/$PROJECT_NAME/
 
-APP_NAME=morak_back_end
+APP_NAME=mything
 CURRENT_PID=$(pgrep -f $APP_NAME)
 
 if [ -z $CURRENT_PID ]
