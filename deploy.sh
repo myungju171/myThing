@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/mything/myThing
+REPOSITORY=/home/ec2-user/mything/
 PROJECT_NAME=mything
 
 # git clone 받은 위치로 이동
