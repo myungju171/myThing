@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -26,9 +27,9 @@ public class FriendController {
 
     @GetMapping("/charts")
     @ResponseStatus(HttpStatus.OK)
-    public FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> getFriends(@RequestParam Long userId) {
-        return friendService.getFriends(userId);
+    public FriendDto.ResponseMultiFriend<FriendDto.ResponseSimpleFriend> getFriends(
+           @Valid @RequestBody FriendDto.RequestFriendList requestFriendList) {
+        return friendService.getFriendInfo(requestFriendList);
     }
-
 
 }
