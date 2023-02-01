@@ -47,14 +47,16 @@ class FriendControllerTest {
     @DisplayName("핸드폰 번호로 유저 조회시 성공 200")
     public void searchFriend_suc() throws Exception {
         //given
-        FriendDto.ResponseFindUserResult responseFindUserResult = FriendDto.ResponseFindUserResult.builder()
+        FriendDto.ResponseSimpleFriend responseSimpleFriend = FriendDto.ResponseSimpleFriend.builder()
                 .userId(1L)
                 .name("testName")
                 .birthDay(LocalDate.of(1999, 4, 8))
                 .infoMessage("hello")
                 .itemCount(3)
+                .avatarId(1L)
+                .remotePath("remotePath")
                 .build();
-        given(friendService.searchFriend(any())).willReturn(responseFindUserResult);
+        given(friendService.searchFriend(any())).willReturn(responseSimpleFriend);
         //when
         ResultActions perform = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/friends")
@@ -78,7 +80,9 @@ class FriendControllerTest {
                                 fieldWithPath("name").description("조회한 친구의 이름 입니다."),
                                 fieldWithPath("infoMessage").description("조회한 친구의 상태메세지 입니다."),
                                 fieldWithPath("birthDay").description("조회한 친구의 생일입니다."),
-                                fieldWithPath("itemCount").description("조회한 친구의 아이템 갯수 입니다.")
+                                fieldWithPath("itemCount").description("조회한 친구의 아이템 갯수 입니다."),
+                                fieldWithPath("avatarId").description("조회한 친구의 프로필 아이디 입니다."),
+                                fieldWithPath("remotePath").description("조회한 친구의 프로필 주소 입니다.")
 
                         )
 
