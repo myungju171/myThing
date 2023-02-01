@@ -8,6 +8,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +90,21 @@ public class ResponseException {
 
 
         ResponseException responseException = new ResponseException(BAD_REQUEST.toString(), message ,errorData);
+
+        return new ResponseEntity<ResponseException>(responseException, BAD_REQUEST);
+    }
+
+    public static ResponseEntity<ResponseException> toResponseEntity(ConstraintViolationException constraintViolationException) {
+        Map<String, String> errorData = new HashMap<>();
+        String message = "Please check out parameters";
+        constraintViolationException.getConstraintViolations()
+                .forEach(error -> {
+                    String errorPath = String.valueOf(error.getPropertyPath());
+                    int index = errorPath.lastIndexOf(".") + 1;
+                    String errorName = errorPath.substring(index);
+                    errorData.put(errorName, error.getMessage());
+                });
+        ResponseException responseException = new ResponseException(BAD_REQUEST.toString(), message, errorData);
 
         return new ResponseEntity<ResponseException>(responseException, BAD_REQUEST);
     }

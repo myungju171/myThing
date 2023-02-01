@@ -1,12 +1,12 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/mything/myThing
+REPOSITORY=/home/ec2-user/mything/
 PROJECT_NAME=mything
 
 # git clone 받은 위치로 이동
 cd $REPOSITORY/$PROJECT_NAME/
 
-APP_NAME=morak_back_end
+APP_NAME=mything
 CURRENT_PID=$(pgrep -f $APP_NAME)
 
 if [ -z $CURRENT_PID ]
@@ -21,8 +21,19 @@ fi
 # git clone 받은 위치로 이동
 cd $REPOSITORY/$PROJECT_NAME/
 
+
 echo "> ll"
 sudo ls -al
+
+
+echo "> GRADLE CHMOD 777"
+sudo chmod 777 ./gradlew
+
+echo "> GRADLE CLEAN"
+sudo ./gradlew clean
+
+echo "> GRADLE BUILD"
+sudo ./gradlew build
 
 # jar 파일 위치로 이동
 cd build/libs

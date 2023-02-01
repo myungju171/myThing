@@ -1,12 +1,9 @@
 package com.project.mything.user.dto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.LocalDate;
 
 public class UserDto {
 
@@ -32,25 +29,20 @@ public class UserDto {
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class RequestUserProfile {
-        @NotNull
-        @Positive
+    public static class ResponseImageURl {
         private Long userId;
-        @NotBlank
-        private String name;
-        @NotBlank
-        private String infoMessage;
-        @NotNull
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private LocalDate birthDay;
+        private Long avatarId;
+        private String remotePath;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ResponseImageUploadResult {
+    public static class RequestUserId {
+        @NotNull
+        @Positive
         private Long userId;
-        private String remotePath;
     }
+
 }

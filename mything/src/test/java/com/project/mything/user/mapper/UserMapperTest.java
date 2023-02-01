@@ -49,6 +49,22 @@ class UserMapperTest {
         assertThat(result.getUserId()).isEqualTo(user.getId());
         assertThat(result.getName()).isEqualTo(user.getName());
         assertThat(result.getImage()).isEqualTo(user.getAvatar().getRemotePath());
+    }
+
+    @Test
+    @DisplayName("User에서 ResponseImageURl 객체로 매핑 테스트")
+    public void toResponseImageUrl_suc(){
+    //given
+        User dbUser = User.builder()
+                .id(1L)
+                .avatar(Avatar.builder().id(2L).remotePath("remotePath").build())
+                .build();
+        //when
+        UserDto.ResponseImageURl responseImageURl = userMapper.toResponseImageUrl(dbUser);
+        //then
+        assertThat(responseImageURl.getUserId()).isEqualTo(dbUser.getId());
+        assertThat(responseImageURl.getAvatarId()).isEqualTo(dbUser.getAvatar().getId());
+        assertThat(responseImageURl.getRemotePath()).isEqualTo(dbUser.getAvatar().getRemotePath());
 
     }
 }

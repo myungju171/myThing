@@ -9,6 +9,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByPhone(String phone);
 
+    @Query("select u from User u left join fetch u.itemUserList where u.phone = :phone")
+    Optional<User> findUserWithItemUserByPhone(String phone);
+
     @Query("select u from User u left join fetch u.avatar where u.id = :userId")
     Optional<User> findUserWithAvatar(Long userId);
 }

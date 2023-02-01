@@ -1,8 +1,9 @@
 package com.project.mything.user.controller;
 
-import com.project.mything.user.entity.User;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -22,17 +23,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/profiles")
-    @ResponseStatus(HttpStatus.OK)
-    public String editProfile(@RequestParam(required = false) MultipartFile multipartFile,
-                              @RequestParam @NotNull @Positive Long userId,
-                              @RequestParam @NotBlank String name,
-                              @RequestParam @NotBlank String infoMessage,
-                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDay) {
+    @PostMapping("/profiles")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto.ResponseImageURl editProfile(@RequestParam(required = false) MultipartFile multipartFile,
+                                                @RequestParam @NotNull @Positive Long userId,
+                                                @RequestParam @NotBlank String name,
+                                                @RequestParam(required = false) String infoMessage,
+                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDay) {
 
-        User dbUser = userService.uploadImage(multipartFile, userId);
-        userService.editUserProfile(dbUser, name, infoMessage, birthDay);
-        return dbUser.getAvatar().getRemotePath();
+        return userService.uploadImageAndEditUserProfile(multipartFile, userId, name, infoMessage, birthDay);
     }
 
+    @DeleteMapping("/avatars")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAvatar(@RequestBody UserDto.RequestUserId requestUserId) {
+        userService.deleteAvatar(requestUserId.getUserId());
+    }
 }

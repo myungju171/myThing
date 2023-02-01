@@ -46,4 +46,9 @@ public class AvatarService {
 
         return avatarRepository.save(avatar);
     }
+
+    public void deleteAvatar(Avatar avatar) {
+        avatar.getUser().deleteAvatar();
+        avatarRepository.delete(avatar);
+    }
 }

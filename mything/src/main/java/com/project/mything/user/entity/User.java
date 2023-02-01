@@ -74,4 +74,8 @@ public class User extends BaseTime {
     public void addAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
+
+    public void deleteAvatar() {
+        this.avatar = null;
+    }
 }

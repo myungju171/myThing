@@ -3,6 +3,7 @@ package com.project.mything.item.repository;
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.dto.QItemDto_ResponseSimpleItem;
 import com.project.mything.item.entity.enums.ItemStatus;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +25,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
     }
 
     @Override
-    public Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId, Pageable pageable) {
+    public Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId, Boolean isFriend, Pageable pageable) {
         List<ItemDto.ResponseSimpleItem> result = queryFactory.select(new QItemDto_ResponseSimpleItem(
                         itemUser.item.id,
                         itemUser.item.title,
@@ -36,9 +37,10 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                         itemUser.createdAt,
                         itemUser.lastModifiedAt))
                 .from(itemUser)
-                .where(itemUser.user.id.eq(userId).and(
-                        itemUser.itemStatus.eq(ItemStatus.POST)
-                                .or(itemUser.itemStatus.eq(ItemStatus.RESERVE))))
+                .where(itemUser.user.id.eq(userId)
+                                .and(itemUser.itemStatus.eq(ItemStatus.POST)
+                                .or(itemUser.itemStatus.eq(ItemStatus.RESERVE)))
+                ,userOrFriend(isFriend))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(itemUser.interestedItem.desc(),itemUser.createdAt.desc())
@@ -53,5 +55,9 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
 
 
         return new PageImpl<>(result, pageable, count);
+    }
+
+    private BooleanExpression userOrFriend(Boolean isFriend) {
+        return isFriend ? itemUser.secretItem.eq(false) : null;
     }
 }
