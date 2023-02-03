@@ -12,11 +12,10 @@ struct BirthdayListView: View {
     List {
       ForEach((0...10), id: \.self) { index in
         NavigationLink {
-          FriendListView()
+          MyWishListView()
         }
       label: {
         FriendCell()
-          .frame(width: .infinity, height: 50)
       }
       }
     }

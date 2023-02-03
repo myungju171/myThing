@@ -14,7 +14,7 @@ struct FriendListView: View {
         header: Text("생일인 친구")
       ) {
         NavigationLink {
-          FriendListView()
+          BirthdayListView()
         } label: {
           Text("생일인 친구를 확인해봐요!")
         }
@@ -25,7 +25,6 @@ struct FriendListView: View {
         }
       label: {
         FriendCell()
-          .frame(width: .infinity, height: 50)
       }
       }
     }
