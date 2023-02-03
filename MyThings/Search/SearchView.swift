@@ -7,14 +7,20 @@
 import SwiftUI
 import Combine
 
-struct ContentoneView: View {
-  @ObservedObject private var viewModel = SearchViewModel(network: NetworkService(configuration: .default))
+struct SearchView: View {
+  @State var searchQuery = ""
+  @StateObject private var viewModel = SearchViewModel(network: NetworkService(configuration: .default))
+  
+  func decimalWon(value: Int) -> String {
+          let numberFormatter = NumberFormatter()
+          numberFormatter.numberStyle = .decimal
+          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
+          
+          return result
+      }
   var body: some View {
     NavigationView{
       VStack {
-        SearchBar(searchLabel: $viewModel.searchTerm,
-                  onSearchButtonClicked: viewModel.onSearchTapped)
-        .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
         List(viewModel.items, id: \.title) { item in
           NavigationLink {
             SearchItemDetailView(model: item)
@@ -22,28 +28,36 @@ struct ContentoneView: View {
             HStack {
               AsyncImage(url: URL(string: item.image), content: { image in
                 image.resizable()
-              }, placeholder: {Color.gray})
+              }, placeholder: {
+                Image("deep")
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width: 100, height: 100)
+              })
               .aspectRatio(contentMode: .fit)
               .frame(width: 100, height: 100)
+              .cornerRadius(10)
               VStack(alignment: .leading, spacing: 10) {
-                Text(item.title)
+                Text(item.title.replacingOccurrences(of: "<b>", with: "").replacingOccurrences(of: "</b>", with: ""))
                   .fontWeight(.bold)
                 HStack(spacing: 0) {
-                  Text(item.lprice)
-                  Text("원")
+                  Text(decimalWon(value: Int(item.lprice)!))
                 }
               }
               .padding()
             }
           }
+          .listRowSeparator(.hidden)
         }
       }
     }
+    .searchable(text: $searchQuery)
+    .onSubmit(of: .search) {
+      viewModel.search(searchText: searchQuery)
+    }
   }
 }
-
 struct ContentViewone_Previews: PreviewProvider {
   static var previews: some View {
-    ContentoneView()
+    SearchView()
   }
 }
