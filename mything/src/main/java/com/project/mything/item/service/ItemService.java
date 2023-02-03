@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,18 +49,29 @@ public class ItemService {
         Item dbItem =
                 saveItemFromDto(requestSaveItem);
 
+        buildItemUserAndSave(dbUser, dbItem);
+
+        return itemMapper.toResponseItemId(dbItem.getId());
+    }
+
+    private void buildItemUserAndSave(User dbUser, Item dbItem) {
         ItemUser itemUser = ItemUser.builder()
                 .user(dbUser)
                 .item(dbItem)
                 .build()
                 .addItemUser();
         itemUserRepository.save(itemUser);
-
-        return itemMapper.toResponseItemId(dbItem.getId());
     }
 
     @NotNull
     private Item saveItemFromDto(ItemDto.RequestSaveItem requestSaveItem) {
+
+        Optional<Item> dbItem =
+                itemRepository.findItemByProductId(requestSaveItem.getProductId());
+        if (dbItem.isPresent()) {
+            return dbItem.get();
+        }
+
         Item item = itemMapper.toItem(requestSaveItem);
         return itemRepository.save(item);
     }
