@@ -12,6 +12,13 @@ struct SearchItemDetailView: View {
   @EnvironmentObject var viewModel: MyWishListViewModel
   @State var manager = Network()
   @State private var showing = false
+  func decimalWon(value: Int) -> String {
+          let numberFormatter = NumberFormatter()
+          numberFormatter.numberStyle = .decimal
+          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
+          
+          return result
+      }
   var body : some View {
     ScrollView(Axis.Set.vertical, showsIndicators: true) {
       VStack(alignment: .leading, spacing: 10) {
@@ -24,8 +31,7 @@ struct SearchItemDetailView: View {
           .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
           .font(.system(size: 20, weight: .bold))
         HStack(spacing:0) {
-          Text(String(model.lprice))
-          Text("원")
+          Text(decimalWon(value: Int(model.lprice) ?? 0))
         }
         .font(.system(size: 20, weight: .bold))
         .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))

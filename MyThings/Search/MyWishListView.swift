@@ -9,37 +9,43 @@ import SwiftUI
 import Combine
 
 struct MyWishListView: View {
-  @ObservedObject var viewModel = MyWishListViewModel(network: NetworkService(configuration: .default))
+  @EnvironmentObject var viewModel: MyWishListViewModel
+  func decimalWon(value: Int) -> String {
+          let numberFormatter = NumberFormatter()
+          numberFormatter.numberStyle = .decimal
+          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
+          
+          return result
+      }
   var body: some View {
     List(viewModel.items, id: \.title) { item in
       NavigationLink {
         WishListDetailView(viewModel: WishListDetailViewModel(network: NetworkService(configuration: .default), itemId: item.itemId, userId: 1), itemId: item.itemId, userId: 1)
-      } label: {
-        HStack {
-          AsyncImage(url: URL(string: item.image), content: { image in
-            image.resizable()
-          }, placeholder: {Color.gray})
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 100, height: 100)
-          VStack(alignment: .leading, spacing: 10) {
-            Text(item.title)
-              .fontWeight(.bold)
-            HStack(spacing: 0) {
-              Text(String(item.price))
-              Text("원")
-            }
-            Image(systemName: item.interestedItem ? "heart.fill" : "heart")
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(width: 30)
-              .foregroundColor(item.interestedItem ? .red : .gray)
-              .padding()
+      }
+    label: {
+      HStack {
+        AsyncImage(url: URL(string: item.image), content: { image in
+          image.resizable()
+        }, placeholder: {Color.gray})
+        .aspectRatio(contentMode: .fit)
+        .frame(width: 100, height: 100)
+        VStack(alignment: .leading, spacing: 10) {
+          Text((item.title).replacingOccurrences(of: "<b>", with: "").replacingOccurrences(of: "</b>", with: ""))
+            .fontWeight(.bold)
+          HStack(spacing: 0) {
+            Text(decimalWon(value: item.price))
           }
-          .padding()
+          Image(systemName: item.interestedItem ? "heart.fill" : "heart")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 30)
+            .foregroundColor(item.interestedItem ? .red : .gray)
+            .padding()
         }
+        .padding()
       }
     }
-    //            .navigationTitle("뉴스 둘러보기")
+    }
   }
 }
 
