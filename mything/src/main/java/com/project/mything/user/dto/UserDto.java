@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 
 public class UserDto {
 
@@ -45,4 +46,18 @@ public class UserDto {
         private Long userId;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseDetailUser {
+        private Long userId;
+        private String name;
+        private String phone;
+        private LocalDate birthDay;
+        private String infoMessage;
+        private Long avatarId;
+        private String image;
+    }
+    
 }
