@@ -8,5 +8,6 @@
 import Foundation
 
 enum Endpoint {
-  static let baseURL = "https://433c-183-98-186-73.jp.ngrok.io"
+//    static let baseURL = "https://f285-49-172-251-241.jp.ngrok.io"
+  static let baseURL =  "http://ec2-13-125-113-82.ap-northeast-2.compute.amazonaws.com:8000"
 }

@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 
 final class WishListDetailViewModel: ObservableObject {
-  @Published var item: [WishListDetailModel] = []
+  @Published var item: WishListDetailModel?
   private var disposeBag = Set<AnyCancellable>()
   var itemId: Int?
   var userId: Int?
@@ -20,7 +20,7 @@ final class WishListDetailViewModel: ObservableObject {
     self.getWishListDetail(itemId: itemId, userId: userId)
   }
   func getWishListDetail(itemId: Int, userId: Int) {
-    let resource: Resource<WishListDetailModel> = Resource(
+    let resource: Resource<WishListDetailModel?> = Resource(
       base: Endpoint.baseURL,
       path: "/items/\(itemId)/users/\(userId)",
       params: [:],
@@ -28,8 +28,8 @@ final class WishListDetailViewModel: ObservableObject {
     )
     return network.load(resource)
       .print()
-      .map { [$0] }
-      .replaceError(with: [])
+      .map { $0 }
+      .replaceError(with: WishListDetailModel(itemId: 1, title: "", price: 0, link: "", image: "", interestedItem: false, secretItem: false, itemStatus: ""))
       .receive(on: DispatchQueue.main)
       .assign(to: \.item, on: self)
       .store(in: &disposeBag)

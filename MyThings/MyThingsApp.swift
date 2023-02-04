@@ -13,7 +13,7 @@ struct MyThingsApp: App {
   
   var body: some Scene {
     WindowGroup {
-      FirstInitView()
+      FirstInitView().environmentObject(MyWishListViewModel(network: NetworkService(configuration: .default)))
         .environment(\.managedObjectContext, persistenceController.container.viewContext)
     }
   }

@@ -9,12 +9,12 @@ import Foundation
 import Combine
 
 class Network: ObservableObject {
-  var didChange = PassthroughSubject<Network, Never>()
-  var formCompleted = false {
-    didSet {
-      didChange.send(self)
-    }
-  }
+//  var didChange = PassthroughSubject<Network, Never>()
+//  var formCompleted = false {
+//    didSet {
+//      didChange.send(self)
+//    }
+//  }
   func checkDetails(userId: Int, productId: Int, title: String, link: String, image: String, price: Int) {
     let body: [String: Any] = ["userId": userId, "productId": productId, "title": title, "link": link, "image": image, "price": price]
     let jsonData = try? JSONSerialization.data(withJSONObject: body)
@@ -25,7 +25,6 @@ class Network: ObservableObject {
     request.httpBody = jsonData
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
       guard let data = data, error == nil else {
-        print(error?.localizedDescription ?? "No data")
         return
       }
       let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
