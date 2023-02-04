@@ -31,7 +31,7 @@ struct SearchItemDetailView: View {
           .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))
           .font(.system(size: 20, weight: .bold))
         HStack(spacing:0) {
-          Text(decimalWon(value: Int(model.lprice) ?? 0))
+          Text(model.lprice.decimalWon())
         }
         .font(.system(size: 20, weight: .bold))
         .padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 0))

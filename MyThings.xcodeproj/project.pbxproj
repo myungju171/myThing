@@ -37,7 +37,7 @@
 		AE3B12C829792FFD00111B19 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C729792FFD00111B19 /* FriendCell.swift */; };
 		AE3B12CA297A7B4200111B19 /* MyWishListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12C9297A7B4200111B19 /* MyWishListView.swift */; };
 		AE3B12CE297A7CA700111B19 /* FirstInitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12CD297A7CA700111B19 /* FirstInitView.swift */; };
-		AE47BFBC298CF10900B343BC /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE47BFBB298CF10900B343BC /* SearchCell.swift */; };
+		AE7E9F26298D822D0070EE5B /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7E9F25298D822D0070EE5B /* Int+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,8 +72,8 @@
 		AE3B12C729792FFD00111B19 /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 		AE3B12C9297A7B4200111B19 /* MyWishListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWishListView.swift; sourceTree = "<group>"; };
 		AE3B12CD297A7CA700111B19 /* FirstInitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstInitView.swift; sourceTree = "<group>"; };
-		AE47BFBB298CF10900B343BC /* SearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
 		AE6A5B5F2985816F0027329F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AE7E9F25298D822D0070EE5B /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +120,8 @@
 		AE07B549297FDFB900EA6530 /* Search */ = {
 			isa = PBXGroup;
 			children = (
-				AE47BFBB298CF10900B343BC /* SearchCell.swift */,
 				AE07B51B297ABF6000EA6530 /* SearchView.swift */,
+				AE7E9F25298D822D0070EE5B /* Int+Extension.swift */,
 				AE07B534297BD8C200EA6530 /* SearchViewModel.swift */,
 				AE3B12C52974416200111B19 /* SearchItemDetailView.swift */,
 				AE07B522297BC5AA00EA6530 /* SearchModel.swift */,
@@ -302,12 +302,12 @@
 				AE07B527297BC6A700EA6530 /* NetworkService.swift in Sources */,
 				AE3B12CA297A7B4200111B19 /* MyWishListView.swift in Sources */,
 				AE07B52C297BC90B00EA6530 /* Publisher+Utils.swift in Sources */,
-				AE47BFBC298CF10900B343BC /* SearchCell.swift in Sources */,
 				AE3B12C22974380A00111B19 /* ChattingView.swift in Sources */,
 				AE07B543297EC7E900EA6530 /* WishListDetailView.swift in Sources */,
 				AE07B52F297BC9BB00EA6530 /* NetworkError.swift in Sources */,
 				AE3B12AE29732A0100111B19 /* Persistence.swift in Sources */,
 				AE07B529297BC6C900EA6530 /* Resource.swift in Sources */,
+				AE7E9F26298D822D0070EE5B /* Int+Extension.swift in Sources */,
 				AE07B545297EC86F00EA6530 /* WishListDetailModel.swift in Sources */,
 				AE0E1217298AC439009DABC5 /* MyPageMainView.swift in Sources */,
 				AE3B12C02974352500111B19 /* FriendListView.swift in Sources */,
