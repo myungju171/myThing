@@ -3,7 +3,6 @@ package com.project.mything.user.controller;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -39,4 +38,11 @@ public class UserController {
     public void deleteAvatar(@RequestBody UserDto.RequestUserId requestUserId) {
         userService.deleteAvatar(requestUserId.getUserId());
     }
+
+    @GetMapping("/{user-id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto.ResponseDetailUser getUserInfo(@PathVariable("user-id") Long userId) {
+        return userService.getUserInfo(userId);
+    }
+
 }

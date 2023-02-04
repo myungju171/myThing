@@ -20,4 +20,9 @@ public interface UserMapper {
     @Mapping(source = "dbUser.avatar.id", target = "avatarId")
     @Mapping(source = "dbUser.avatar.remotePath", target = "remotePath")
     UserDto.ResponseImageURl toResponseImageUrl(User dbUser);
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.avatar.id", target = "avatarId")
+    @Mapping(source = "user.avatar.remotePath", target = "image")
+    UserDto.ResponseDetailUser toResponseDetailUser(User user);
 }
