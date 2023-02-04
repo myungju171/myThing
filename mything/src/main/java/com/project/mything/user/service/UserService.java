@@ -82,4 +82,10 @@ public class UserService {
         return userRepository.findUserWithItemUserByPhone(phone)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
     }
+
+    public UserDto.ResponseDetailUser getUserInfo(Long userId) {
+        User dbUser = findUserWithAvatar(userId);
+        return userMapper.toResponseDetailUser(dbUser);
+    }
+
 }
