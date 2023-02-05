@@ -49,7 +49,7 @@ public class UserService {
     private User uploadImage(MultipartFile multipartFile, Long userId) {
         User dbUser = findUserWithAvatar(userId);
         try {
-            if (!multipartFile.isEmpty()) {
+            if (multipartFile != null) {
                 Avatar dbAvatar = avatarService.getDbAvatar(multipartFile, dbUser);
                 return dbAvatar.getUser();
             }
