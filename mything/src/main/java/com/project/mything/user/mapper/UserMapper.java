@@ -1,6 +1,7 @@
 package com.project.mything.user.mapper;
 
 import com.project.mything.user.dto.UserDto;
+import com.project.mything.user.entity.Avatar;
 import com.project.mything.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,7 +23,7 @@ public interface UserMapper {
     UserDto.ResponseImageURl toResponseImageUrl(User dbUser);
 
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "user.avatar.id", target = "avatarId")
-    @Mapping(source = "user.avatar.remotePath", target = "image")
-    UserDto.ResponseDetailUser toResponseDetailUser(User user);
+    @Mapping(source = "avatar.id", target = "avatarId")
+    @Mapping(source = "avatar.remotePath", target = "image")
+    UserDto.ResponseDetailUser toResponseDetailUser(User user, Avatar avatar);
 }

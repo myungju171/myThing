@@ -36,7 +36,8 @@ public class User extends BaseTime {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    private String infoMessage;
+    @Builder.Default
+    private String infoMessage = "";
 
     @Enumerated(EnumType.STRING)
     private UserEmoji userEmoji;
