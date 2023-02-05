@@ -46,7 +46,7 @@ jobs:
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
-          cloud.aws.s3.region.static: ${{ secrets.AWS_REGION }}
+          cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           
           nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
           nurigo.secret: ${{ secrets.NURIGO_SECRET }}
