@@ -23,7 +23,8 @@ public class UserDto {
     public static class ResponseSimpleUser {
         private Long userId;
         private String name;
-        private String image;
+        @Builder.Default
+        private String image = "";
     }
 
     @Getter
@@ -33,7 +34,8 @@ public class UserDto {
     public static class ResponseImageURl {
         private Long userId;
         private Long avatarId;
-        private String remotePath;
+        @Builder.Default
+        private String remotePath = "";
     }
 
     @Getter

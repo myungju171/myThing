@@ -85,7 +85,21 @@ public class UserService {
 
     public UserDto.ResponseDetailUser getUserInfo(Long userId) {
         User dbUser = findUserWithAvatar(userId);
-        return userMapper.toResponseDetailUser(dbUser);
+
+        Avatar avatar = getAvatar(dbUser);
+
+        return userMapper.toResponseDetailUser(dbUser, avatar);
+    }
+
+    private Avatar getAvatar(User dbUser) {
+        Avatar avatar = dbUser.getAvatar();
+        if (avatar == null) {
+            avatar = Avatar.builder()
+                    .id(0L)
+                    .remotePath("")
+                    .build();
+        }
+        return avatar;
     }
 
 }
