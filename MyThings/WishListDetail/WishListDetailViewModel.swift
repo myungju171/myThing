@@ -10,17 +10,14 @@ import Combine
 import SwiftUI
 
 final class WishListDetailViewModel: ObservableObject {
-  @Published var item: WishListDetailModel?
+  @Published var item: WishListDetailModel = WishListDetailModel(itemId: 1, title: "", price: 0, link: "", image: "", interestedItem: false, secretItem: false, itemStatus: "")
   private var disposeBag = Set<AnyCancellable>()
-  var itemId: Int?
-  var userId: Int?
-  let network: NetworkService
-  init(network: NetworkService, itemId: Int, userId: Int) {
+  var network: NetworkService
+  init(network: NetworkService) {
     self.network = network
-    self.getWishListDetail(itemId: itemId, userId: userId)
   }
   func getWishListDetail(itemId: Int, userId: Int) {
-    let resource: Resource<WishListDetailModel?> = Resource(
+    let resource: Resource<WishListDetailModel> = Resource(
       base: Endpoint.baseURL,
       path: "/items/\(itemId)/users/\(userId)",
       params: [:],

@@ -14,7 +14,6 @@ final class MyWishListViewModel: ObservableObject {
   let network: NetworkService
   init(network: NetworkService) {
     self.network = network
-    self.getWishList(userId: 1, start: "1", size: "10")
   }
   func getWishList(userId: Int, start: String, size: String) {
     let resource: Resource<UserWishListModel> = Resource(
