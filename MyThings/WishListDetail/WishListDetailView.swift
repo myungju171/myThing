@@ -45,7 +45,7 @@ struct WishListDetailView: View {
         Spacer()
         HStack {
           Button {
-            self.manager.changeInterestStatus(userId: 1, itemId: viewModel.item.itemId)
+            self.viewModel.changeInterestStatus(userId: 1, itemId: viewModel.item.itemId)
             self.viewModel.getWishListDetail(itemId: 1, userId: 1)
             print("cli>>> \(viewModel.item.interestedItem)")
           } label: {
@@ -65,11 +65,10 @@ struct WishListDetailView: View {
           .background(.blue)
           .cornerRadius(10)
           Button {
-//            viewModel.getWishListDetail()
             if viewModel.item.itemStatus != "BOUGHT" {
-              self.manager.changeItemStatus(userId: 1, itemId: viewModel.item.itemId, itemStatus: "BOUGHT")
+              self.viewModel.changeItemStatus(userId: 1, itemId: viewModel.item.itemId, itemStatus: "BOUGHT")
             } else if viewModel.item.itemStatus != "RESERVE" {
-              self.manager.changeItemStatus(userId: 1, itemId: viewModel.item.itemId, itemStatus: "RECEIVED")
+              self.viewModel.changeItemStatus(userId: 1, itemId: viewModel.item.itemId, itemStatus: "RECEIVED")
             }
           } label: {
             Text("상품 구매하기")
