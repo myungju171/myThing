@@ -10,7 +10,6 @@ import Combine
 struct SearchView: View {
   @State var searchQuery = ""
   @StateObject private var viewModel = SearchViewModel(network: NetworkService(configuration: .default))
-  
   var body: some View {
     NavigationView{
       VStack {

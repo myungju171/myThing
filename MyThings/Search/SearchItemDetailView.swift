@@ -10,15 +10,16 @@ import SwiftUI
 struct SearchItemDetailView: View {
   var model: SearchItem
   @EnvironmentObject var viewModel: MyWishListViewModel
-  @State var manager = Network()
+  @ObservedObject var searchItemDetailViewModel = SearchItemDetailViewModel()
+//  @State var manager = Network()
   @State private var showing = false
   func decimalWon(value: Int) -> String {
-          let numberFormatter = NumberFormatter()
-          numberFormatter.numberStyle = .decimal
-          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
-          
-          return result
-      }
+    let numberFormatter = NumberFormatter()
+    numberFormatter.numberStyle = .decimal
+    let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
+    
+    return result
+  }
   var body : some View {
     ScrollView(Axis.Set.vertical, showsIndicators: true) {
       VStack(alignment: .leading, spacing: 10) {
@@ -51,7 +52,7 @@ struct SearchItemDetailView: View {
             Text("위시리스트에 담기")
           }
           .alert(isPresented: $showing) {
-            let defaultButton = Alert.Button.default(Text("담기")) {             self.manager.checkDetails(userId: 1, productId: Int(model.productId)!, title: model.title, link: model.link, image: model.image, price: Int( model.lprice)!)
+            let defaultButton = Alert.Button.default(Text("담기")) {  self.searchItemDetailViewModel.registerProduct(userId: 1, productId: Int(model.productId)!, title: model.title, link: model.link, image: model.image, price: Int( model.lprice)!)
             }
             let cancelButton = Alert.Button.cancel(Text("취소"))
             return Alert(title: Text("위시리스트에 담으시겠어요?"), message: Text(""), primaryButton: defaultButton, secondaryButton: cancelButton)

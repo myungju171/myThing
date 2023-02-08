@@ -23,6 +23,7 @@
 		AE07B54E298026AA00EA6530 /* DataPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B54D298026AA00EA6530 /* DataPatch.swift */; };
 		AE07B55029838AD600EA6530 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE07B54F29838AD600EA6530 /* Endpoint.swift */; };
 		AE0E1217298AC439009DABC5 /* MyPageMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0E1216298AC439009DABC5 /* MyPageMainView.swift */; };
+		AE2468362993948000A3E351 /* SearchItemDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2468352993948000A3E351 /* SearchItemDetailViewModel.swift */; };
 		AE3B12A5297329FF00111B19 /* MyThingsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A4297329FF00111B19 /* MyThingsApp.swift */; };
 		AE3B12A7297329FF00111B19 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B12A6297329FF00111B19 /* MainTabView.swift */; };
 		AE3B12A929732A0100111B19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE3B12A829732A0100111B19 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		AE07B54D298026AA00EA6530 /* DataPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPatch.swift; sourceTree = "<group>"; };
 		AE07B54F29838AD600EA6530 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		AE0E1216298AC439009DABC5 /* MyPageMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageMainView.swift; sourceTree = "<group>"; };
+		AE2468352993948000A3E351 /* SearchItemDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchItemDetailViewModel.swift; sourceTree = "<group>"; };
 		AE3B12A1297329FF00111B19 /* MyThings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyThings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE3B12A4297329FF00111B19 /* MyThingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyThingsApp.swift; sourceTree = "<group>"; };
 		AE3B12A6297329FF00111B19 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				AE7E9F25298D822D0070EE5B /* Int+Extension.swift */,
 				AE07B534297BD8C200EA6530 /* SearchViewModel.swift */,
 				AE3B12C52974416200111B19 /* SearchItemDetailView.swift */,
+				AE2468352993948000A3E351 /* SearchItemDetailViewModel.swift */,
 				AE07B522297BC5AA00EA6530 /* SearchModel.swift */,
 			);
 			path = Search;
@@ -293,6 +296,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE2468362993948000A3E351 /* SearchItemDetailViewModel.swift in Sources */,
 				AE3B12B129732A0100111B19 /* MyThings.xcdatamodeld in Sources */,
 				AE3B12CE297A7CA700111B19 /* FirstInitView.swift in Sources */,
 				AE3B12C62974416200111B19 /* SearchItemDetailView.swift in Sources */,
