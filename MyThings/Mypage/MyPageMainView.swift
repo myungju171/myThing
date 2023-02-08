@@ -8,40 +8,47 @@
 import SwiftUI
 
 struct MyPageMainView: View {
+  @ObservedObject var viewModel = MypageEditViewModel(network: NetworkService(configuration: .default), userId: 1)
   var body: some View {
     VStack(alignment: .leading, spacing: 20) {
       HStack(alignment: .top, spacing: 30) {
-        Image(systemName: "heart.fill")
-          .resizable()
-          .frame(width: 100, height: 100)
+        AsyncImage(url: URL(string: viewModel.item?.image ?? ""), content: { image in
+          image.resizable()
+        }, placeholder: {Color.gray})
+        .cornerRadius(100)
+        .frame(width: 100, height: 100)
         VStack(alignment: .leading) {
-          Text("jelllly")
+          Text(viewModel.item?.name ?? "")
             .font(.title)
-          Text("birrrttthday")
+          Text(viewModel.item?.birthDay ?? "")
             .font(.title2)
-          Text("wlwrmrno rweridfsfsdfsdfdsf")
+          Text(viewModel.item?.infoMessage ?? "")
             .lineLimit(1)
             .font(.title2)
         }
         Spacer()
       }
       .padding(50)
-        NavigationLink {
-          MyPageEditView()
-        } label: {
-          Text("내 정보 수정하기")
-            .font(.title)
-            .foregroundColor(.black)
-          Spacer()
-          Image(systemName: "chevron.right")
-            .padding(30)
-        }.padding(30)
+      NavigationLink {
+        MyPageEditView(model: viewModel.item)
+      } label: {
+        Text("내 정보 수정하기")
+          .font(.title)
+          .foregroundColor(.black)
+        Spacer()
+        Image(systemName: "chevron.right")
+          .padding(30)
+      }.padding(30)
       Spacer()
+    }
+    .onAppear {
+      print("onappear")
+      viewModel.search(userId: 1)
     }
   }
 }
-struct MyPageEditView_Previews: PreviewProvider {
-  static var previews: some View {
-    MyPageMainView()
-  }
-}
+//struct MyPageEditView_Previews: PreviewProvider {
+//  static var previews: some View {
+//    MyPageMainView()
+//  }
+//}

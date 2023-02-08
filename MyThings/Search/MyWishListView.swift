@@ -10,17 +10,10 @@ import Combine
 
 struct MyWishListView: View {
   @EnvironmentObject var viewModel: MyWishListViewModel
-  func decimalWon(value: Int) -> String {
-          let numberFormatter = NumberFormatter()
-          numberFormatter.numberStyle = .decimal
-          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
-          
-          return result
-      }
   var body: some View {
     List(viewModel.items, id: \.title) { item in
       NavigationLink {
-        WishListDetailView(viewModel: WishListDetailViewModel(network: NetworkService(configuration: .default), itemId: item.itemId, userId: 1), itemId: item.itemId, userId: 1)
+        WishListDetailView(viewModel: WishListDetailViewModel(network: NetworkService(configuration: .default)), itemId: item.itemId, userId: 1)
       }
     label: {
       HStack {
@@ -33,7 +26,7 @@ struct MyWishListView: View {
           Text((item.title).replacingOccurrences(of: "<b>", with: "").replacingOccurrences(of: "</b>", with: ""))
             .fontWeight(.bold)
           HStack(spacing: 0) {
-            Text(decimalWon(value: item.price))
+            Text(item.price.description.decimalWon())
           }
           Image(systemName: item.interestedItem ? "heart.fill" : "heart")
             .resizable()
@@ -46,15 +39,16 @@ struct MyWishListView: View {
       }
     }
     }
+    .onAppear {
+      viewModel.getWishList(userId: 1, start: "1", size: "10")
+    }
   }
 }
-
 struct MyWishListView_Previews: PreviewProvider {
   static var previews: some View {
     MyWishListView()
   }
 }
-
 struct MyWishCell: View {
   var body: some View {
     HStack {

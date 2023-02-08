@@ -12,7 +12,6 @@ struct UserWishListModel: Codable {
   var user: User
   var pageInfo: PageInfo
 }
-
 struct UserItem: Codable {
   var itemId : Int
   var title : String
@@ -24,13 +23,11 @@ struct UserItem: Codable {
   var createdAt : String
   var lastModifiedAt : String
 }
-
 struct User: Codable {
   var userId: Int
   var name: String
   var image: String?
 }
-
 struct PageInfo: Codable {
   var page: Int
   var size: Int

@@ -37,6 +37,7 @@ struct FirstInitView: View {
         }
         Spacer()
       }
+      .navigationBarHidden(true)
     }
   }
 }

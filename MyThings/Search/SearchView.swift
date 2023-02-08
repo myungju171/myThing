@@ -10,14 +10,6 @@ import Combine
 struct SearchView: View {
   @State var searchQuery = ""
   @StateObject private var viewModel = SearchViewModel(network: NetworkService(configuration: .default))
-  
-  func decimalWon(value: Int) -> String {
-          let numberFormatter = NumberFormatter()
-          numberFormatter.numberStyle = .decimal
-          let result = numberFormatter.string(from: NSNumber(value: value))! + "원"
-          
-          return result
-      }
   var body: some View {
     NavigationView{
       VStack {
@@ -40,7 +32,7 @@ struct SearchView: View {
                 Text(item.title.replacingOccurrences(of: "<b>", with: "").replacingOccurrences(of: "</b>", with: ""))
                   .fontWeight(.bold)
                 HStack(spacing: 0) {
-                  Text(decimalWon(value: Int(item.lprice)!))
+                  Text(item.lprice.decimalWon())
                 }
               }
               .padding()
