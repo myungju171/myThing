@@ -68,11 +68,11 @@ struct MyPageEditView: View {
       VStack(spacing: 0) {
         if isAppear == true {
           AsyncImage(url: URL(string: model?.image ?? ""), content: { image in
-          image.resizable()
+            image.resizable()
             image.aspectRatio(contentMode: .fit)
-        }, placeholder: {Color.gray})
-        .frame(width: 200, height: 200)
-        .cornerRadius(100)
+          }, placeholder: {Color.gray})
+          .frame(width: 200, height: 200)
+          .cornerRadius(100)
         } else {
           Image(uiImage: image ?? UIImage())
             .aspectRatio(contentMode: .fit)
@@ -102,9 +102,9 @@ struct MyPageEditView: View {
         Text(model?.infoMessage ?? "")
         Spacer()
         Button("수정") {
-          network.addPost(image: image ?? UIImage(), userId: 1, name: nameText, infoMessage: messageText, birthDay: birthDate.dateToStringTime()) {
-                      print("poooost")
-                    }
+          network.editMyInfo(image: image ?? UIImage(), userId: 1, name: nameText, infoMessage: messageText, birthDay: birthDate.dateToStringTime()) {
+            print("poooost")
+          }
         }
         .frame(minWidth: 300, minHeight: 50)
         .foregroundColor(.white)
@@ -125,7 +125,6 @@ struct MyPageEditView: View {
     }
   }
 }
-
 extension Date {
   func dateToStringTime() -> String {
     let formatter = DateFormatter()

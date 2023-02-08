@@ -7,14 +7,10 @@
 
 import Foundation
 import Combine
+import SwiftUI
+import Alamofire
 
 class Network: ObservableObject {
-//  var didChange = PassthroughSubject<Network, Never>()
-//  var formCompleted = false {
-//    didSet {
-//      didChange.send(self)
-//    }
-//  }
   func checkDetails(userId: Int, productId: Int, title: String, link: String, image: String, price: Int) {
     let body: [String: Any] = ["userId": userId, "productId": productId, "title": title, "link": link, "image": image, "price": price]
     let jsonData = try? JSONSerialization.data(withJSONObject: body)
@@ -69,5 +65,42 @@ class Network: ObservableObject {
       }
     }
     task.resume()
+  }
+  func editMyInfo(image: UIImage, userId: Int, name: String, infoMessage: String, birthDay: String, completionHandler: @escaping () -> Void) {
+    let url = "http://ec2-13-125-113-82.ap-northeast-2.compute.amazonaws.com:8000/users/profiles"
+    let header: HTTPHeaders = ["Content-Type": "multipart/form-data"]
+    AF.upload(multipartFormData: { multipartFormData in
+      multipartFormData.append(Data(String(userId).utf8), withName: "userId")
+      multipartFormData.append(Data(name.utf8), withName: "name")
+      multipartFormData.append(Data(infoMessage.utf8), withName: "infoMessage")
+      multipartFormData.append(Data(birthDay.utf8), withName: "birthDay")
+      // Date 처리
+      //          multipartFormData.append(Data(model.time?.toString().utf8 ?? "".utf8), withName: "time")
+      
+      //          for image in images {
+      //              // UIImage 처리
+      //        UIImage(data: image.pngData()!)
+      multipartFormData.append(image.jpegData(compressionQuality: 1) ?? Data(),
+                               withName: "multipartFile",
+                               fileName: "image.jpeg",
+                               mimeType: "image/jpeg")
+      //          }
+      
+      // 배열 처리
+      //          let keywords =  try! JSONSerialization.data(withJSONObject: model.keywords, options: .prettyPrinted)
+      //          multipartFormData.append(keywords, withName: "keywords")
+      
+    }, to: url, method: .post, headers: header)
+    .responseData { response in
+      print(response)
+      guard let statusCode = response.response?.statusCode else { return }
+      switch statusCode {
+      case 200..<300:
+        print("게시물 등록 성공")
+        completionHandler()
+      default:
+        print("게시물 등록 실패")
+      }
+    }
   }
 }
