@@ -55,14 +55,21 @@ jobs:
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
       
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./mything/gradlew
+#       - name: Grant execute permission for gradlew
+#         run: chmod +x ./mything/gradlew
+      - name: Server Build 
+        run: |                          
+          cd mything/                    
+          chmod +x ./gradlew            
+          ./gradlew clean build  
+          cd ..                         
+        shell: bash  
         
-      - name: Build with Gradle clean
-        run: ./mything/gradlew clean
+#       - name: Build with Gradle clean
+#         run: ./mything/gradlew clean
       
-      - name: Build with Gradle build
-        run: ./mything/gradlew build
+#       - name: Build with Gradle build
+#         run: ./mything/gradlew build
         
         # [3] save build
       - name: Make zip file
