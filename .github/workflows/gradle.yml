@@ -58,11 +58,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./mything/gradlew
         
-      - name: Gradle init
-        run: ./mything/gradlew init
+#       - name: Gradle init
+#         run: ./mything/gradlew init
         
       - name: Build with Gradle clean
-        run: ./gradlew clean
+        run: ./mything/gradlew clean
       
 #       - name: Build with Gradle build
 #         run: ./gradlew build
