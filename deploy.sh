@@ -25,15 +25,14 @@ cd $REPOSITORY/$PROJECT_NAME/
 echo "> ll"
 sudo ls -al
 
+# echo "> GRADLE CHMOD 777"
+# sudo chmod 777 ./gradlew
 
-echo "> GRADLE CHMOD 777"
-sudo chmod 777 ./gradlew
+# echo "> GRADLE CLEAN"
+# sudo ./gradlew clean
 
-echo "> GRADLE CLEAN"
-sudo ./gradlew clean
-
-echo "> GRADLE BUILD"
-sudo ./gradlew build
+# echo "> GRADLE BUILD"
+# sudo ./gradlew build
 
 # jar 파일 위치로 이동
 cd build/libs
