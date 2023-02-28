@@ -23,9 +23,7 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
-bootJar {
-	mainClassName = 'com.project.mything.MythingApplication'
-}
+
 configurations {
 	asciidoctorExt
 }
