@@ -59,7 +59,7 @@ jobs:
         run: chmod +x ./mything/gradlew
 
       - name: Build with Gradle clean
-        run: /mything/gradlew clean
+        run: ./mything/gradlew clean
       
 #       - name: Build with Gradle build
 #         run: ./gradlew build
