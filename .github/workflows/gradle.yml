@@ -54,7 +54,9 @@ jobs:
           
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
-          
+      - name: Gradle init
+        run: gradlew init
+        
       - name: Grant execute permission for gradlew
         run: chmod +x ./mything/gradlew
 
