@@ -59,7 +59,7 @@ jobs:
         run: chmod +x gradlew
     
       - name: Build with Gradle
-        run: ./gradlew clean build    
+        run: ./mything/gradlew clean build    
         # [3] save build
       - name: Make zip file
         run: zip -r ./mything.zip .
