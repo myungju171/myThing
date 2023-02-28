@@ -62,7 +62,7 @@ jobs:
         run: ./mything/gradlew clean
       
       - name: Build with Gradle build
-        run: ./gradlew build
+        run: ./mything/gradlew build
         
         # [3] save build
       - name: Make zip file
