@@ -62,7 +62,7 @@ jobs:
         run: ./mything/gradlew init
         
       - name: Build with Gradle clean
-        run: ./mything/gradlew clean
+        run: ./gradlew clean
       
 #       - name: Build with Gradle build
 #         run: ./gradlew build
