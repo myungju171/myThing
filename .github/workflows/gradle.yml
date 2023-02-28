@@ -56,8 +56,8 @@ jobs:
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
           
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-    
+        run: chmod +x ./mything/gradlew
+
       - name: Build with Gradle
         run: ./mything/gradlew clean build    
         # [3] save build
