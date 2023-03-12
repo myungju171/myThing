@@ -4,22 +4,27 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.project.mything.exception.BusinessLogicException;
+import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.config.S3Config;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class S3ServiceImpl implements S3Service {
 
     private final AmazonS3Client amazonS3Client;
     private final S3Config s3Config;
 
     @Override
-    public void uploadImage(MultipartFile multipartFile, String phone) throws IOException {
+    public void uploadImage(MultipartFile multipartFile, String phone)  {
         String originalName = multipartFile.getOriginalFilename();
         long size =  multipartFile.getSize();
 
@@ -27,8 +32,16 @@ public class S3ServiceImpl implements S3Service {
         objectMetaData.setContentType(multipartFile.getContentType());
         objectMetaData.setContentLength(size);
 
+        InputStream inputStream;
+        try {
+            inputStream = multipartFile.getInputStream();
+        } catch (IOException ioException) {
+            throw new BusinessLogicException(ErrorCode.S3_SERVICE_ERROR);
+            //에러로그 전송하기 남기기
+        }
+
         amazonS3Client.putObject(
-                new PutObjectRequest(s3Config.getS3Bucket(), getLocalPath(originalName, phone), multipartFile.getInputStream(), objectMetaData)
+                new PutObjectRequest(s3Config.getS3Bucket(), getLocalPath(originalName, phone), inputStream, objectMetaData)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
     }
 

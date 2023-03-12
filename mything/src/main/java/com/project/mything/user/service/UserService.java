@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 @Service
@@ -48,14 +47,11 @@ public class UserService {
 
     private User uploadImage(MultipartFile multipartFile, Long userId) {
         User dbUser = findUserWithAvatar(userId);
-        try {
-            if (multipartFile != null) {
-                Avatar dbAvatar = avatarService.getDbAvatar(multipartFile, dbUser);
-                return dbAvatar.getUser();
-            }
-        } catch (
-                IOException e) {
-            throw new BusinessLogicException(ErrorCode.S3_SERVICE_ERROR);
+
+        if (multipartFile != null) {
+            Avatar dbAvatar = avatarService.getDbAvatar(multipartFile, dbUser);
+            User originUser = dbAvatar.getUser();
+            return originUser;
         }
         return dbUser;
     }
