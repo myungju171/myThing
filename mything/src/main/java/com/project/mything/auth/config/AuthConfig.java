@@ -1,6 +1,9 @@
 package com.project.mything.auth.config;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,19 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthConfig {
     @Value("${nurigo.public}")
-    private final String publicKey;
+    private String publicKey;
 
     @Value("${nurigo.secret}")
-    private final String secret;
+    private String secret;
 
     @Value("${nurigo.number}")
-    private final String fromNumber;
+    private String fromNumber;
 
-    public AuthConfig(@Value("${nurigo.public}")String publicKey,
-                      @Value("${nurigo.secret}")String secret,
-                      @Value("${nurigo.number}")String fromNumber) {
-        this.publicKey = publicKey;
-        this.secret = secret;
-        this.fromNumber = fromNumber;
-    }
 }
