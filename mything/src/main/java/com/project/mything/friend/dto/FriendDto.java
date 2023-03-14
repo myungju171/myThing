@@ -26,7 +26,7 @@ public class FriendDto {
         private Long userId;
         private String name;
         private String infoMessage;
-        private LocalDate birthDay;
+        private LocalDate birthday;
         private Integer itemCount;
         private Long avatarId;
         private String remotePath;
