@@ -1,7 +1,6 @@
 package com.project.mything.friend.entity;
 
 import com.project.mything.friend.entity.enums.ApplyStatus;
-import com.project.mything.friend.entity.enums.ApplyType;
 import com.project.mything.time.BaseTime;
 import com.project.mything.user.entity.User;
 import lombok.*;
@@ -20,15 +19,15 @@ public class Apply extends BaseTime {
     @Column(name = "apply_id")
     private Long id;
 
-    private Long receiveUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receive_user_id")
+    private User receiveUser;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private ApplyType applyType;
-
-    @Enumerated(EnumType.STRING)
-    private ApplyStatus applyStatus;
+    private ApplyStatus applyStatus = ApplyStatus.SUGGEST;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "send_user_id")
     private User sendUser;
 }
