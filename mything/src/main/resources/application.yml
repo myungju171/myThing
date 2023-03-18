@@ -36,7 +36,9 @@ server:
     encoding:
       charset: UTF-8
       force: true
-  port: ""
+
+jwt:
+  secretKey: ""
 
 cloud:
   aws:
