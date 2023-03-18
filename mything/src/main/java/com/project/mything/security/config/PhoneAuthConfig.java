@@ -1,15 +1,12 @@
-package com.project.mything.security.auth.config;
+package com.project.mything.security.config;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-public class AuthConfig {
+public class PhoneAuthConfig {
     @Value("${nurigo.public}")
     private String publicKey;
 
