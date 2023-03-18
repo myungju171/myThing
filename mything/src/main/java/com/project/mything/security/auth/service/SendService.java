@@ -1,4 +1,4 @@
-package com.project.mything.auth.service;
+package com.project.mything.security.auth.service;
 
 
 import net.nurigo.sdk.message.model.Message;

@@ -1,4 +1,4 @@
-package com.project.mything.auth.entity;
+package com.project.mything.security.auth.entity;
 
 import com.project.mything.time.BaseTime;
 import lombok.*;

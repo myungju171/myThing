@@ -1,4 +1,4 @@
-package com.project.mything.auth.dto;
+package com.project.mything.security.auth.dto;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,14 +15,18 @@ public class PhoneAuthDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RequestJoin {
         @NotBlank
+        private  String email;
+        @NotBlank
         private String name;
+        @NotBlank
+        private String password;
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthDay;
         @NotBlank
         @Size(min = 11, max = 11)
         private String phone;
-        @NotBlank
+
         private String authNumber;
     }
 
@@ -34,5 +38,14 @@ public class PhoneAuthDto {
         @NotBlank
         @Size(min = 11, max = 11)
         private String phone;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestLogin {
+        private String email;
+        private String password;
     }
 }

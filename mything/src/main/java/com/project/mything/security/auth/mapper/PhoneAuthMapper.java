@@ -1,7 +1,7 @@
-package com.project.mything.auth.mapper;
+package com.project.mything.security.auth.mapper;
 
-import com.project.mything.auth.dto.PhoneAuthDto;
-import com.project.mything.auth.entity.PhoneAuth;
+import com.project.mything.security.auth.dto.PhoneAuthDto;
+import com.project.mything.security.auth.entity.PhoneAuth;
 import com.project.mything.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

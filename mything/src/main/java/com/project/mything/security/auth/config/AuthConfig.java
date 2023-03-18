@@ -1,4 +1,4 @@
-package com.project.mything.auth.config;
+package com.project.mything.security.auth.config;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
