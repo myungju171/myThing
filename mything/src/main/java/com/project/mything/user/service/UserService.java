@@ -98,4 +98,12 @@ public class UserService {
         return avatar;
     }
 
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT));
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 }
