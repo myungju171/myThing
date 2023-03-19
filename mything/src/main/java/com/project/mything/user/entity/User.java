@@ -4,6 +4,7 @@ import com.project.mything.friend.entity.Apply;
 import com.project.mything.friend.entity.Friend;
 import com.project.mything.item.entity.ItemUser;
 import com.project.mything.notice.Notice;
+import com.project.mything.auth.service.PasswordService;
 import com.project.mything.time.BaseTime;
 import com.project.mything.user.entity.enums.UserStatus;
 import lombok.*;
@@ -25,6 +26,9 @@ public class User extends BaseTime {
     @Column(name = "user_id")
     private Long id;
 
+    private String email;
+
+    private String password;
     private String name;
 
     private String phone;
@@ -37,6 +41,10 @@ public class User extends BaseTime {
 
     @Builder.Default
     private String infoMessage = "";
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
@@ -70,5 +78,9 @@ public class User extends BaseTime {
 
     public void deleteAvatar() {
         this.avatar = null;
+    }
+
+    public void encodePassword(PasswordService passwordService) {
+        password = passwordService.encodePassword(password);
     }
 }
