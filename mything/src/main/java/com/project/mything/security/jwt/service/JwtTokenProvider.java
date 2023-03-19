@@ -3,7 +3,9 @@ package com.project.mything.security.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.project.mything.security.jwt.exception.ExpiredTokenException;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +16,11 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtTokenProvider implements JwtParseToken{
     @Value("${jwt.secretKey}")
     private String secretKey;
 
@@ -70,6 +73,16 @@ public class JwtTokenProvider {
 
     private String extractToken(String jwtToken) {
         return jwtToken.replace("Bearer ", "");
+    }
+
+    @Override
+    public UserDto.UserInfo getUserInfo(String token) {
+        Map<String, Claim> claims = JWT.decode(extractToken(token)).getClaims();
+        return UserDto.UserInfo.builder()
+                .userId(claims.get("id").asLong())
+                .email(claims.get("email").asString())
+                .name(claims.get("name").asString())
+                .build();
     }
 
 }
