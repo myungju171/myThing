@@ -1,4 +1,4 @@
-package com.project.mything.security.config;
+package com.project.mything.auth.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

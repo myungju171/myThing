@@ -2,19 +2,21 @@ package com.project.mything.redis.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
+@Repository
 @RequiredArgsConstructor
 public class RedisRepositoryImpl implements RedisRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public boolean saveData(String key, String value, Long expire) {
-            redisTemplate.opsForValue().set(key, value, expire, TimeUnit.MILLISECONDS);
-            return true;
+        redisTemplate.opsForValue().set(key, value, expire, TimeUnit.MILLISECONDS);
+        return true;
     }
 
     @Override

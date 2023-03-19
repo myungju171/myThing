@@ -25,7 +25,7 @@ public class CustomDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(() -> RoleName.ROLE_USER.getName());
+        authorities.add(RoleName.ROLE_USER::getName);
         return authorities;
     }
 

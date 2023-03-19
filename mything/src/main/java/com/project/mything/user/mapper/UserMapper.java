@@ -11,9 +11,6 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     @Mapping(source = "user.id", target = "userId")
-    UserDto.ResponseUserId toResponseUserId(User user);
-
-    @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.avatar.remotePath", target = "image")
     UserDto.ResponseSimpleUser toResponseSimpleUser(User user);
 
