@@ -10,14 +10,6 @@ public class UserDto {
 
     @Getter
     @Builder
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ResponseUserId {
-        private Long userId;
-    }
-
-    @Getter
-    @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseSimpleUser {
