@@ -9,8 +9,8 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    NO_MATCH_AUTH_NUMBER(NOT_FOUND),
-    NO_MATCH_PHONE_NUMBER(NOT_FOUND),
+    NO_MATCH_AUTH_NUMBER(CONFLICT),
+    NO_MATCH_PHONE_NUMBER(CONFLICT),
     INVALID_PHONE_NUMBER(BAD_REQUEST),
     USER_NOT_FOUND(NOT_FOUND),
     ITEM_EXISTS(CONFLICT),
@@ -28,8 +28,9 @@ public enum ErrorCode {
     Apply_STATUS_REJECT(CONFLICT),
     ITEM_STATUS_CONFLICT(CONFLICT),
     JWT_UNAUTHORIZED(UNAUTHORIZED),
+    NO_CORRECT_ACCOUN러T(CONFLICT),;
 
-    ;
+
 
     private HttpStatus httpStatus;
 
