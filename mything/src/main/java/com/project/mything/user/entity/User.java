@@ -6,6 +6,7 @@ import com.project.mything.item.entity.ItemUser;
 import com.project.mything.notice.Notice;
 import com.project.mything.auth.service.PasswordService;
 import com.project.mything.time.BaseTime;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.enums.UserStatus;
 import lombok.*;
 
@@ -47,8 +48,8 @@ public class User extends BaseTime {
     private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id")
-    private Avatar avatar;
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
@@ -66,21 +67,25 @@ public class User extends BaseTime {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ItemUser> itemUserList = new ArrayList<>();
 
-    public void editProfile(String userName, String userInfoMessage, LocalDate userBirthDay) {
-        name = userName;
-        infoMessage = userInfoMessage;
-        birthday = userBirthDay;
+    public void editProfile(UserDto.RequestEditProFile requestEditProFile) {
+        name = requestEditProFile.getName();
+        infoMessage = requestEditProFile.getInfoMessage();
+        birthday = requestEditProFile.getBirthday();
     }
 
-    public void addAvatar(Avatar avatar) {
-        this.avatar = avatar;
+    public void addImage(Image image) {
+        this.image = image;
     }
 
-    public void deleteAvatar() {
-        this.avatar = null;
+    public void deleteImage() {
+        this.image = null;
     }
 
     public void encodePassword(PasswordService passwordService) {
         password = passwordService.encodePassword(password);
+    }
+
+    public void removeImage() {
+        this.image = null;
     }
 }
