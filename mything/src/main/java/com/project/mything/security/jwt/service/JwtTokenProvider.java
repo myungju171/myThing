@@ -1,13 +1,11 @@
-package com.project.mything.security.jwt.util;
+package com.project.mything.security.jwt.service;
 
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.project.mything.security.jwt.service.CustomDetailsService;
+import com.project.mything.security.jwt.exception.ExpiredTokenException;
 import com.project.mything.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,10 +15,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-
-@RequiredArgsConstructor
 @Component
-public class JwtTokenProvider  {
+@RequiredArgsConstructor
+public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
@@ -28,15 +25,16 @@ public class JwtTokenProvider  {
 
 
     public String createToken(User user) {
-        long tokenValidTime = 30 * 60 * 1000L;
+//        long tokenValidTime = 30 * 60 * 1000L;
+        long tokenValidTime = 1000 * 60 * 60; //1시간
         return "Bearer " +
                 JWT.create()
-                .withSubject("JWT")
-                .withExpiresAt(new Date(System.currentTimeMillis() + tokenValidTime))
-                .withClaim("id", user.getId())
-                .withClaim("email", user.getEmail())
-                .withClaim("name", user.getName())
-                .sign(Algorithm.HMAC256(secretKey));
+                        .withSubject("JWT")
+                        .withExpiresAt(new Date(System.currentTimeMillis() + tokenValidTime))
+                        .withClaim("id", user.getId())
+                        .withClaim("email", user.getEmail())
+                        .withClaim("name", user.getName())
+                        .sign(Algorithm.HMAC256(secretKey));
     }
 
     public Authentication getAuthentication(String token) {
@@ -45,30 +43,27 @@ public class JwtTokenProvider  {
     }
 
     public String getUserEmail(String token) {
-        return JWT.decode(initToken(token)).getClaims().get("email").asString();
+        return JWT.decode(token).getClaims().get("email").asString();
     }
 
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    public boolean validateToken(String jwtToken) {
-        try {
-            Date expiresAt = JWT.decode(initToken(jwtToken)).getExpiresAt();
-            return expiresAt.after(new Date());
-        } catch (JWTDecodeException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public void validateToken(String jwtToken) {
+        Date expiresAt = JWT.decode(jwtToken).getExpiresAt();
+        if (expiresAt.before(new Date()))
+            throw new ExpiredTokenException("expired");
     }
 
-    @NotNull
-    private  String initToken(String jwtToken) {
+
+    public String initToken(String jwtToken) {
         validationAuthorizationHeader(jwtToken);
         return extractToken(jwtToken);
     }
 
     private void validationAuthorizationHeader(String jwtToken) {
-        if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
+        if (!jwtToken.startsWith("Bearer ")) {
             throw new IllegalArgumentException();
         }
     }
