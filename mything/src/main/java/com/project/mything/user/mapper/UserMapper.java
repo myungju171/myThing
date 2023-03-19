@@ -1,7 +1,6 @@
 package com.project.mything.user.mapper;
 
 import com.project.mything.user.dto.UserDto;
-import com.project.mything.user.entity.Avatar;
 import com.project.mything.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,16 +10,12 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "user.avatar.remotePath", target = "image")
+    @Mapping(source = "user.image.id", target = "avatar.imageId")
+    @Mapping(source = "user.image.remotePath", target = "avatar.remotePath")
     UserDto.ResponseSimpleUser toResponseSimpleUser(User user);
 
-    @Mapping(source = "dbUser.id", target = "userId")
-    @Mapping(source = "dbUser.avatar.id", target = "avatarId")
-    @Mapping(source = "dbUser.avatar.remotePath", target = "remotePath")
-    UserDto.ResponseImageURl toResponseImageUrl(User dbUser);
-
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "avatar.id", target = "avatarId")
-    @Mapping(source = "avatar.remotePath", target = "image")
-    UserDto.ResponseDetailUser toResponseDetailUser(User user, Avatar avatar);
+    @Mapping(source = "user.image.id", target = "avatar.imageId")
+    @Mapping(source = "user.image.remotePath", target = "avatar.remotePath")
+    UserDto.ResponseDetailUser toResponseDetailUser(User user);
 }

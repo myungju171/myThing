@@ -2,8 +2,6 @@ package com.project.mything.user.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public class UserDto {
@@ -15,29 +13,7 @@ public class UserDto {
     public static class ResponseSimpleUser {
         private Long userId;
         private String name;
-        @Builder.Default
-        private String image = "";
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class ResponseImageURl {
-        private Long userId;
-        private Long avatarId;
-        @Builder.Default
-        private String remotePath = "";
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class RequestUserId {
-        @NotNull
-        @Positive
-        private Long userId;
+        ImageDto.SimpleImageDto avatar;
     }
 
     @Getter
@@ -48,10 +24,29 @@ public class UserDto {
         private Long userId;
         private String name;
         private String phone;
-        private LocalDate birthDay;
+        private LocalDate birthday;
         private String infoMessage;
-        private Long avatarId;
-        private String image;
+        ImageDto.SimpleImageDto avatar;
     }
-    
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UserInfo {
+        private Long userId;
+        private String email;
+        private String name;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestEditProFile {
+        private String name;
+        private String infoMessage;
+        private LocalDate birthday;
+        private ImageDto.SimpleImageDto avatar;
+    }
 }
