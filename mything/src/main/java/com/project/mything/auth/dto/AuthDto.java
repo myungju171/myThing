@@ -14,19 +14,20 @@ public class AuthDto {
     public static class RequestJoin {
         @NotBlank
         @Email
-        private  String email;
+        private String email;
         @NotBlank
-        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{0,6}$", message = "한글 2자 이상 16자 이하입니다.") // 영문, 숫자, 한글 2자 이상 16자 이하(공백 및 초성, 자음 불가능)
+        // 영문, 숫자, 한글 2자 이상 16자 이하(공백 및 초성, 자음 불가능)
+        @Pattern(regexp = "^(?=.*[a-z0-9가-힣])[a-z0-9가-힣].{0,6}$", message = "한글 2자 이상 16자 이하입니다.")
         private String name;
         @NotBlank
-        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.") // 영문 + 숫자 + 특수문자 8자 이상 20자 이하
+        // 영문 + 숫자 + 특수문자 8자 이상 20자 이하
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
         private String password;
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private LocalDate birthDay;
+        private LocalDate birthday;
         @NotBlank
-        @Size(min = 11, max = 11)
-        @Pattern(regexp = "^(?=[0-9]){11}", message = "'-'를 제외하고 작성해주세요.")
+        @Size(min = 11, max = 11, message = "'-'를 제외하고 작성해주세요.")
         private String phone;
         @NotBlank
         @Size(min = 4, max = 4)
@@ -39,8 +40,7 @@ public class AuthDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RequestAuthNumber {
         @NotBlank
-        @Size(min = 11, max = 11)
-        @Pattern(regexp = "^(?=[0-9]){11}", message = "'-'를 제외하고 작성해주세요.")
+        @Size(min = 11, max = 11, message = "'-'를 제외하고 작성해주세요.")
         private String phone;
     }
 
@@ -53,7 +53,8 @@ public class AuthDto {
         @Email
         private String email;
         @NotBlank
-        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.") // 영문 + 숫자 + 특수문자 8자 이상 20자 이하
+        // 영문 + 숫자 + 특수문자 8자 이상 20자 이하
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
         private String password;
     }
 
