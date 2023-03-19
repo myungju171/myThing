@@ -1,14 +1,14 @@
 package com.project.mything.security.config;
 
 import com.project.mything.security.jwt.filter.JwtAuthenticationFilter;
-import com.project.mything.security.jwt.util.JwtTokenProvider;
+import com.project.mything.security.jwt.exception.JwtAuthenticationEntryPoint;
+import com.project.mything.security.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,8 +22,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class SecurityConfiguration  {
+public class SecurityConfiguration {
+    
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,18 +41,16 @@ public class SecurityConfiguration  {
                 .httpBasic().disable()
                 //커스텀 필터 등록
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-//                .mvcMatchers("/users/**").hasRole("USER")
-//                .mvcMatchers(POST, "/items/**").hasRole("USER")
-//                .mvcMatchers("/auth/login").permitAll()
+                .mvcMatchers("/users/**").hasRole("USER")
+                .mvcMatchers("/items/**").hasRole("USER")
+                .mvcMatchers("/auth/login").permitAll()
                 .anyRequest().permitAll();
         return http.build();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean
