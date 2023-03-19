@@ -10,11 +10,11 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Avatar extends BaseTime {
+public class Image extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "avatar_id")
+    @Column(name = "image_id")
     private Long id;
 
     private String originalFilename;
@@ -25,7 +25,10 @@ public class Avatar extends BaseTime {
 
     private String remotePath;
 
-    @OneToOne(mappedBy = "avatar")
+    @OneToOne(mappedBy = "image")
     private User user;
 
+    public void addUser(User dbUser) {
+        user = dbUser;
+    }
 }
