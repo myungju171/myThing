@@ -1,6 +1,5 @@
 package com.project.mything.page;
 
-import com.project.mything.user.dto.UserDto;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
@@ -13,10 +12,9 @@ import java.util.List;
 public class ResponseMultiPageDto<T> {
 
     private List<T> data;
-    private UserDto.ResponseSimpleUser user;
     private PageInfo pageInfo;
 
-    public ResponseMultiPageDto(List<T> data, Page page, UserDto.ResponseSimpleUser user) {
+    public ResponseMultiPageDto(List<T> data, Page page) {
         this.data = data;
         this.pageInfo = PageInfo.builder()
                 .page(page.getNumber() + 1)
@@ -24,6 +22,5 @@ public class ResponseMultiPageDto<T> {
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
                 .build();
-        this.user = user;
     }
 }
