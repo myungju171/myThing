@@ -61,6 +61,9 @@ public class UserService {
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT));
     }
 
+    public Boolean duplicateEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
     public User saveUser(User user) {
         return userRepository.save(user);
     }
