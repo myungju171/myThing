@@ -40,7 +40,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                 .where(itemUser.user.id.eq(userId)
                                 .and(itemUser.itemStatus.eq(ItemStatus.POST)
                                 .or(itemUser.itemStatus.eq(ItemStatus.RESERVE)))
-                ,userOrFriend(isFriend))
+                ,isFriend(isFriend))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(itemUser.interestedItem.desc(),itemUser.createdAt.desc())
@@ -53,11 +53,10 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                         .and(itemUser.itemStatus.eq(ItemStatus.RESERVE)))
                 .fetchOne();
 
-
         return new PageImpl<>(result, pageable, count);
     }
 
-    private BooleanExpression userOrFriend(Boolean isFriend) {
+    private BooleanExpression isFriend(Boolean isFriend) {
         return isFriend ? itemUser.secretItem.eq(false) : null;
     }
 }
