@@ -32,4 +32,10 @@ public class AuthController {
     public AuthDto.ResponseLogin login(@Valid @RequestBody AuthDto.RequestLogin requestLogin) {
         return authService.login(requestLogin);
     }
+
+    @GetMapping("/email")
+    @ResponseStatus(HttpStatus.OK)
+    public void duplicateEmail(@RequestParam String email) {
+        authService.duplicateEmail(email);
+    }
 }
