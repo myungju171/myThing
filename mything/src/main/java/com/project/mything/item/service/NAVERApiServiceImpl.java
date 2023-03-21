@@ -2,10 +2,7 @@ package com.project.mything.item.service;
 
 import com.project.mything.item.config.ItemConfig;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,7 +15,9 @@ public class NAVERApiServiceImpl implements NAVERApiService {
     @Override
     public ResponseEntity<String> searchItem(String query, Integer size, String sort, Integer start) {
         RestTemplate rest = new RestTemplate();
+
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("X-Naver-Client-Id", itemConfig.getPublicKey());
         httpHeaders.add("X-Naver-Client-Secret", itemConfig.getSecretKey());
         String body = "";
