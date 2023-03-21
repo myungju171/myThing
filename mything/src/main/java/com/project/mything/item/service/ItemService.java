@@ -76,9 +76,9 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(UserDto.UserInfo userInfo, Boolean isFriend, Integer start, Integer size) {
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Boolean isFriend, Integer start, Integer size) {
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems =
-                itemUserRepository.searchSimpleItem(userInfo.getUserId(), isFriend, PageRequest.of(start - 1, size));
+                itemUserRepository.searchSimpleItem(userId, isFriend, PageRequest.of(start - 1, size));
         List<ItemDto.ResponseSimpleItem> content = responseSimpleItems.getContent();
 
         return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(content, responseSimpleItems);

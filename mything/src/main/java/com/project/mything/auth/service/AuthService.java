@@ -29,10 +29,17 @@ public class AuthService {
     private final UserService userService;
 
     public Boolean sendAuthNumber(AuthDto.RequestAuthNumber requestAuthNumber) {
+        String phone = requestAuthNumber.getPhone();
+        duplicatePhone(phone);
         String randomCode = passwordService.getRandomCode();
-        authNumSendService.send(requestAuthNumber.getPhone(), randomCode);
-        redisRepository.saveData(requestAuthNumber.getPhone(), randomCode, 1000 * 60 * 3L);
+        authNumSendService.send(phone, randomCode);
+        redisRepository.saveData(phone, randomCode, 1000 * 60 * 3L);
         return Boolean.TRUE;
+    }
+
+    private void duplicatePhone(String phone) {
+        if(userService.findByPhone(phone))
+            throw new BusinessLogicException(ErrorCode.PHONE_ALREADY_EXIST);
     }
 
     public AuthDto.ResponseLogin join(AuthDto.RequestJoin requestJoin) {

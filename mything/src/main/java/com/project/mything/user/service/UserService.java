@@ -51,6 +51,10 @@ public class UserService {
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public boolean findByPhone(String phone) {
+        return userRepository.findUserByPhone(phone).isPresent();
+    }
+
     public UserDto.ResponseDetailUser getUserInfo(Long userId) {
         User dbUser = findUserWithAvatar(userId);
         return userMapper.toResponseDetailUser(dbUser);

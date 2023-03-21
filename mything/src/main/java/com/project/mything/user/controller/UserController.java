@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
     private final JwtParseToken jwtParseToken;
 
-    @PatchMapping("/profiles")
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public UserDto.ResponseDetailUser editProfile(@RequestHeader("Authorization") String token,
                                                   @RequestBody UserDto.RequestEditProFile requestEditProFile) {
