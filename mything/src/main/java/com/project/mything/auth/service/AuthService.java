@@ -68,4 +68,9 @@ public class AuthService {
         if (passwordService.isNotEqualPassword(requestLogin.getPassword(), dbUser.getPassword()))
             throw new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT);
     }
+
+    public void duplicateEmail(String email) {
+        if(userService.duplicateEmail(email))
+            throw new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST);
+    }
 }
