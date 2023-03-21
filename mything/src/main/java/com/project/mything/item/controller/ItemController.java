@@ -3,6 +3,7 @@ package com.project.mything.item.controller;
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.item.service.ItemService;
+import com.project.mything.security.jwt.service.JwtParseToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/items")
@@ -19,65 +21,73 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping
-    public ResponseEntity<String> search(@RequestParam String query,
+    private final JwtParseToken jwtParseToken;
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> search(@RequestHeader("Authorization") String token,
+                                         @Valid @NotBlank @RequestParam String query,
                                          @RequestParam(required = false, defaultValue = "10") Integer size,
                                          @RequestParam(required = false, defaultValue = "sim") String sort,
                                          @RequestParam(required = false, defaultValue = "1") Integer start) {
-        ResponseEntity<String> search = itemService.search(query, size, sort, start);
-        return search;
+        return itemService.search(query, size, sort, start);
     }
 
-    @PostMapping("/storages")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto.ResponseItemId saveItem(@Valid @RequestBody ItemDto.RequestSaveItem requestSaveItem) {
-        return itemService.saveItem(requestSaveItem);
+    public ItemDto.ResponseItemId saveItem(@RequestHeader("Authorization") String token,
+                                           @Valid @RequestBody ItemDto.RequestSaveItem requestSaveItem) {
+        return itemService.saveItem(jwtParseToken.getUserInfo(token), requestSaveItem);
     }
 
-    @DeleteMapping("/storages")
+    @DeleteMapping("/{item-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteItem(@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem) {
-        itemService.deleteItemUser(requestSimpleItem);
+    public void deleteItem(@RequestHeader("Authorization") String token,
+                           @PathVariable("item-id") Long itemId) {
+        itemService.deleteItemUser(jwtParseToken.getUserInfo(token), itemId);
     }
 
-    @GetMapping("/{item-id}/users/{user-id}")
+    @GetMapping("/{item-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto.ResponseDetailItem getDetailPage(@PathVariable("item-id") Long itemId,
-                                                    @PathVariable("user-id") Long userId) {
-        return itemService.getDetailItem(userId, itemId);
+    public ItemDto.ResponseDetailItem getDetailPage(@RequestHeader("Authorization") String token,
+                                                    @PathVariable("item-id") Long itemId) {
+        return itemService.getDetailItem(jwtParseToken.getUserInfo(token), itemId);
     }
 
-    @GetMapping("/users/{user-id}")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@PathVariable("user-id") Long userId,
-                                                                           @RequestParam(required = false, defaultValue = "false") Boolean isFriend,
-                                                                           @RequestParam Integer start,
-                                                                           @RequestParam Integer size) {
-        return itemService.getSimpleItems(userId, isFriend, start, size);
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@RequestHeader("Authorization") String token,
+                                                                               @RequestParam(required = false, defaultValue = "false") Boolean isFriend,
+                                                                               @RequestParam Integer start,
+                                                                               @RequestParam Integer size) {
+        return itemService.getSimpleItems(jwtParseToken.getUserInfo(token), isFriend, start, size);
     }
 
     @PatchMapping("/statuses")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto.ResponseItemId changeItemStatus(@Valid @RequestBody ItemDto.RequestChangeItemStatus requestChangeItemStatus,
-                                                   @RequestHeader(required = false) Long reservedId) {
-        return itemService.changeItemStatus(requestChangeItemStatus, reservedId);
+    public ItemDto.ResponseItemId changeItemStatus(@RequestHeader("Authorization") String token,
+                                                   @Valid @RequestBody ItemDto.RequestChangeItemStatus requestChangeItemStatus) {
+        return itemService.changeItemStatus(jwtParseToken.getUserInfo(token), requestChangeItemStatus);
     }
 
     @DeleteMapping("/statuses")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancelReserve(@Valid @RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
-        itemService.cancelReservedItem(requestCancelReserveItem);
+    public void cancelReserve(@RequestHeader("Authorization") String token,
+                              @Valid @RequestBody ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
+        itemService.cancelReservedItem(jwtParseToken.getUserInfo(token), requestCancelReserveItem);
     }
 
-    @PatchMapping("/interests")
+    @PatchMapping("/interests/{item-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto.ResponseItemId changeItemInterest (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
-        return itemService.changeItemInterest(requestSimpleItem);
+    public ItemDto.ResponseItemId changeItemInterest(@RequestHeader("Authorization") String token,
+                                                     @PathVariable("item-id") Long itemId) {
+        return itemService.changeItemInterest(jwtParseToken.getUserInfo(token), itemId);
     }
 
-    @PatchMapping("/secrets")
+    @PatchMapping("/secrets/{item-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto.ResponseItemId changeItemSecret (@Valid @RequestBody ItemDto.RequestSimpleItem requestSimpleItem ) {
-        return itemService.changeItemSecret(requestSimpleItem);
+    public ItemDto.ResponseItemId changeItemSecret(@RequestHeader("Authorization") String token,
+                                                   @PathVariable("item-id") Long itemId) {
+        return itemService.changeItemSecret(jwtParseToken.getUserInfo(token), itemId);
     }
 }

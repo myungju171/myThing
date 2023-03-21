@@ -33,7 +33,7 @@ public class ItemUser extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reserve_user_id")
-    private User reserveUser;
+    private User reservedUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -53,16 +53,13 @@ public class ItemUser extends BaseTime {
         return this;
     }
 
-    public void changeItemStatus(ItemStatus itemStatus, Long reservedUserId) {
+    public void updateItemStatus(ItemStatus itemStatus, User reservedUser) {
         this.itemStatus = itemStatus;
-        if (itemStatus.equals(ItemStatus.RESERVE)) {
-//            this.reservedUser = reservedUserId;
-        }
+        if(reservedUser != null) this.reservedUser = reservedUser;
     }
 
     public void cancelReserveItem() {
         this.itemStatus = ItemStatus.POST;
-//        this.reservedUserId = null;
     }
 
     public void changeItemInterest() {
