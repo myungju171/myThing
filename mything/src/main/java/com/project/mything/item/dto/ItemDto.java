@@ -3,6 +3,7 @@ package com.project.mything.item.dto;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
+import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,9 +16,6 @@ public class ItemDto {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RequestSaveItem {
-        @NotNull
-        @Positive
-        private Long userId;
         @NotNull
         @Positive
         private Long productId;
@@ -100,12 +98,11 @@ public class ItemDto {
     public static class RequestChangeItemStatus {
         @NotNull
         @Positive
-        private Long userId;
-        @NotNull
-        @Positive
         private Long itemId;
         @NotNull
         private ItemStatus itemStatus;
+        @Nullable
+        private Long reservedId;
     }
 
     @Getter
@@ -115,25 +112,9 @@ public class ItemDto {
     public static class RequestCancelReserveItem {
         @NotNull
         @Positive
-        private Long userId;
-        @NotNull
-        @Positive
         private Long itemId;
         @NotNull
         @Positive
-        private Long reservedId;
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class RequestSimpleItem {
-        @NotNull
-        @Positive
-        private Long userId;
-        @NotNull
-        @Positive
-        private Long itemId;
+        private Long reservedUserId;
     }
 }
