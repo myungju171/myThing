@@ -3,10 +3,11 @@ package com.project.mything.user.service;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.dto.UserDto;
-import com.project.mything.user.entity.Image;
+import com.project.mything.image.entity.Image;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.repository.UserRepository;
+import com.project.mything.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +56,8 @@ public class UserService {
         return userRepository.findUserByPhone(phone).isPresent();
     }
 
-    public UserDto.ResponseDetailUser getUserInfo(Long userId) {
-        User dbUser = findUserWithAvatar(userId);
+    public UserDto.ResponseDetailUser getUserInfo(UserDto.UserInfo userInfo) {
+        User dbUser = findUserWithAvatar(userInfo.getUserId());
         return userMapper.toResponseDetailUser(dbUser);
     }
 
@@ -68,6 +69,7 @@ public class UserService {
     public Boolean duplicateEmail(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
+
     public User saveUser(User user) {
         return userRepository.save(user);
     }
