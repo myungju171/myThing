@@ -10,14 +10,12 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     @Mapping(source = "user.id", target = "userId")
-    UserDto.ResponseUserId toResponseUserId(User user);
-
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "user.avatar.remotePath", target = "image")
+    @Mapping(source = "user.image.id", target = "avatar.imageId")
+    @Mapping(source = "user.image.remotePath", target = "avatar.remotePath")
     UserDto.ResponseSimpleUser toResponseSimpleUser(User user);
 
-    @Mapping(source = "dbUser.id", target = "userId")
-    @Mapping(source = "dbUser.avatar.id", target = "avatarId")
-    @Mapping(source = "dbUser.avatar.remotePath", target = "remotePath")
-    UserDto.ResponseImageURl toResponseImageUrl(User dbUser);
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.image.id", target = "avatar.imageId")
+    @Mapping(source = "user.image.remotePath", target = "avatar.remotePath")
+    UserDto.ResponseDetailUser toResponseDetailUser(User user);
 }

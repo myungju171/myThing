@@ -19,10 +19,13 @@ public class Friend extends BaseTime {
     @Column(name = "friend_id")
     private Long id;
 
-    private Long userFriendId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_friend_id")
+    private User userFriend;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private FriendStatus friendStatus;
+    private FriendStatus friendStatus = FriendStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

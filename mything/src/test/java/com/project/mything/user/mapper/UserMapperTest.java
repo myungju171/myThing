@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserMapperTest {
@@ -65,6 +67,31 @@ class UserMapperTest {
         assertThat(responseImageURl.getUserId()).isEqualTo(dbUser.getId());
         assertThat(responseImageURl.getAvatarId()).isEqualTo(dbUser.getAvatar().getId());
         assertThat(responseImageURl.getRemotePath()).isEqualTo(dbUser.getAvatar().getRemotePath());
+    }
+
+    @Test
+    @DisplayName("User에서 ResponseDetailUser 객체로 매핑 테스트")
+    public void toResponseDetailUser_suc() {
+        //given
+        Avatar dbAvatar = Avatar.builder().id(1L).remotePath("remotePath").build();
+        User dbUser = User.builder()
+                .id(1L)
+                .name("test")
+                .birthDay(LocalDate.of(1999, 4, 8))
+                .infoMessage("testInfo")
+                .phone("01012345678")
+                .avatar(dbAvatar)
+                .build();
+        //when
+        UserDto.ResponseDetailUser result = userMapper.toResponseDetailUser(dbUser, dbAvatar);
+
+        //then
+        assertThat(result.getUserId()).isEqualTo(dbUser.getId());
+        assertThat(result.getPhone()).isEqualTo(dbUser.getPhone());
+        assertThat(result.getBirthDay().compareTo(dbUser.getBirthDay())).isEqualTo(0);
+        assertThat(result.getInfoMessage()).isEqualTo(dbUser.getInfoMessage());
+        assertThat(result.getAvatarId()).isEqualTo(dbUser.getAvatar().getId());
+        assertThat(result.getImage()).isEqualTo(dbUser.getAvatar().getRemotePath());
 
     }
 }

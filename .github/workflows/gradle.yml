@@ -46,7 +46,7 @@ jobs:
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
-          cloud.aws.s3.region.static: ${{ secrets.AWS_REGION }}
+          cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           
           nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
           nurigo.secret: ${{ secrets.NURIGO_SECRET }}
@@ -54,31 +54,39 @@ jobs:
           
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
-          
-        # [3] save build
-      - name: Make zip file
-        run: zip -r ./mything.zip .
-        shell: bash
+
+#       - name: Server Build 
+#         run: |                          
+#           cd mything/                    
+#           chmod +x ./gradlew            
+#           ./gradlew clean build  
+#           cd ..                         
+#         shell: bash  
+        
+#         # [3] save build
+#       - name: Make zip file
+#         run: zip -r ./mything.zip .
+#         shell: bash
       
       
-        # [4] aws 권한
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ap-northeast-2
+#         # [4] aws 권한
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+#           aws-region: ap-northeast-2
 
-        # [5] upload
-      - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./mything.zip s3://$S3_BUCKET_NAME/mything.zip
+#         # [5] upload
+#       - name: Upload to S3
+#         run: aws s3 cp --region ap-northeast-2 ./mything.zip s3://$S3_BUCKET_NAME/mything.zip
 
-        # [6] deploy
-      - name: Code Deploy
-        run: |
-          aws deploy create-deployment \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-          --file-exists-behavior OVERWRITE \
-          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip
+#         # [6] deploy
+#       - name: Code Deploy
+#         run: |
+#           aws deploy create-deployment \
+#           --deployment-config-name CodeDeployDefault.AllAtOnce \
+#           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+#           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+#           --file-exists-behavior OVERWRITE \
+#           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip

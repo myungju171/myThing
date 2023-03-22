@@ -4,8 +4,9 @@ import com.project.mything.friend.entity.Apply;
 import com.project.mything.friend.entity.Friend;
 import com.project.mything.item.entity.ItemUser;
 import com.project.mything.notice.Notice;
+import com.project.mything.auth.service.PasswordService;
 import com.project.mything.time.BaseTime;
-import com.project.mything.user.entity.enums.UserEmoji;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.enums.UserStatus;
 import lombok.*;
 
@@ -26,24 +27,29 @@ public class User extends BaseTime {
     @Column(name = "user_id")
     private Long id;
 
+    private String email;
+
+    private String password;
     private String name;
 
     private String phone;
 
-    private LocalDate birthDay;
+    private LocalDate birthday;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    private String infoMessage;
+    @Builder.Default
+    private String infoMessage = "";
 
-    @Enumerated(EnumType.STRING)
-    private UserEmoji userEmoji;
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id")
-    private Avatar avatar;
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
@@ -61,21 +67,25 @@ public class User extends BaseTime {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ItemUser> itemUserList = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user")
-    private List<BirthDay> birthDays = new ArrayList<>();
-
-    public void editProfile(String userName, String userInfoMessage, LocalDate userBirthDay) {
-        name = userName;
-        infoMessage = userInfoMessage;
-        birthDay = userBirthDay;
+    public void editProfile(UserDto.RequestEditProFile requestEditProFile) {
+        name = requestEditProFile.getName();
+        infoMessage = requestEditProFile.getInfoMessage();
+        birthday = requestEditProFile.getBirthday();
     }
 
-    public void addAvatar(Avatar avatar) {
-        this.avatar = avatar;
+    public void addImage(Image image) {
+        this.image = image;
     }
 
-    public void deleteAvatar() {
-        this.avatar = null;
+    public void deleteImage() {
+        this.image = null;
+    }
+
+    public void encodePassword(PasswordService passwordService) {
+        password = passwordService.encodePassword(password);
+    }
+
+    public void removeImage() {
+        this.image = null;
     }
 }

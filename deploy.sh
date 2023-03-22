@@ -25,18 +25,17 @@ cd $REPOSITORY/$PROJECT_NAME/
 echo "> ll"
 sudo ls -al
 
+# echo "> GRADLE CHMOD 777"
+# sudo chmod 777 ./gradlew
 
-echo "> GRADLE CHMOD 777"
-sudo chmod 777 ./gradlew
+# echo "> GRADLE CLEAN"
+# sudo ./gradlew clean
 
-echo "> GRADLE CLEAN"
-sudo ./gradlew clean
-
-echo "> GRADLE BUILD"
-sudo ./gradlew build
+# echo "> GRADLE BUILD"
+# sudo ./gradlew build
 
 # jar 파일 위치로 이동
 cd build/libs
 
 echo "> JAR BUILD"
-sudo nohup java -jar mything-0.0.1-SNAPSHOT.jar &
+sudo nohup java -jar -Duser.timezone=Asia/Seoul mything-0.0.1-SNAPSHOT.jar >> $REPOSITORY/nohup.out 2>&1 &

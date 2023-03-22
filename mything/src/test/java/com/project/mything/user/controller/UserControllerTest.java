@@ -16,12 +16,14 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
@@ -33,8 +35,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -323,7 +324,7 @@ class UserControllerTest {
     @Test
     @DisplayName("아바타 삭제시 성공 204")
     public void deleteAvatar_suc() throws Exception {
-    //given
+        //given
         UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
                 .userId(1L)
                 .build();
@@ -375,6 +376,7 @@ class UserControllerTest {
                         )
                 ));
     }
+
     @Test
     @DisplayName("아바타 삭제시 유저의 기존 아바타가 null일때 실패 409")
     public void deleteAvatar_fail2() throws Exception {
@@ -399,6 +401,74 @@ class UserControllerTest {
                                 List.of(
                                         fieldWithPath("userId").description("유저의 아이디입니다.")
                                 )
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("유저 상세보기 API 성공 200")
+    public void getUserInfo_suc() throws Exception {
+        //given
+        UserDto.ResponseDetailUser result = UserDto.ResponseDetailUser.builder()
+                .userId(1L)
+                .name("test")
+                .birthDay(LocalDate.of(1999, 4, 8))
+                .infoMessage("testInfo")
+                .phone("01012345678")
+                .avatarId(1L)
+                .image("remotePath")
+                .build();
+
+        given(userService.getUserInfo(any())).willReturn(result);
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/users/{user-id}", 1L)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value("1"))
+                .andExpect(jsonPath("$.name").value("test"))
+                .andExpect(jsonPath("$.infoMessage").value("testInfo"))
+                .andExpect(jsonPath("$.birthDay").value("1999-04-08"))
+                .andExpect(jsonPath("$.avatarId").value("1"))
+                .andExpect(jsonPath("$.image").value("remotePath"))
+                .andDo(document("유저_상세보기_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("해당 유저의 상세정보를 조회합니다.")
+                        ),
+                        responseFields(
+                                fieldWithPath("userId").description("상세정보를 가져온 유저의 아이디 입니다."),
+                                fieldWithPath("name").description("상세정보를 가져온 유저의 이름 입니다."),
+                                fieldWithPath("birthDay").description("상세정보를 가져온 유저의 생일 입니다."),
+                                fieldWithPath("infoMessage").description("상세정보를 가져온 유저의 상태메세지 입니다."),
+                                fieldWithPath("phone").description("상세정보를 가져온 유저의 핸드폰 번호 입니다."),
+                                fieldWithPath("avatarId").description("상세정보를 가져온 유저의 아바타 아이디 입니다."),
+                                fieldWithPath("image").description("상세정보를 가져온 유저의 이미지 주소 입니다.")
+                        )
+
+                ));
+    }
+
+    @Test
+    @DisplayName("유저 상세보기 API 존재하지 않는 유저 실패 404")
+    public void getUserInfo_fail() throws Exception {
+        //given
+
+
+        given(userService.getUserInfo(any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/users/{user-id}", 5000L)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("유저_상세보기_성공_200",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("user-id").description("해당 유저의 상세정보를 조회합니다.")
                         )
                 ));
     }

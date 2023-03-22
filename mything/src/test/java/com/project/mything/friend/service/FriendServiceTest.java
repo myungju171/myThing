@@ -65,6 +65,7 @@ class FriendServiceTest {
                 .userId(1L)
                 .name("홍길동")
                 .birthDay(LocalDate.of(1999, 4, 8))
+                .infoMessage("")
                 .itemCount(3)
                 .avatarId(1L)
                 .remotePath("remotePath")
