@@ -1,10 +1,11 @@
 package com.project.mything.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mything.config.SecurityTestConfig;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.exception.ExceptionController;
-import com.project.mything.user.dto.UserDto;
+import com.project.mything.security.jwt.service.JwtTokenProvider;
 import com.project.mything.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,29 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.List;
-
 import static com.project.mything.config.ApiDocumentUtils.getDocumentRequest;
 import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
+import static com.project.mything.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest({UserController.class, ExceptionController.class})
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
+@Import(SecurityTestConfig.class)
+@WithMockUser
 class UserControllerTest {
 
     @Autowired
@@ -50,426 +45,143 @@ class UserControllerTest {
     UserService userService;
     @Autowired
     ObjectMapper objectMapper;
+    @MockBean
+    JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("프로필 이미지와 상태메세지 포함 수정 성공 201")
     public void editProfile_suc() throws Exception {
         //given
-        UserDto.ResponseImageURl responseImageURl = UserDto.ResponseImageURl.builder()
-                .userId(1L)
-                .avatarId(1L)
-                .remotePath("remotePath")
-                .build();
-        final String fileName = "testFile.png";
-        final String contentType = "image/png";
-        final String filePath = "src/main/resources/" + fileName;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
-        MockMultipartFile mockMultipartFile = new MockMultipartFile(
-                "multipartFile",
-                fileName,
-                contentType,
-                fileInputStream
-        );
-        given(userService.uploadImageAndEditUserProfile(any(), any(), any(), any(), any())).willReturn(responseImageURl);
+        given(userService.editProFile(any(), any())).willReturn(RESPONSE_DETAIL_USER);
+        String content = objectMapper.writeValueAsString(REQUEST_EDIT_PRO_FILE);
         //when
         ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .file(mockMultipartFile)
-                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.remotePath").value(responseImageURl.getRemotePath()))
-                .andDo(document("프로필_이미지와_상태메세지_포함_수정_성공_201",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("multipartFile").description("업로드할 유저 프로필 이미지 입니다. 필수가 아닙니다."),
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        ),
-                        responseFields(
-                                fieldWithPath("userId").description("유저 아이디 입니다."),
-                                fieldWithPath("avatarId").description("아바타 아이디 입니다."),
-                                fieldWithPath("remotePath").description("이미지 주소 입니다.")
-                        )
-
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 이미지와 상태메세지 포함하지않고 수정 성공 201")
-    public void editProfile_suc2() throws Exception {
-        //given
-
-        UserDto.ResponseImageURl responseImageURl = UserDto.ResponseImageURl.builder()
-                .userId(1L)
-                .avatarId(1L)
-                .remotePath("remotePath")
-                .build();
-
-        given(userService.uploadImageAndEditUserProfile(any(), any(), any(), any(), any())).willReturn(responseImageURl);
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.remotePath").value(responseImageURl.getRemotePath()))
-                .andDo(document("프로필_이미지와_상태메세지_포함하지_않고_수정_성공_201",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        ),
-                        responseFields(
-                                fieldWithPath("userId").description("유저 아이디 입니다."),
-                                fieldWithPath("avatarId").description("아바타 아이디 입니다."),
-                                fieldWithPath("remotePath").description("이미지 주소 입니다.")
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 수정시 존재하지 않는 유저 실패 404")
-    public void editProfile_fail1() throws Exception {
-        //given
-
-        final String fileName = "testFile.png";
-        final String contentType = "image/png";
-        final String filePath = "src/main/resources/" + fileName;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
-        MockMultipartFile mockMultipartFile = new MockMultipartFile(
-                "multipartFile",
-                fileName,
-                contentType,
-                fileInputStream
-        );
-        given(userService.uploadImageAndEditUserProfile(any(), any(), any(), any(), any()))
-                .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("userId", "5000".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isNotFound())
-                .andDo(document("존재하지_않는_유저_프로필_수정_실패_404",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 수정시 이미지 업로드 실패 500")
-    public void editProfile_fail2() throws Exception {
-        //given
-
-        final String fileName = "testFile.png";
-        final String contentType = "image/png";
-        final String filePath = "src/main/resources/" + fileName;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
-        MockMultipartFile mockMultipartFile = new MockMultipartFile(
-                "multipartFile",
-                fileName,
-                contentType,
-                fileInputStream
-        );
-        given(userService.uploadImageAndEditUserProfile(any(), any(), any(), any(), any()))
-                .willThrow(new BusinessLogicException(ErrorCode.S3_SERVICE_ERROR));
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isInternalServerError())
-                .andDo(document("프로필_수정시_이미지_업로드_실패_500",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        )
-
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 수정시 유저아이디를 보내지 않음 실패 400")
-    public void editProfile_fail3() throws Exception {
-        //given
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isBadRequest())
-                .andDo(document("프로필_수정시_유저_아디디_보내지_않음_실패_400",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        )
-
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 수정시 유저 이름을 보내지 않음 실패 400")
-    public void editProfile_fail4() throws Exception {
-        //given
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("birthDay", "1999-04-08".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isBadRequest())
-                .andDo(document("프로필_수정시_유저_이름_보내지_않음_실패_400",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다."),
-                                partWithName("birthDay").description("변경할 유저의 생일입니다. 필수입니다.")
-                        )
-
-                ));
-    }
-
-    @Test
-    @DisplayName("프로필 수정시 유저 생년월일을 보내지 않음 실패 400")
-    public void editProfile_fail5() throws Exception {
-        //given
-
-        //when
-        ResultActions perform = mockMvc.perform(
-                multipart("/users/profiles")
-                        .part(new MockPart("userId", "1".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("name", "백시온".getBytes(StandardCharsets.UTF_8)))
-                        .part(new MockPart("infoMessage", "상태메세지 입니다.".getBytes(StandardCharsets.UTF_8)))
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-
-        );
-
-        //then
-        perform.andExpect(status().isBadRequest())
-                .andDo(document("프로필_수정시_유저_생년월일_보내지_않음_실패_400",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestParts(
-                                partWithName("userId").description("업로드할 파일입니다. 파일형태입니다. 필수입니다."),
-                                partWithName("name").description("변경할 유저의 이름입니다. 필수입니다."),
-                                partWithName("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수가 아닙니다.")
-                        )
-
-                ));
-    }
-
-    @Test
-    @DisplayName("아바타 삭제시 성공 204")
-    public void deleteAvatar_suc() throws Exception {
-        //given
-        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
-                .userId(1L)
-                .build();
-        String content = objectMapper.writeValueAsString(requestUserId);
-        doNothing().when(userService).deleteAvatar(any());
-        //when
-        ResultActions perform = mockMvc.perform(
-                delete("/users/avatars")
+                patch("/users")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(JWT_HEADER, JWT_TOKEN)
                         .content(content)
-        );
-        //then
-        perform.andExpect(status().isNoContent())
-                .andDo(document("아바타_삭제_성공_204",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                List.of(
-                                        fieldWithPath("userId").description("유저의 아이디입니다.")
-                                )
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("아바타 삭제시 존재하지 않는 유저 실패 404")
-    public void deleteAvatar_fail() throws Exception {
-        //given
-        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
-                .userId(5000L)
-                .build();
-        String content = objectMapper.writeValueAsString(requestUserId);
-        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(userService).deleteAvatar(any());
-        //when
-        ResultActions perform = mockMvc.perform(
-                delete("/users/avatars")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-        //then
-        perform.andExpect(status().isNotFound())
-                .andDo(document("아바타_삭제시_존재하지_않는_유저_실패_404",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                List.of(
-                                        fieldWithPath("userId").description("유저의 아이디입니다.")
-                                )
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("아바타 삭제시 유저의 기존 아바타가 null일때 실패 409")
-    public void deleteAvatar_fail2() throws Exception {
-        //given
-        UserDto.RequestUserId requestUserId = UserDto.RequestUserId.builder()
-                .userId(1L)
-                .build();
-        String content = objectMapper.writeValueAsString(requestUserId);
-        doThrow(new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL)).when(userService).deleteAvatar(any());
-        //when
-        ResultActions perform = mockMvc.perform(
-                delete("/users/avatars")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-        //then
-        perform.andExpect(status().isConflict())
-                .andDo(document("아바타_삭제시_유저의_기존_아바타가_null일때_실패_409",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                List.of(
-                                        fieldWithPath("userId").description("유저의 아이디입니다.")
-                                )
-                        )
-                ));
-    }
-
-    @Test
-    @DisplayName("유저 상세보기 API 성공 200")
-    public void getUserInfo_suc() throws Exception {
-        //given
-        UserDto.ResponseDetailUser result = UserDto.ResponseDetailUser.builder()
-                .userId(1L)
-                .name("test")
-                .birthDay(LocalDate.of(1999, 4, 8))
-                .infoMessage("testInfo")
-                .phone("01012345678")
-                .avatarId(1L)
-                .image("remotePath")
-                .build();
-
-        given(userService.getUserInfo(any())).willReturn(result);
-        //when
-        ResultActions perform = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/users/{user-id}", 1L)
         );
         //then
         perform.andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value("1"))
-                .andExpect(jsonPath("$.name").value("test"))
-                .andExpect(jsonPath("$.infoMessage").value("testInfo"))
-                .andExpect(jsonPath("$.birthDay").value("1999-04-08"))
-                .andExpect(jsonPath("$.avatarId").value("1"))
-                .andExpect(jsonPath("$.image").value("remotePath"))
-                .andDo(document("유저_상세보기_성공_200",
+                .andExpect(jsonPath("$.userId").value(RESPONSE_DETAIL_USER.getUserId()))
+                .andExpect(jsonPath("$.name").value(RESPONSE_DETAIL_USER.getName()))
+                .andExpect(jsonPath("$.phone").value(RESPONSE_DETAIL_USER.getPhone()))
+                .andExpect(jsonPath("$.birthday").value(RESPONSE_DETAIL_USER.getBirthday().toString()))
+                .andExpect(jsonPath("$.infoMessage").value(RESPONSE_DETAIL_USER.getInfoMessage()))
+                .andExpect(jsonPath("$.avatar.imageId").value(RESPONSE_DETAIL_USER.getAvatar().getImageId()))
+                .andExpect(jsonPath("$.avatar.remotePath").value(RESPONSE_DETAIL_USER.getAvatar().getRemotePath()))
+                .andDo(document("프로필_수정_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("user-id").description("해당 유저의 상세정보를 조회합니다.")
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("name").description("변경할 유저의 이름입니다."),
+                                fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다."),
+                                fieldWithPath("birthday").description("변경할 유저의 생일 입니다."),
+                                fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다. Nullable")
                         ),
                         responseFields(
-                                fieldWithPath("userId").description("상세정보를 가져온 유저의 아이디 입니다."),
-                                fieldWithPath("name").description("상세정보를 가져온 유저의 이름 입니다."),
-                                fieldWithPath("birthDay").description("상세정보를 가져온 유저의 생일 입니다."),
-                                fieldWithPath("infoMessage").description("상세정보를 가져온 유저의 상태메세지 입니다."),
-                                fieldWithPath("phone").description("상세정보를 가져온 유저의 핸드폰 번호 입니다."),
-                                fieldWithPath("avatarId").description("상세정보를 가져온 유저의 아바타 아이디 입니다."),
-                                fieldWithPath("image").description("상세정보를 가져온 유저의 이미지 주소 입니다.")
+                                fieldWithPath("userId").description("유저 아이디 입니다."),
+                                fieldWithPath("name").description("유저의 이름 입니다."),
+                                fieldWithPath("phone").description("유저의 핸드폰 번호 입니다."),
+                                fieldWithPath("infoMessage").description("유저의 상태메세지 입니다."),
+                                fieldWithPath("birthday").description("유저의 생일 입니다."),
+                                fieldWithPath("avatar.imageId").description("유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.remotePath").description("유저의 프로필 이미지 url 입니다. Nullable")
                         )
-
                 ));
     }
 
     @Test
-    @DisplayName("유저 상세보기 API 존재하지 않는 유저 실패 404")
-    public void getUserInfo_fail() throws Exception {
+    @DisplayName("프로필 변경시 존재하지 않는 이미지 id를 전달할 경우 404")
+    public void editProfile_fail() throws Exception {
         //given
-
-
-        given(userService.getUserInfo(any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+        given(userService.editProFile(any(), any())).willThrow(new BusinessLogicException(ErrorCode.IMAGE_NOT_FOUND));
+        String content = objectMapper.writeValueAsString(REQUEST_EDIT_PRO_FILE);
         //when
         ResultActions perform = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/users/{user-id}", 5000L)
+                patch("/users")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
         );
         //then
         perform.andExpect(status().isNotFound())
-                .andDo(document("유저_상세보기_성공_200",
+                .andDo(document("프로필_수정_실패1",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("user-id").description("해당 유저의 상세정보를 조회합니다.")
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("name").description("변경할 유저의 이름입니다."),
+                                fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다."),
+                                fieldWithPath("birthday").description("변경할 유저의 생일입니다."),
+                                fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다ㅏ. Nullable")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("프로필 변경시 이름, 상태 메세지, 생일을 전달하지 않을 경우 400")
+    public void editProfile_fail2() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(ERROR_EDIT_PRO_FILE);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/users")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("프로필_수정_실패2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("name").description("변경할 유저의 이름입니다."),
+                                fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다."),
+                                fieldWithPath("birthday").description("변경할 유저의 생일입니다."),
+                                fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다ㅏ. Nullable")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("본인의 개인정보 확인하기 성공 200")
+    public void getUserInfo_suc() throws Exception {
+        //given
+        given(userService.getUserInfo(any())).willReturn(RESPONSE_DETAIL_USER);
+        //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/users")
+                        .param("user-id", String.valueOf(ID1))
+                        .header(JWT_HEADER, JWT_TOKEN)
+        );
+        //then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(RESPONSE_DETAIL_USER.getUserId()))
+                .andExpect(jsonPath("$.name").value(RESPONSE_DETAIL_USER.getName()))
+                .andExpect(jsonPath("$.phone").value(RESPONSE_DETAIL_USER.getPhone()))
+                .andExpect(jsonPath("$.birthday").value(RESPONSE_DETAIL_USER.getBirthday().toString()))
+                .andExpect(jsonPath("$.infoMessage").value(RESPONSE_DETAIL_USER.getInfoMessage()))
+                .andExpect(jsonPath("$.avatar.imageId").value(RESPONSE_DETAIL_USER.getAvatar().getImageId()))
+                .andExpect(jsonPath("$.avatar.remotePath").value(RESPONSE_DETAIL_USER.getAvatar().getRemotePath()))
+                .andDo(document("개인_프로필_정보_확인_성공",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        responseFields(
+                                fieldWithPath("userId").description("유저 아이디 입니다."),
+                                fieldWithPath("name").description("유저의 이름 입니다."),
+                                fieldWithPath("phone").description("유저의 핸드폰 번호 입니다."),
+                                fieldWithPath("infoMessage").description("유저의 상태메세지 입니다."),
+                                fieldWithPath("birthday").description("유저의 생일 입니다."),
+                                fieldWithPath("avatar.imageId").description("유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.remotePath").description("유저의 프로필 이미지 url 입니다. Nullable")
+                        )));
     }
 }

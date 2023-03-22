@@ -96,6 +96,26 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("인증번호를 요청시 이미 동일한 핸드폰 번호가 존재할시 409 ")
+    public void requestAuthNumber_fail2() throws Exception {
+        //given
+        given(authService.sendAuthNumber(any())).willThrow(new BusinessLogicException(ErrorCode.PHONE_ALREADY_EXIST));
+        String content = objectMapper.writeValueAsString(REQUEST_AUTH_NUMBER);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/number")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("인증번호_요청_실패2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(fieldWithPath("phone").description("이미 한번 인증 받은 번호는 인증번호 요청을 할 수 없습니다."))
+                ));
+    }
+
+    @Test
     @DisplayName("회원가입 요청시 인증번호가 동일하다면 201코드와 userId를 리턴한다.")
     public void requestJoin_suc() throws Exception {
         //given
@@ -116,12 +136,12 @@ class AuthControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름"),
-                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-1-21"),
-                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호"),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("유저의 핸드폰 인증번호")
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 )),
                         responseFields(
                                 List.of(
@@ -150,12 +170,12 @@ class AuthControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름"),
-                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-1-21"),
-                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호"),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("유저의 핸드폰 인증번호")
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -178,12 +198,115 @@ class AuthControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호"),
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름"),
-                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-1-21"),
-                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호"),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("유저의 핸드폰 인증번호")
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                ))
+                ));
+    }
+
+    @Test
+    @DisplayName("회원가입 요청시 비밀번호 규칙이 지켜지지 않았을 경우 400에러를 리턴한다. ")
+    public void requestJoin_fail13() throws Exception {
+        //given
+        AuthDto.RequestJoin INVALID_PASSWORD_REQUEST_JOIN = AuthDto.RequestJoin.builder()
+                .email(EMAIL)
+                .name(NAME)
+                .phone(PHONE)
+                .password(INVALID_PASSWORD)
+                .birthday(BIRTHDAY)
+                .authNumber(AUTH_NUMBER).build();
+        String content = objectMapper.writeValueAsString(INVALID_PASSWORD_REQUEST_JOIN);
+
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("회원가입_실패3",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                ))
+                ));
+    }
+
+    @Test
+    @DisplayName("회원가입 요청시 이메일 형식이 아닐 경우 400에러를 리턴한다. ")
+    public void requestJoin_fail14() throws Exception {
+        //given
+        AuthDto.RequestJoin INVALID_EMAIL_REQUEST_JOIN = AuthDto.RequestJoin.builder()
+                .email(INVALID_EMAIL)
+                .name(NAME)
+                .phone(PHONE)
+                .password(PASSWORD)
+                .birthday(BIRTHDAY)
+                .authNumber(AUTH_NUMBER).build();
+        String content = objectMapper.writeValueAsString(INVALID_EMAIL_REQUEST_JOIN);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("회원가입_실패4",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                ))
+                ));
+    }
+
+    @Test
+    @DisplayName("회원가입 요청시 이름 규칙을 어긋날 경우 400에러를 리턴한다. ")
+    public void requestJoin_fail15() throws Exception {
+        //given
+        AuthDto.RequestJoin INVALID_NAME_REQUEST_JOIN = AuthDto.RequestJoin.builder()
+                .email(EMAIL)
+                .name(INVALID_NAME)
+                .phone(PHONE)
+                .password(PASSWORD)
+                .birthday(BIRTHDAY)
+                .authNumber(AUTH_NUMBER).build();
+        String content = objectMapper.writeValueAsString(INVALID_NAME_REQUEST_JOIN);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("회원가입_실패5",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("유저 이메일 @를 이용한이메일형식을 지켜주세요."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -250,7 +373,7 @@ class AuthControllerTest {
                         .content(content));
         //then
         perform.andExpect(status().isConflict())
-                .andDo(document("로그인_실패1",
+                .andDo(document("로그인_실패2",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(

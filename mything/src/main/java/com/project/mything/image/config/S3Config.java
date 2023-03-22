@@ -1,4 +1,4 @@
-package com.project.mything.user.config;
+package com.project.mything.image.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

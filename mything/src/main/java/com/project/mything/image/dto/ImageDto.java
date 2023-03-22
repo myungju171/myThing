@@ -1,4 +1,4 @@
-package com.project.mything.user.dto;
+package com.project.mything.image.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;

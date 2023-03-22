@@ -1,15 +1,15 @@
-package com.project.mything.user.service;
+package com.project.mything.image.service;
 
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
-import com.project.mything.user.dto.ImageDto;
+import com.project.mything.image.dto.ImageDto;
+import com.project.mything.image.mapper.ImageMapper;
 import com.project.mything.user.dto.UserDto;
-import com.project.mything.user.entity.Image;
 import com.project.mything.user.entity.User;
-import com.project.mything.user.mapper.ImageMapper;
-import com.project.mything.user.repository.ImageRepository;
 import com.project.mything.user.repository.UserRepository;
-import com.project.mything.user.service.s3.S3Service;
+import com.project.mything.image.entity.Image;
+import com.project.mything.image.repository.ImageRepository;
+import com.project.mything.image.service.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

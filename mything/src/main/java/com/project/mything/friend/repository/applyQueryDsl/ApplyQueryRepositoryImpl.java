@@ -3,7 +3,7 @@ package com.project.mything.friend.repository.applyQueryDsl;
 import com.project.mything.friend.dto.ApplyDto;
 import com.project.mything.friend.dto.QApplyDto_ResponseSimpleApply;
 import com.project.mything.friend.entity.enums.ApplyStatus;
-import com.project.mything.user.dto.QImageDto_SimpleImageDto;
+import com.project.mything.image.dto.QImageDto_SimpleImageDto;
 import com.project.mything.user.dto.QUserDto_ResponseSimpleUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class ApplyQueryRepositoryImpl implements ApplyQueryRepository {
                         applyType(isReceiveApply)))
                 .from(apply)
                 .where(apply.applyStatus.eq(ApplyStatus.SUGGEST))
-                .orderBy()
+                .orderBy(apply.id.desc())
                 .fetch();
     }
 

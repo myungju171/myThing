@@ -1,4 +1,4 @@
-package com.project.mything.user.service.s3;
+package com.project.mything.image.service.s3;
 
 import org.springframework.web.multipart.MultipartFile;
 

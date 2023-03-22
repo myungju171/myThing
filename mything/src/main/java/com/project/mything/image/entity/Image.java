@@ -1,6 +1,7 @@
-package com.project.mything.user.entity;
+package com.project.mything.image.entity;
 
 import com.project.mything.time.BaseTime;
+import com.project.mything.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;

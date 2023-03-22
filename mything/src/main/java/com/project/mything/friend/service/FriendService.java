@@ -34,12 +34,12 @@ public class FriendService {
     public ResponseMultiPageDto<FriendDto.ResponseSimpleFriend> getFriendsList(UserDto.UserInfo userInfo,
                                                                                FriendStatus friendStatus,
                                                                                Boolean isBirthday) {
-        User dbUser = userService.findUserWithAvatar(userInfo.getUserId());
+        User dbUser = userService.findVerifiedUser(userInfo.getUserId());
         Page<FriendDto.ResponseSimpleFriend> friendList =
                 friendRepository.getFriendList(userInfo.getUserId(),
                         friendStatus,
                         isBirthday,
-                        PageRequest.of(0, dbUser.getFriendList().size()));
+                        PageRequest.of(0, dbUser.getFriendList().size() + 1));
         return new ResponseMultiPageDto<FriendDto.ResponseSimpleFriend>(friendList.getContent(), friendList);
     }
 

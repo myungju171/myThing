@@ -4,6 +4,7 @@ import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.friend.dto.ApplyDto;
 import com.project.mything.friend.entity.Apply;
+import com.project.mything.friend.entity.enums.ApplyStatus;
 import com.project.mything.friend.mapper.ApplyMapper;
 import com.project.mything.friend.repository.ApplyRepository;
 import com.project.mything.friend.repository.applyQueryDsl.ApplyQueryRepository;
@@ -92,7 +93,7 @@ public class ApplyService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplyDto.ResponseSimpleApply> getApply(UserDto.UserInfo userInfo, Boolean isReceiveApply) {
+    public List<ApplyDto.ResponseSimpleApply> getApply(UserDto.UserInfo userInfo, Boolean isReceiveApply, ApplyStatus applyStatus) {
         return applyQueryRepository.getApply(userInfo.getUserId(), isReceiveApply);
     }
 }
