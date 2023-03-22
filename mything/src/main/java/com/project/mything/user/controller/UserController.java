@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -20,13 +22,13 @@ public class UserController {
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public UserDto.ResponseDetailUser editProfile(@RequestHeader("Authorization") String token,
-                                                  @RequestBody UserDto.RequestEditProFile requestEditProFile) {
+                                                  @Valid @RequestBody UserDto.RequestEditProFile requestEditProFile) {
         return userService.editProFile(jwtParseToken.getUserInfo(token), requestEditProFile);
     }
 
-    @GetMapping("/{user-id}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto.ResponseDetailUser getUserInfo(@PathVariable("user-id") Long userId) {
-        return userService.getUserInfo(userId);
+    public UserDto.ResponseDetailUser getUserInfo(@RequestHeader("Authorization") String token) {
+        return userService.getUserInfo(jwtParseToken.getUserInfo(token));
     }
 }
