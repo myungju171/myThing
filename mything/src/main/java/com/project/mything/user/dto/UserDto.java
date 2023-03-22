@@ -1,6 +1,7 @@
 package com.project.mything.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.project.mything.image.dto.ImageDto;
 import lombok.*;
 import reactor.util.annotation.Nullable;
 

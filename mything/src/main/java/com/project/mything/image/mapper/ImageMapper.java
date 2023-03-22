@@ -1,7 +1,7 @@
-package com.project.mything.user.mapper;
+package com.project.mything.image.mapper;
 
-import com.project.mything.user.dto.ImageDto;
-import com.project.mything.user.entity.Image;
+import com.project.mything.image.dto.ImageDto;
+import com.project.mything.image.entity.Image;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
