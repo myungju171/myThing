@@ -2,7 +2,7 @@ package com.project.mything.friend.mapper;
 
 import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.friend.entity.Friend;
-import com.project.mything.user.dto.ImageDto;
+import com.project.mything.image.dto.ImageDto;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import org.mapstruct.Mapper;

@@ -1,8 +1,12 @@
 package com.project.mything.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.project.mything.image.dto.ImageDto;
 import lombok.*;
+import reactor.util.annotation.Nullable;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class UserDto {
@@ -60,9 +64,13 @@ public class UserDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RequestEditProFile {
+        @NotBlank
         private String name;
+        @NotNull
         private String infoMessage;
+        @NotNull
         private LocalDate birthday;
+        @Nullable
         private ImageDto.SimpleImageDto avatar;
     }
 }

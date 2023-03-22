@@ -48,7 +48,9 @@ public class SecurityConfiguration {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .mvcMatchers("/users/**").hasRole("USER")
                 .mvcMatchers("/items/**").hasRole("USER")
-                .mvcMatchers("/auth/login").permitAll()
+                .mvcMatchers("/images/**").hasRole("USER")
+                .mvcMatchers("/friends/**").hasRole("USER")
+                .mvcMatchers("/auth/**").permitAll()
                 .anyRequest().permitAll();
         return http.build();
     }

@@ -8,6 +8,7 @@ import com.project.mything.auth.service.PasswordService;
 import com.project.mything.time.BaseTime;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.enums.UserStatus;
+import com.project.mything.image.entity.Image;
 import lombok.*;
 
 import javax.persistence.*;

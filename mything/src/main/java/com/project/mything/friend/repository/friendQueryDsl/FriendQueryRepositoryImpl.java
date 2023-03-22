@@ -3,7 +3,7 @@ package com.project.mything.friend.repository.friendQueryDsl;
 import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.friend.dto.QFriendDto_ResponseSimpleFriend;
 import com.project.mything.friend.entity.enums.FriendStatus;
-import com.project.mything.user.dto.QImageDto_SimpleImageDto;
+import com.project.mything.image.dto.QImageDto_SimpleImageDto;
 import com.project.mything.user.dto.QUserDto_ResponseDetailUser;
 import com.project.mything.user.entity.enums.UserStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import static com.project.mything.friend.entity.QFriend.friend;
 
@@ -57,7 +58,7 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
                                 .and(friend.user.userStatus.eq(UserStatus.ACTIVE)))
                 .fetchOne();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, pageable, Objects.requireNonNull(count));
     }
 
     private BooleanExpression birthday(Boolean isBirthday) {

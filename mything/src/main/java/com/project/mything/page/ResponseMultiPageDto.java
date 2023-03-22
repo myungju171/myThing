@@ -14,7 +14,7 @@ public class ResponseMultiPageDto<T> {
     private List<T> data;
     private PageInfo pageInfo;
 
-    public ResponseMultiPageDto(List<T> data, Page page) {
+    public ResponseMultiPageDto(List<T> data, Page<T> page) {
         this.data = data;
         this.pageInfo = PageInfo.builder()
                 .page(page.getNumber() + 1)

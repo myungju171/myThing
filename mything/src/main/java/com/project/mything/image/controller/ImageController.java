@@ -1,8 +1,8 @@
-package com.project.mything.user.controller;
+package com.project.mything.image.controller;
 
+import com.project.mything.image.dto.ImageDto;
+import com.project.mything.image.service.ImageService;
 import com.project.mything.security.jwt.service.JwtParseToken;
-import com.project.mything.user.dto.ImageDto;
-import com.project.mything.user.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;

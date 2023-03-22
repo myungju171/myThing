@@ -1,4 +1,4 @@
-package com.project.mything.user.service.s3;
+package com.project.mything.image.service.s3;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
-import com.project.mything.user.config.S3Config;
+import com.project.mything.image.config.S3Config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
