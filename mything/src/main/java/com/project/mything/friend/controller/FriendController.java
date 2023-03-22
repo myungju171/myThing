@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @RestController
@@ -24,7 +24,8 @@ public class FriendController {
 
     @GetMapping("/searches")
     @ResponseStatus(HttpStatus.OK)
-    public FriendDto.ResponseSimpleFriend searchFriend(@NotBlank @Size(min = 11, max = 11) @RequestParam String friendPhone) {
+    public FriendDto.ResponseSimpleFriend searchFriend(@Size(min = 11, max = 11) @Positive(message = "'-'을 붙이지 말아주세요.")
+                                                           @RequestParam String friendPhone) {
         return friendService.searchFriend(friendPhone);
     }
 
