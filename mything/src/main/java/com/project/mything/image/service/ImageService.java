@@ -44,8 +44,8 @@ public class ImageService {
         return s3Service.getRemotePath(localPath);
     }
 
-    public void deleteImage(UserDto.UserInfo userInfo) {
-        User userWithAvatar = userRepository.findUserWithImage(userInfo.getUserId())
+    public void deleteImage(Long userId) {
+        User userWithAvatar = userRepository.findUserWithImage(userId)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         try {
             Image image = userWithAvatar.getImage();
