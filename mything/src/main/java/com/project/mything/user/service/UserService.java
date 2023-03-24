@@ -3,7 +3,6 @@ package com.project.mything.user.service;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.dto.UserDto;
-import com.project.mything.image.entity.Image;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.repository.UserRepository;
@@ -11,6 +10,8 @@ import com.project.mything.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -35,11 +36,14 @@ public class UserService {
     }
 
     private void editAvatar(UserDto.RequestEditProFile requestEditProFile, User dbUser) {
-        if (requestEditProFile.getAvatar() != null) {
-            Image dbImage = imageService.findById(requestEditProFile.getAvatar().getImageId());
-            dbImage.addUser(dbUser);
-            dbUser.addImage(dbImage);
-        }
+        if (requestEditProFile.getAvatar() == null)
+            imageService.deleteImage(dbUser.getId());
+        else changeToNewAvatar(requestEditProFile, dbUser);
+    }
+
+    private void changeToNewAvatar(UserDto.RequestEditProFile requestEditProFile, User dbUser) {
+        imageService.findById(Objects.requireNonNull(requestEditProFile.getAvatar()).getImageId())
+                .mappingToUser(dbUser);
     }
 
     public User findUserWithAvatar(Long userId) {
