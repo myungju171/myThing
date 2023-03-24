@@ -28,7 +28,7 @@ public class ImageController {
 
     @DeleteMapping("users/avatars")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestHeader("Authorization") String token) {
-        imageService.deleteImage(jwtParseToken.getUserInfo(token));
+    public void deleteAvatar(@RequestHeader("Authorization") String token) {
+        imageService.deleteImage(jwtParseToken.getUserInfo(token).getUserId());
     }
 }
