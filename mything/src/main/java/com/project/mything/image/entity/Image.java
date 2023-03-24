@@ -29,7 +29,8 @@ public class Image extends BaseTime {
     @OneToOne(mappedBy = "image")
     private User user;
 
-    public void addUser(User dbUser) {
+    public void mappingToUser(User dbUser) {
         user = dbUser;
+        dbUser.addImage(this);
     }
 }
