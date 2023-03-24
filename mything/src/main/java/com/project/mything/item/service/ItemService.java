@@ -32,7 +32,6 @@ public class ItemService {
     private final ItemUserRepository itemUserRepository;
     private final UserService userService;
     private final NAVERApiService naverApiService;
-    private final UserMapper userMapper;
 
     @Transactional(readOnly = true)
     public ResponseEntity<String> search(String query, Integer size, String sort, Integer start) {
@@ -76,9 +75,9 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Boolean isFriend, Integer start, Integer size) {
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItems(Long userId, Boolean isWish, Boolean isFriend, String sortBy, Integer start, Integer size) {
         Page<ItemDto.ResponseSimpleItem> responseSimpleItems =
-                itemUserRepository.searchSimpleItem(userId, isFriend, PageRequest.of(start - 1, size));
+                itemUserRepository.searchSimpleItem(userId, isWish, isFriend, sortBy, PageRequest.of(start - 1, size));
         List<ItemDto.ResponseSimpleItem> content = responseSimpleItems.getContent();
 
         return new ResponseMultiPageDto<ItemDto.ResponseSimpleItem>(content, responseSimpleItems);
