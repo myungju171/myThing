@@ -154,7 +154,7 @@ class UserControllerTest {
     @DisplayName("본인의 개인정보 확인하기 성공 200")
     public void getUserInfo_suc() throws Exception {
         //given
-        given(userService.getUserInfo(any())).willReturn(RESPONSE_DETAIL_USER);
+        given(userService.getUserDetail(any())).willReturn(RESPONSE_DETAIL_USER);
         //when
         ResultActions perform = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/users")
