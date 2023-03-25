@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto.ResponseDetailUser getUserInfo(@RequestHeader("Authorization") String token) {
-        return userService.getUserInfo(jwtParseToken.getUserInfo(token));
+    public UserDto.ResponseDetailUser getUserDetail(@RequestHeader("Authorization") String token) {
+        return userService.getUserDetail(jwtParseToken.getUserInfo(token));
     }
 }
