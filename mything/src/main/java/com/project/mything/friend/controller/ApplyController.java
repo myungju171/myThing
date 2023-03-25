@@ -21,10 +21,10 @@ public class ApplyController {
     private final JwtParseToken jwtParseToken;
     private final ApplyService applyService;
 
-    @PostMapping
+    @PostMapping("/{received-id}")
     @ResponseStatus(HttpStatus.CREATED)
     public ApplyDto.ResponseApplyId createApply(@RequestHeader("Authorization") String token,
-                                                @Positive @RequestParam Long receivedId) {
+                                                @Positive @PathVariable("received-id") Long receivedId) {
         return applyService.createApply(jwtParseToken.getUserInfo(token), receivedId);
     }
 
