@@ -104,8 +104,7 @@ class ApplyControllerTest {
         given(applyService.createApply(any(), any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies")
-                        .param("receivedId", NOT_FOUND_ID.toString())
+                post("/friends/applies/{received-id}", NOT_FOUND_ID)
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
@@ -114,8 +113,8 @@ class ApplyControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
-                        requestParameters(
-                                parameterWithName("receivedId").description("존재하지 않는 receivedId 입니다..")
+                        pathParameters(
+                                parameterWithName("received-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
                         )
                 ));
     }
