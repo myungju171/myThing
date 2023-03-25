@@ -60,7 +60,7 @@ public class UserService {
         return userRepository.findUserByPhone(phone).isPresent();
     }
 
-    public UserDto.ResponseDetailUser getUserInfo(UserDto.UserInfo userInfo) {
+    public UserDto.ResponseDetailUser getUserDetail(UserDto.UserInfo userInfo) {
         User dbUser = findUserWithAvatar(userInfo.getUserId());
         return userMapper.toResponseDetailUser(dbUser);
     }
