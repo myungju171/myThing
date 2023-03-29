@@ -29,6 +29,8 @@ public class AuthService {
     private final UserService userService;
 
     public Boolean sendAuthNumber(AuthDto.RequestAuthNumber requestAuthNumber) {
+        if (redisRepository.getData(requestAuthNumber.getPhone()).isPresent())
+            throw new BusinessLogicException(ErrorCode.MESSAGE_ALREADY_SEND);
         String phone = requestAuthNumber.getPhone();
         duplicatePhone(phone);
         String randomCode = passwordService.getRandomCode();
@@ -38,12 +40,12 @@ public class AuthService {
     }
 
     private void duplicatePhone(String phone) {
-        if(userService.findByPhone(phone))
+        if (userService.findByPhone(phone))
             throw new BusinessLogicException(ErrorCode.PHONE_ALREADY_EXIST);
     }
 
     public AuthDto.ResponseLogin join(AuthDto.RequestJoin requestJoin) {
-        verifiedRandomCode(requestJoin);
+        verifiedRandomCode(requestJoin.getPhone(), requestJoin.getAuthNumber());
         User user = authMapper.toUser(requestJoin);
         user.encodePassword(passwordService);
         addUserRole(user);
@@ -58,26 +60,28 @@ public class AuthService {
         user.getUserRoles().add(userRole);
     }
 
-    private void verifiedRandomCode(AuthDto.RequestJoin requestJoin) {
-        String randomCode = redisRepository.getData(requestJoin.getPhone())
+    private void verifiedRandomCode(String phone, String authNumber) {
+        String randomCode = redisRepository.getData(phone)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_MATCH_PHONE_NUMBER));
-        if (!randomCode.equals(requestJoin.getAuthNumber()))
+        if (!randomCode.equals(authNumber))
             throw new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER);
     }
 
     public AuthDto.ResponseLogin login(AuthDto.RequestLogin requestLogin) {
         User dbUser = userService.findUserByEmail(requestLogin.getEmail());
-        validatePassword(requestLogin, dbUser);
+        passwordService.validatePassword(requestLogin.getPassword(), dbUser.getPassword());
         return authMapper.toResponseToken(dbUser, jwtTokenProvider.createToken(dbUser));
     }
 
-    private void validatePassword(AuthDto.RequestLogin requestLogin, User dbUser) {
-        if (passwordService.isNotEqualPassword(requestLogin.getPassword(), dbUser.getPassword()))
-            throw new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT);
+    public void duplicateEmail(String email) {
+        if (userService.duplicateEmail(email))
+            throw new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST);
     }
 
-    public void duplicateEmail(String email) {
-        if(userService.duplicateEmail(email))
-            throw new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST);
+    public void findPassword(AuthDto.RequestFindPassword requestFindPassword) {
+        verifiedRandomCode(requestFindPassword.getPhone(), requestFindPassword.getAuthNumber());
+        User dbUser = userService.findUserByPhone(requestFindPassword.getPhone());
+        dbUser.changePassword(requestFindPassword.getNewPassword());
+        dbUser.encodePassword(passwordService);
     }
 }
