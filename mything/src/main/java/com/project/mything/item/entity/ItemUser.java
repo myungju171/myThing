@@ -59,6 +59,7 @@ public class ItemUser extends BaseTime {
     }
 
     public void cancelReserveItem() {
+        this.reservedUser = null;
         this.itemStatus = ItemStatus.POST;
     }
 
