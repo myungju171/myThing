@@ -26,6 +26,7 @@ import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static com.project.mything.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -116,7 +117,7 @@ class UserControllerTest {
                                 fieldWithPath("name").description("변경할 유저의 이름입니다."),
                                 fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다."),
                                 fieldWithPath("birthday").description("변경할 유저의 생일입니다."),
-                                fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. Nullable"),
+                                fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. 아이디가 존재하지 않을시 예외입니다. Nullable"),
                                 fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다ㅏ. Nullable")
                         )
                 ));
@@ -141,11 +142,11 @@ class UserControllerTest {
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
                         requestFields(
-                                fieldWithPath("name").description("변경할 유저의 이름입니다."),
-                                fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다."),
-                                fieldWithPath("birthday").description("변경할 유저의 생일입니다."),
+                                fieldWithPath("name").description("변경할 유저의 이름입니다. 필수 입니다."),
+                                fieldWithPath("infoMessage").description("변경할 유저의 상태메세지 입니다. 필수 입니다."),
+                                fieldWithPath("birthday").description("변경할 유저의 생일입니다. 필수 입니다."),
                                 fieldWithPath("avatar.imageId").description("변경할 유저의 프로필 이미지 아이디 입니다. Nullable"),
-                                fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다ㅏ. Nullable")
+                                fieldWithPath("avatar.remotePath").description("변경할 유저의 프로필 이미지 url 입니다. Nullable")
                         )
                 ));
     }
@@ -158,7 +159,6 @@ class UserControllerTest {
         //when
         ResultActions perform = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/users")
-                        .param("user-id", String.valueOf(ID1))
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
@@ -183,5 +183,99 @@ class UserControllerTest {
                                 fieldWithPath("avatar.imageId").description("유저의 프로필 이미지 아이디 입니다. Nullable"),
                                 fieldWithPath("avatar.remotePath").description("유저의 프로필 이미지 url 입니다. Nullable")
                         )));
+    }
+
+    @Test
+    @DisplayName("회원탈퇴 성공")
+    public void withdrawal_suc() throws Exception {
+        //given
+        //when
+        ResultActions perform = mockMvc.perform(
+                delete("/users")
+                        .header(JWT_HEADER, JWT_TOKEN)
+        );
+        //then
+        perform.andExpect(status().isNoContent())
+                .andDo(document("회원탈퇴_성공",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet()
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 성공")
+    public void changePassword_suc() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(REQUEST_CHANGE_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/users/passwords")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNoContent())
+                .andDo(document("유저_비밀번호_변경_성공",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("originalPassword").description("기존 비밀번호 입니다."),
+                                fieldWithPath("newPassword").description("변경하고 싶은 비밀번호 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시 기존 비밀번호를 다륵게 입력시 409 실패")
+    public void changePassword_fail() throws Exception {
+        //given
+        doThrow(new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT)).when(userService).changePassword(any(), any());
+        String content = objectMapper.writeValueAsString(REQUEST_CHANGE_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/users/passwords")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("유저_비밀번호_변경_실패1",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("originalPassword").description("기존 비밀번호가 틀릴시 에러가 발생합니다."),
+                                fieldWithPath("newPassword").description("변경할 비밀번호 입니다. ")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시 비밀번호 유효성 검사 실패 400")
+    public void changePassword_fail2() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(INVALID_REQUEST_CHANGE_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/users/passwords")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("유저_비밀번호_변경_실패2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        requestFields(
+                                fieldWithPath("originalPassword").description("기존 비밀번호 입니다. "),
+                                fieldWithPath("newPassword").description("변경할 비밀번호 입니다. ")
+                        )
+                ));
     }
 }
