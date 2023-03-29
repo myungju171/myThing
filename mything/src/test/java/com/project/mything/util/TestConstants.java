@@ -4,20 +4,20 @@ import com.project.mything.auth.dto.AuthDto;
 import com.project.mything.friend.dto.ApplyDto;
 import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.image.dto.ImageDto;
+import com.project.mything.item.dto.ItemDto;
+import com.project.mything.item.entity.enums.ItemStatus;
 import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.headers.RequestHeadersSnippet;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -42,6 +42,7 @@ public class TestConstants {
     public final static LocalDate BIRTHDAY = LocalDate.of(2023, 3, 20);
     public final static LocalDate DIFF_BIRTHDAY = LocalDate.of(2023, 3, 20);
     public final static String AUTH_NUMBER = "1234";
+    public static final String INVALID_AUTH_NUMBER = "12345";
     public final static String DIFF_AUTH_NUMBER = "4321";
     public final static String ACCESS_KEY = "accessKey";
     public final static String INVALID_ACCESS_KEY = "invalidAccessKey";
@@ -53,6 +54,14 @@ public class TestConstants {
     public final static Integer ITEM_COUNT = 5;
     public final static String DIFF_REMOTE_PATH = "differentRemotePath";
     public final static Long NOT_FOUND_ID = 404L;
+    public final static String LINK = "testLink";
+    public final static String TITLE = "testTitle";
+    public final static String IMAGE = "test_remote_path";
+    public final static Integer PRICE = 1000;
+    public static final String MEMO = "MEMO";
+
+    public final static LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
+
     public final static AuthDto.RequestJoin REQUEST_JOIN = AuthDto.RequestJoin.builder()
             .email(EMAIL)
             .name(NAME)
@@ -74,9 +83,20 @@ public class TestConstants {
             .id(ID1)
             .name(NAME)
             .phone(PHONE)
+            .infoMessage(INFO_MESSAGE)
             .birthday(BIRTHDAY)
             .email(EMAIL)
             .password(PASSWORD)
+            .build();
+
+    public final static User DIFF_ORIGINAL_USER = User.builder()
+            .id(ID2)
+            .name(DIFF_NAME)
+            .phone(DIFF_PHONE)
+            .infoMessage(DIFF_INFO_MESSAGE)
+            .birthday(DIFF_BIRTHDAY)
+            .email(DIFF_EMAIL)
+            .password(DIFF_PASSWORD)
             .build();
 
     public final static User REQUEST_USER = User.builder()
@@ -154,6 +174,12 @@ public class TestConstants {
     public final static String FILE_PATH = "src/main/resources/" + FILE_NAME;
     public final static FileInputStream FILE_INPUT_STREAM;
     public final static MockMultipartFile MOCK_MULTIPART_FILE;
+    public static final UserDto.UserInfo USER_INFO = UserDto.UserInfo.builder()
+            .userId(ID1)
+            .email(EMAIL)
+            .name(NAME)
+            .build();
+
 
     static {
         try {
@@ -227,4 +253,82 @@ public class TestConstants {
             .build();
 
     public final static List<ApplyDto.ResponseSimpleApply> RESPONSE_SIMPLE_APPLY_LIST = List.of(RESPONSE_SIMPLE_APPLY, DIFF_RESPONSE_SIMPLE_APPLY);
+
+    public final static ItemDto.RequestSaveItem REQUEST_SAVE_ITEM = ItemDto.RequestSaveItem.builder()
+            .link(LINK)
+            .title(TITLE)
+            .productId(ID1)
+            .price(PRICE)
+            .image(IMAGE)
+            .build();
+
+    public final static ItemDto.ResponseItemId RESPONSE_ITEM_ID = ItemDto.ResponseItemId.builder()
+            .itemId(ID1)
+            .build();
+
+    public final static ItemDto.ResponseDetailItem RESPONSE_DETAIL_ITEM = ItemDto.ResponseDetailItem.builder()
+            .itemId(ID1)
+            .title(TITLE)
+            .link(LINK)
+            .price(PRICE)
+            .image(IMAGE)
+            .memo(MEMO)
+            .interestedItem(Boolean.FALSE)
+            .secretItem(Boolean.FALSE)
+            .itemStatus(ItemStatus.POST)
+            .createdAt(LOCAL_DATE_TIME)
+            .lastModifiedAt(LOCAL_DATE_TIME)
+            .build();
+
+    public static void setData(List<ItemDto.ResponseSimpleItem> data) {
+        for (int i = 1; i <= 5; i++) {
+            Boolean value;
+            ItemStatus itemStatus;
+            if (i % 2 == 0) {
+                value = Boolean.FALSE;
+                itemStatus = ItemStatus.BOUGHT;
+            } else {
+                value = Boolean.TRUE;
+                itemStatus = ItemStatus.POST;
+            }
+            data.add(ItemDto.ResponseSimpleItem.builder()
+                    .itemId((long) i)
+                    .itemStatus(itemStatus)
+                    .secretItem(value)
+                    .interestedItem(value)
+                    .title(TITLE)
+                    .createdAt(LocalDateTime.now())
+                    .lastModifiedAt(LocalDateTime.now())
+                    .image(IMAGE)
+                    .price(PRICE)
+                    .build());
+        }
+
+    }
+
+    public final static ItemDto.RequestChangeItemStatus REQUEST_CHANGE_ITEM_STATUS = ItemDto.RequestChangeItemStatus.builder()
+            .itemId(1L)
+            .itemStatus(ItemStatus.BOUGHT)
+            .build();
+
+    public final static AuthDto.RequestFindPassword REQUEST_FIND_PASSWORD = AuthDto.RequestFindPassword.builder()
+            .phone(PHONE)
+            .authNumber(AUTH_NUMBER)
+            .newPassword(PASSWORD)
+            .build();
+    public final static AuthDto.RequestFindPassword INVALID_REQUEST_FIND_PASSWORD = AuthDto.RequestFindPassword.builder()
+            .phone(INVALID_PHONE)
+            .authNumber(INVALID_AUTH_NUMBER)
+            .newPassword(INVALID_PASSWORD)
+            .build();
+
+    public final static UserDto.RequestChangePassword REQUEST_CHANGE_PASSWORD = UserDto.RequestChangePassword.builder()
+            .originalPassword(PASSWORD)
+            .newPassword(DIFF_PASSWORD)
+            .build();
+
+    public final static UserDto.RequestChangePassword INVALID_REQUEST_CHANGE_PASSWORD = UserDto.RequestChangePassword.builder()
+            .originalPassword(PASSWORD)
+            .newPassword(INVALID_PASSWORD)
+            .build();
 }
