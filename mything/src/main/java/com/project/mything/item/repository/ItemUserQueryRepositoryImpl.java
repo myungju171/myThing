@@ -3,7 +3,6 @@ package com.project.mything.item.repository;
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.dto.QItemDto_ResponseSimpleItem;
 import com.project.mything.item.entity.enums.ItemStatus;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.project.mything.item.entity.QItemUser.itemUser;
@@ -43,8 +41,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                         isFriend(isFriend))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(timeSort(sortBy),
-                        interestedItemSort(sortBy))
+                .orderBy(itemUser.interestedItem.desc(), itemUser.id.desc())
                 .fetch();
 
         Long count = queryFactory
@@ -73,18 +70,5 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
     private BooleanExpression wishItem() {
         return itemUser.itemStatus.eq(ItemStatus.POST)
                 .or(itemUser.itemStatus.eq(ItemStatus.RESERVE));
-    }
-
-    private OrderSpecifier<Boolean> interestedItemSort(String sortBy) {
-        if ("WISH".equals(sortBy))
-            return itemUser.interestedItem.desc();
-        return null;
-    }
-
-    private OrderSpecifier<LocalDateTime> timeSort(String sortBy) {
-        if ("WISH".equals(sortBy)) {
-            return itemUser.createdAt.desc();
-        }
-        return itemUser.lastModifiedAt.desc();
     }
 }
