@@ -16,6 +16,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
+
 @Entity
 @Getter
 @Builder
@@ -45,7 +48,7 @@ public class User extends BaseTime {
     private String infoMessage = "";
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user", cascade = {PERSIST, REMOVE})
     private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -53,11 +56,11 @@ public class User extends BaseTime {
     private Image image;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = REMOVE)
     private List<Friend> friendList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "sendUser")
+    @OneToMany(mappedBy = "sendUser", cascade = REMOVE)
     private List<Apply> applyList = new ArrayList<>();
 
     @Builder.Default
@@ -65,7 +68,7 @@ public class User extends BaseTime {
     private List<Notice> noticeList = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = REMOVE)
     private List<ItemUser> itemUserList = new ArrayList<>();
 
     public void editProfile(UserDto.RequestEditProFile requestEditProFile) {
@@ -78,15 +81,15 @@ public class User extends BaseTime {
         this.image = image;
     }
 
-    public void deleteImage() {
-        this.image = null;
-    }
-
     public void encodePassword(PasswordService passwordService) {
         password = passwordService.encodePassword(password);
     }
 
     public void removeImage() {
         this.image = null;
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
     }
 }
