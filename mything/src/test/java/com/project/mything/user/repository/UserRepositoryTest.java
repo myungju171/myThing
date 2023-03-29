@@ -18,8 +18,8 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("핸드폰 번호로 유저를 찾아오는 메서드 테스트")
-    public void findUserByPhone_suc(){
-    //given
+    public void findUserByPhone_suc() {
+        //given
         User user = User.builder()
                 .phone("01012345678")
                 .build();
@@ -33,7 +33,7 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("핸드폰 번호로 유저와 아이템유저 객체를 한번에 조회 ")
-    public void findUserWithItemUserByPhone_suc(){
+    public void findUserWithItemUserByPhone_suc() {
         //given
         User user = User.builder()
                 .phone("01012345678")
@@ -48,18 +48,17 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("유저 아이디로 유저와 아바타 객체를 한번에 조회")
-    public void findUserWithAvatar_suc(){
+    public void findUserWithAvatar_suc() {
         //given
         User user = User.builder()
-                .id(1L)
                 .build();
         User dbUser = userRepository.save(user);
         //when
-        User result = userRepository.findUserWithAvatar(user.getId())
+        User result = userRepository.findUserWithImage(user.getId())
                 .orElseThrow(RuntimeException::new);
         //then
         assertThat(result.getId()).isEqualTo(user.getId());
 
     }
-    
+
 }
