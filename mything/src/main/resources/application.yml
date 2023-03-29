@@ -1,8 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile:
-
   jpa:
     hibernate:
       ddl-auto: validate # create update create-update
