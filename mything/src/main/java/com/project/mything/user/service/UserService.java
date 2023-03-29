@@ -1,5 +1,6 @@
 package com.project.mything.user.service;
 
+import com.project.mything.auth.service.PasswordService;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.dto.UserDto;
@@ -21,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ImageService imageService;
     private final UserMapper userMapper;
+    private final PasswordService passwordService;
 
     public User findVerifiedUser(Long userId) {
         return userRepository.findById(userId)
@@ -56,6 +58,11 @@ public class UserService {
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public User findUserByPhone(String phone) {
+        return userRepository.findUserByPhone(phone)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
+    }
+
     public boolean findByPhone(String phone) {
         return userRepository.findUserByPhone(phone).isPresent();
     }
@@ -76,5 +83,19 @@ public class UserService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public void withdrawal(UserDto.UserInfo userInfo) {
+        User dbUser = findUserWithAvatar(userInfo.getUserId());
+        if (dbUser.getImage() != null)
+            imageService.deleteImage(dbUser.getImage().getId());
+        userRepository.delete(dbUser);
+    }
+
+    public void changePassword(UserDto.UserInfo userInfo, UserDto.RequestChangePassword requestChangePassword) {
+        User dbUser = findVerifiedUser(userInfo.getUserId());
+        passwordService.validatePassword(requestChangePassword.getOriginalPassword(), dbUser.getPassword());
+        dbUser.changePassword(requestChangePassword.getNewPassword());
+        dbUser.encodePassword(passwordService);
     }
 }
