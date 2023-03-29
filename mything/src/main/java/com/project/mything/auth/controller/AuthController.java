@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,8 +36,15 @@ public class AuthController {
     }
 
     @GetMapping("/email")
-    @ResponseStatus(HttpStatus.OK)
-    public void duplicateEmail(@RequestParam String email) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void duplicateEmail(@Valid @Email @RequestParam String email) {
         authService.duplicateEmail(email);
     }
+
+    @PatchMapping("/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findPassword(@Valid @RequestBody AuthDto.RequestFindPassword requestFindPassword) {
+        authService.findPassword(requestFindPassword);
+    }
+
 }

@@ -34,10 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest(value = "jwt.secretKey=only_test_secret_Key_value_gn..rlfdlrkqnwhrgkekspdy")
+@SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class AuthIntegrationTest {
+public class AuthTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -65,8 +65,6 @@ public class AuthIntegrationTest {
         User originalUser = REQUEST_USER;
         addUserRole(originalUser);
         userRepository.save(originalUser);
-
-        given(passwordService.isNotEqualPassword(any(), any())).willReturn(false);
 
         String content = objectMapper.writeValueAsString(REQUEST_LOGIN);
         //when

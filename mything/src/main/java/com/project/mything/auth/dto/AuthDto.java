@@ -66,4 +66,18 @@ public class AuthDto {
         private Long userId;
         private String accessToken;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestFindPassword {
+        @Size(min = 11, max = 11, message = "'-'를 제외하고 작성해주세요.")
+        private String phone;
+        @NotBlank
+        @Size(min = 4, max = 4)
+        private String authNumber;
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+        private String newPassword;
+    }
 }

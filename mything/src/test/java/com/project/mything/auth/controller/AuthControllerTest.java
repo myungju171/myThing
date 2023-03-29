@@ -29,9 +29,12 @@ import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static com.project.mything.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest({AuthController.class, ExceptionController.class})
@@ -70,7 +73,7 @@ class AuthControllerTest {
                 .andDo(document("인증번호_요청_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("phone").description("핸드폰 번호 11자리를 입력해주세요. / '-' 을 붙이지 말아주세요.")),
+                        requestFields(fieldWithPath("phone").description("핸드폰 번호 11자리를 입력해주세요. \n '-' 을 붙이지 말아주세요.")),
                         responseBody()
                 ));
     }
@@ -91,7 +94,7 @@ class AuthControllerTest {
                 .andDo(document("인증번호_요청_실패1",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(fieldWithPath("phone").description("핸드폰 번호 11자리를 입력해주세요. / '-' 을 붙이지 말아주세요."))
+                        requestFields(fieldWithPath("phone").description("핸드폰 번호 11자리를 입력해주세요. \n '-' 을 붙이지 말아주세요."))
                 ));
     }
 
@@ -112,6 +115,26 @@ class AuthControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(fieldWithPath("phone").description("이미 한번 인증 받은 번호는 인증번호 요청을 할 수 없습니다."))
+                ));
+    }
+
+    @Test
+    @DisplayName("인증번호를 요청시 이미 인증번호를 3분 이내 받았다면 409 ")
+    public void requestAuthNumber_fail3() throws Exception {
+        //given
+        given(authService.sendAuthNumber(any())).willThrow(new BusinessLogicException(ErrorCode.MESSAGE_ALREADY_SEND));
+        String content = objectMapper.writeValueAsString(REQUEST_AUTH_NUMBER);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/number")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("인증번호_요청_실패3",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(fieldWithPath("phone").description("인증번호 요청후 3분이내 인증번호 요청을 할 수 없습니다."))
                 ));
     }
 
@@ -381,4 +404,161 @@ class AuthControllerTest {
                                 fieldWithPath("password").description("잘못된 유저의 비밀번호 입니다."))
                 ));
     }
+
+    @Test
+    @DisplayName("회원가입시 동일한 이메일이 존재하지 않을시 검증이 통과한다.")
+    public void duplicateEmail_suc() throws Exception {
+        //given
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/auth/email")
+                        .param("email", EMAIL)
+        );
+        //then
+        verify(authService, times(1)).duplicateEmail(any());
+        perform.andExpect(status().isNoContent())
+                .andDo(document("이메일_중복검사_성공",
+                        requestParameters(
+                                parameterWithName("email").description("회원가입할 이메일입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("동일한 이메일이 존재하는지 확인시 이메일이 이메일 형식이 아닐시 400 리턴.")
+    public void duplicateEmail_fail() throws Exception {
+        //given
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/auth/email")
+                        .param("email", INVALID_EMAIL)
+        );
+        //then
+        verify(authService, times(0)).duplicateEmail(any());
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("이메일_중복검사_실패1",
+                        requestParameters(
+                                parameterWithName("email").description("@를 이용한 이메일 형식을 지켜주세요.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("동일한 이메일이 존재하는지 확인시 이메일이 이미 존재하면 409 리턴.")
+    public void duplicateEmail_fail1() throws Exception {
+        //given
+        doThrow(new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST)).when(authService).duplicateEmail(any());
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/auth/email")
+                        .param("email", EMAIL)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("이메일_중복검사_실패2",
+                        requestParameters(
+                                parameterWithName("email").description("이미 존재하는 이메일입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 성공")
+    public void findPassword_suc() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(REQUEST_FIND_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/auth/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        verify(authService, times(1)).findPassword(any());
+        perform.andExpect(status().isNoContent())
+                .andDo(document("비밀번호_찾기_성공",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("phone").description("비밀번호를 찾을 핸드폰 번호 입니다. 핸드폰 번호는 '-'를 제외하고 11자리 입니다."),
+                                fieldWithPath("authNumber").description("핸드폰 인증번호를 통해 받은 인증번호 4자리 입니다."),
+                                fieldWithPath("newPassword").description("변경할 새로운 비밀번호 입니다. 영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 시 인증번호가 틀릴시 실패 409")
+    public void findPassword_fail1() throws Exception {
+        //given
+        doThrow(new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER)).when(authService).findPassword(any());
+        String content = objectMapper.writeValueAsString(REQUEST_FIND_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/auth/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("비밀번호_찾기_실패1",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("phone").description("비밀번호를 찾을 핸드폰 번호 입니다. 핸드폰 번호는 '-'를 제외하고 11자리 입니다."),
+                                fieldWithPath("authNumber").description("핸드폰 인증번호를 통해 받은 인증번호 4자리 입니다."),
+                                fieldWithPath("newPassword").description("변경할 새로운 비밀번호 입니다. 영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 시 핸드폰 번호가 존재하지 않는 유저일시 실패 404")
+    public void findPassword_fail2() throws Exception {
+        //given
+        doThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND)).when(authService).findPassword(any());
+        String content = objectMapper.writeValueAsString(REQUEST_FIND_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/auth/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isNotFound())
+                .andDo(document("비밀번호_찾기_실패2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("phone").description("비밀번호를 찾을 핸드폰 번호 입니다. 핸드폰 번호는 '-'를 제외하고 11자리 입니다."),
+                                fieldWithPath("authNumber").description("핸드폰 인증번호를 통해 받은 인증번호 4자리 입니다."),
+                                fieldWithPath("newPassword").description("변경할 새로운 비밀번호 입니다. 영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("비밀번호 찾기 시 핸드폰번호, 인증번호, 새로운 비밀번호 유효성 검사 실패 400")
+    public void findPassword_fail3() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(INVALID_REQUEST_FIND_PASSWORD);
+        //when
+        ResultActions perform = mockMvc.perform(
+                patch("/auth/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isBadRequest())
+                .andDo(document("비밀번호_찾기_실패3",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("phone").description("비밀번호를 찾을 핸드폰 번호 입니다. 핸드폰 번호는 '-'를 제외하고 11자리 입니다."),
+                                fieldWithPath("authNumber").description("핸드폰 인증번호를 통해 받은 인증번호 4자리 입니다."),
+                                fieldWithPath("newPassword").description("변경할 새로운 비밀번호 입니다. 영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+                        )
+                ));
+    }
+
 }
