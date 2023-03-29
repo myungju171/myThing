@@ -10,6 +10,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        default_batch_fetch_size: 100
     database: mysql
     open-in-view: false
 
@@ -23,6 +24,10 @@ spring:
     username: ""
     password: ""
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: ""
+    port:
 
 logging:
   level:
