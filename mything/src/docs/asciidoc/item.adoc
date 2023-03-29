@@ -35,476 +35,446 @@
 
 ***
 == 아이템 검색
-=== 네이버_검색_API_성공_200
+=== 네이버_검색_API_성공
 
 .http-request
-include::{snippets}/네이버_검색_API_성공_200/http-request.adoc[]
+include::{snippets}/네이버_검색_API_성공/http-request.adoc[]
 
-.Request parameters
-include::{snippets}/네이버_검색_API_성공_200/request-parameters.adoc[]
+.request-headers
+include::{snippets}/네이버_검색_API_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/네이버_검색_API_성공/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/네이버_검색_API_성공_200/http-response.adoc[]
+include::{snippets}/네이버_검색_API_성공/http-response.adoc[]
 
-=== 네이버_검색_API_실패_query파라미터가_존재하지_않음_400
+=== 네이버_검색_API_실패
 
 .http-request
-include::{snippets}/네이버_검색_API_실패_query파라미터가_존재하지_않음_400/http-request.adoc[]
+include::{snippets}/네이버_검색_API_실패/http-request.adoc[]
+
+.request-headers
+include::{snippets}/네이버_검색_API_실패/request-headers.adoc[]
 
 .http-response
-include::{snippets}/네이버_검색_API_실패_query파라미터가_존재하지_않음_400/http-response.adoc[]
+include::{snippets}/네이버_검색_API_실패/http-response.adoc[]
 
 ***
 == 아이템 저장
-=== 아이템_저장하기_성공_201
+=== 아이템_저장_성공
 
 .http-request
-include::{snippets}/아이템_저장하기_성공_201/http-request.adoc[]
+include::{snippets}/아이템_저장_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_저장_성공/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_저장하기_성공_201/request-fields.adoc[]
+include::{snippets}/아이템_저장_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_저장하기_성공_201/http-response.adoc[]
+include::{snippets}/아이템_저장_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_저장하기_성공_201/response-fields.adoc[]
+include::{snippets}/아이템_저장_성공/response-fields.adoc[]
 
-=== 아이템_중복_저장하기_실패_409
-
-.http-request
-include::{snippets}/아이템_중복_저장하기_실패_409/http-request.adoc[]
-
-.request-fields
-include::{snippets}/아이템_중복_저장하기_실패_409/request-fields.adoc[]
-
-.http-response
-include::{snippets}/아이템_중복_저장하기_실패_409/http-response.adoc[]
-
-=== 아이템_저장하기_실패_모든_요청_DTO_필드값은_null값_허용않함_400
+=== 아이템_저장_실패1
 
 .http-request
-include::{snippets}/아이템_저장하기_실패_모든_요청_DTO_필드값은_null값_허용않함_400/http-request.adoc[]
+include::{snippets}/아이템_저장_실패1/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_저장_실패1/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_저장하기_실패_모든_요청_DTO_필드값은_null값_허용않함_400/request-fields.adoc[]
+include::{snippets}/아이템_저장_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_저장하기_실패_모든_요청_DTO_필드값은_null값_허용않함_400/http-response.adoc[]
+include::{snippets}/아이템_저장_실패1/http-response.adoc[]
+
+=== 아이템_저장_실패2
+
+.http-request
+include::{snippets}/아이템_저장_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_저장_실패2/request-headers.adoc[]
+
+.request-fields
+include::{snippets}/아이템_저장_실패2/request-fields.adoc[]
+
+.http-response
+include::{snippets}/아이템_저장_실패2/http-response.adoc[]
 
 ***
 == 아이템 삭제
-=== POST_상태인_아이템_삭제시_성공_204
-
+=== 아이템_삭제_성공
 .http-request
-include::{snippets}/POST_상태인_아이템_삭제시_성공_204/http-request.adoc[]
+include::{snippets}/아이템_삭제_성공/http-request.adoc[]
 
-.request-fields
-include::{snippets}/POST_상태인_아이템_삭제시_성공_204/request-fields.adoc[]
+.request-headers
+include::{snippets}/아이템_삭제_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_삭제_성공/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/POST_상태인_아이템_삭제시_성공_204/http-response.adoc[]
+include::{snippets}/아이템_삭제_성공/http-response.adoc[]
 
-=== 아이템_삭제시_잘못된_유저_아이디_전달_실패_404
-
-.http-request
-include::{snippets}/아이템_삭제시_잘못된_유저_아이디_전달_실패_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/아이템_삭제시_잘못된_유저_아이디_전달_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/아이템_삭제시_잘못된_유저_아이디_전달_실패_404/http-response.adoc[]
-
-=== 아이템_삭제시_잘못된_아이템_아이디_전달_실패_404
+=== 아이템_삭제_실패1
 
 .http-request
-include::{snippets}/아이템_삭제시_잘못된_아이템_아이디_전달_실패_404/http-request.adoc[]
+include::{snippets}/아이템_삭제_실패1/http-request.adoc[]
 
-.request-fields
-include::{snippets}/아이템_삭제시_잘못된_아이템_아이디_전달_실패_404/request-fields.adoc[]
+.request-headers
+include::{snippets}/아이템_삭제_실패1/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_삭제_실패1/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_삭제시_잘못된_아이템_아이디_전달_실패_404/http-response.adoc[]
+include::{snippets}/아이템_삭제_실패1/http-response.adoc[]
 
-=== POST_상태가_아닌_아이템_삭제시_실패_409
+=== 아이템_삭제_실패2
 
 .http-request
-include::{snippets}/POST_상태가_아닌_아이템_삭제시_실패_409/http-request.adoc[]
+include::{snippets}/아이템_삭제_실패2/http-request.adoc[]
 
-.request-fields
-include::{snippets}/POST_상태가_아닌_아이템_삭제시_실패_409/request-fields.adoc[]
+.request-headers
+include::{snippets}/아이템_삭제_실패2/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_삭제_실패2/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/POST_상태가_아닌_아이템_삭제시_실패_409/http-response.adoc[]
+include::{snippets}/아이템_삭제_실패2/http-response.adoc[]
 
 ***
 == 아이템 상세조회
-=== 아이템_상세조회_성공_200
+=== 아이템_상세조회_성공
 
 .http-request
-include::{snippets}/아이템_상세조회_성공_200/http-request.adoc[]
+include::{snippets}/아이템_상세조회_성공/http-request.adoc[]
 
-.Path parameters
-include::{snippets}/아이템_상세조회_성공_200/path-parameters.adoc[]
+.request-headers
+include::{snippets}/아이템_상세조회_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_상세조회_성공/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_상세조회_성공_200/http-response.adoc[]
+include::{snippets}/아이템_상세조회_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_상세조회_성공_200/response-fields.adoc[]
+include::{snippets}/아이템_상세조회_성공/response-fields.adoc[]
 
-=== 아이템_상세조회시_존재하지_않는_아이템_실패_404
+=== 아이템_상세조회_실패1
 
 .http-request
-include::{snippets}/아이템_상세조회시_존재하지_않는_아이템_실패_404/http-request.adoc[]
+include::{snippets}/아이템_상세조회_실패1/http-request.adoc[]
 
-.Path parameters
-include::{snippets}/아이템_상세조회시_존재하지_않는_아이템_실패_404/path-parameters.adoc[]
+.request-headers
+include::{snippets}/아이템_상세조회_실패1/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_상세조회_실패1/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_상세조회시_존재하지_않는_아이템_실패_404/http-response.adoc[]
+include::{snippets}/아이템_상세조회_실패1/http-response.adoc[]
 
 ***
 == 아이템 리스트 조회
-=== 본인의_아이템_리스트_조회_성공_200
+=== 아이템_리스트_조회_성공
 
 .http-request
-include::{snippets}/본인의_아이템_리스트_조회_성공_200/http-request.adoc[]
+include::{snippets}/아이템_리스트_조회_성공/http-request.adoc[]
 
-.Path parameters
-include::{snippets}/본인의_아이템_리스트_조회_성공_200/path-parameters.adoc[]
+.request-headers
+include::{snippets}/아이템_리스트_조회_성공/request-headers.adoc[]
 
-.Request parameters
-include::{snippets}/본인의_아이템_리스트_조회_성공_200/request-parameters.adoc[]
+.path-parameters
+include::{snippets}/아이템_리스트_조회_성공/path-parameters.adoc[]
+
+.request-parameters
+include::{snippets}/아이템_리스트_조회_성공/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/본인의_아이템_리스트_조회_성공_200/http-response.adoc[]
+include::{snippets}/아이템_리스트_조회_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/본인의_아이템_리스트_조회_성공_200/response-fields.adoc[]
+include::{snippets}/아이템_리스트_조회_성공/response-fields.adoc[]
 
-=== 친구의_아이템_리스트_조회_성공_200
-
-.http-request
-include::{snippets}/친구의_아이템_리스트_조회_성공_200/http-request.adoc[]
-
-.Path parameters
-include::{snippets}/친구의_아이템_리스트_조회_성공_200/path-parameters.adoc[]
-
-.Request parameters
-include::{snippets}/친구의_아이템_리스트_조회_성공_200/request-parameters.adoc[]
-
-.http-response
-include::{snippets}/친구의_아이템_리스트_조회_성공_200/http-response.adoc[]
-
-.response-fields
-include::{snippets}/친구의_아이템_리스트_조회_성공_200/response-fields.adoc[]
-
-
-=== 아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404
+=== 아이템_리스트_조회_실패1
 
 .http-request
-include::{snippets}/아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404/http-request.adoc[]
+include::{snippets}/아이템_리스트_조회_실패1/http-request.adoc[]
 
-.Path parameters
-include::{snippets}/아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404/path-parameters.adoc[]
+.request-headers
+include::{snippets}/아이템_리스트_조회_실패1/request-headers.adoc[]
 
-.Request parameters
-include::{snippets}/아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404/request-parameters.adoc[]
+.path-parameters
+include::{snippets}/아이템_리스트_조회_실패1/path-parameters.adoc[]
+
+.request-parameters
+include::{snippets}/아이템_리스트_조회_실패1/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_리스트_조회_존재하지_않는_유저아이디로_요청_404/http-response.adoc[]
+include::{snippets}/아이템_리스트_조회_실패1/http-response.adoc[]
 
 
-=== 아이템_리스트_조회_파라미터를_작성하지_않고_요청_400
+=== 아이템_리스트_조회_실패2
 
 .http-request
-include::{snippets}/아이템_리스트_조회_파라미터를_작성하지_않고_요청_400/http-request.adoc[]
+include::{snippets}/아이템_리스트_조회_실패2/http-request.adoc[]
 
-.Path parameters
-include::{snippets}/아이템_리스트_조회_파라미터를_작성하지_않고_요청_400/path-parameters.adoc[]
+.request-headers
+include::{snippets}/아이템_리스트_조회_실패2/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/아이템_리스트_조회_실패2/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/아이템_리스트_조회_파라미터를_작성하지_않고_요청_400/http-response.adoc[]
+include::{snippets}/아이템_리스트_조회_실패2/http-response.adoc[]
 
 ***
 == 아이템 상태변경
-=== 아이템_상태_BOUGHT로_변경_성공_200
+=== 아이템_상태_BOUGHT로_변경_성공
 
 .http-request
-include::{snippets}/아이템_상태_BOUGHT로_변경_성공_200/http-request.adoc[]
+include::{snippets}/아이템_상태_BOUGHT로_변경_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_상태_BOUGHT로_변경_성공/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_상태_BOUGHT로_변경_성공_200/request-fields.adoc[]
+include::{snippets}/아이템_상태_BOUGHT로_변경_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_상태_BOUGHT로_변경_성공_200/http-response.adoc[]
+include::{snippets}/아이템_상태_BOUGHT로_변경_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_상태_BOUGHT로_변경_성공_200/response-fields.adoc[]
+include::{snippets}/아이템_상태_BOUGHT로_변경_성공/response-fields.adoc[]
 
-=== 아이템_상태_RECEIVED로_변경_성공_200
+=== 아이템_상태_RECEIVED로_변경_성공
 
 .http-request
-include::{snippets}/아이템_상태_RECEIVED로_변경_성공_200/http-request.adoc[]
+include::{snippets}/아이템_상태_RECEIVED로_변경_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_상태_RECEIVED로_변경_성공/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_상태_RECEIVED로_변경_성공_200/request-fields.adoc[]
+include::{snippets}/아이템_상태_RECEIVED로_변경_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_상태_RECEIVED로_변경_성공_200/http-response.adoc[]
+include::{snippets}/아이템_상태_RECEIVED로_변경_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_상태_RECEIVED로_변경_성공_200/response-fields.adoc[]
+include::{snippets}/아이템_상태_RECEIVED로_변경_성공/response-fields.adoc[]
 
-=== 아이템_상태_RESERVE로_변경_성공_200
+=== 아이템_상태_RESERVE로_변경_성공
 
 .http-request
-include::{snippets}/아이템_상태_RESERVE로_변경_성공_200/http-request.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_성공/http-request.adoc[]
 
 .request-headers
-include::{snippets}/아이템_상태_RESERVE로_변경_성공_200/request-headers.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_성공/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_상태_RESERVE로_변경_성공_200/request-fields.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_상태_RESERVE로_변경_성공_200/http-response.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/아이템_상태_RESERVE로_변경_성공_200/response-fields.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_성공/response-fields.adoc[]
 
-=== 존재하지_않는_유저가_아이템_상태_변경_실패_404
-
-.http-request
-include::{snippets}/존재하지_않는_유저가_아이템_상태_변경_실패_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/존재하지_않는_유저가_아이템_상태_변경_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/존재하지_않는_유저가_아이템_상태_변경_실패_404/http-response.adoc[]
-
-=== 존재하지_않는_아이템의_상태_변경_실패_404
+=== 아이템_상태_RESERVE로_변경_실패1
 
 .http-request
-include::{snippets}/존재하지_않는_아이템의_상태_변경_실패_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/존재하지_않는_아이템의_상태_변경_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/존재하지_않는_아이템의_상태_변경_실패_404/http-response.adoc[]
-
-=== 요청값이_잘못되었을때_실패_404
-
-.http-request
-include::{snippets}/요청값이_잘못되었을때_실패_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/요청값이_잘못되었을때_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/요청값이_잘못되었을때_실패_404/http-response.adoc[]
-
-=== 존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404
-
-.http-request
-include::{snippets}/존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404/http-request.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패1/http-request.adoc[]
 
 .request-headers
-include::{snippets}/존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404/request-headers.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패1/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404/request-fields.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/존재하지_않는_예약자가_아이템상태_RESERVE로_변경_실패_404/http-response.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패1/http-response.adoc[]
 
-=== 아이템의_상태가_이미_RESERVE상태_변경_실패_409
+=== 아이템_상태_RESERVE로_변경_실패2
 
 .http-request
-include::{snippets}/아이템의_상태가_이미_RESERVE상태_변경_실패_409/http-request.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패2/http-request.adoc[]
 
 .request-headers
-include::{snippets}/아이템의_상태가_이미_RESERVE상태_변경_실패_409/request-headers.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패2/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템의_상태가_이미_RESERVE상태_변경_실패_409/request-fields.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패2/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템의_상태가_이미_RESERVE상태_변경_실패_409/http-response.adoc[]
+include::{snippets}/아이템_상태_RESERVE로_변경_실패2/http-response.adoc[]
 
-=== 아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409
+=== 아이템_상태_변경_실패1
 
 .http-request
-include::{snippets}/아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409/http-request.adoc[]
+include::{snippets}/아이템_상태_변경_실패1/http-request.adoc[]
 
 .request-headers
-include::{snippets}/아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409/request-headers.adoc[]
+include::{snippets}/아이템_상태_변경_실패1/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409/request-fields.adoc[]
+include::{snippets}/아이템_상태_변경_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/아이템_소유_유저아이디와_예약_유저아이디가_동일_실패_409/http-response.adoc[]
+include::{snippets}/아이템_상태_변경_실패1/http-response.adoc[]
 
-=== 아이템상태를_POST로_변경_시도_실패_409
+=== 아이템_상태_변경_실패2
 
 .http-request
-include::{snippets}/아이템상태를_POST로_변경_시도_실패_409/http-request.adoc[]
+include::{snippets}/아이템_상태_변경_실패2/http-request.adoc[]
 
-.request-fields
-include::{snippets}/아이템상태를_POST로_변경_시도_실패_409/request-fields.adoc[]
+.request-headers
+include::{snippets}/아이템_상태_변경_실패2/request-headers.adoc[]
 
 .http-response
-include::{snippets}/아이템상태를_POST로_변경_시도_실패_409/http-response.adoc[]
+include::{snippets}/아이템_상태_변경_실패2/http-response.adoc[]
 
 ***
-== 예약되어있는 아이템 상태 취소
-=== 예약된_아이템_예약취소_성공_204
+== 아이템 예약 취소
+=== 아이템_예약취소_성공
 
 .http-request
-include::{snippets}/예약된_아이템_예약취소_성공_204/http-request.adoc[]
+include::{snippets}/아이템_예약취소_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_예약취소_성공/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/예약된_아이템_예약취소_성공_204/request-fields.adoc[]
+include::{snippets}/아이템_예약취소_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/예약된_아이템_예약취소_성공_204/http-response.adoc[]
+include::{snippets}/아이템_예약취소_성공/http-response.adoc[]
 
-=== 예약된_아이템_예약취소시_요청값을_누락할_경우_400
+=== 아이템_예약취소_실패1
 
 .http-request
-include::{snippets}/예약된_아이템_예약취소시_요청값을_누락할_경우_400/http-request.adoc[]
+include::{snippets}/아이템_예약취소_실패1/http-request.adoc[]
 
-.request-fields
-include::{snippets}/예약된_아이템_예약취소시_요청값을_누락할_경우_400/request-fields.adoc[]
+.request-headers
+include::{snippets}/아이템_예약취소_실패1/request-headers.adoc[]
 
 .http-response
-include::{snippets}/예약된_아이템_예약취소시_요청값을_누락할_경우_400/http-response.adoc[]
+include::{snippets}/아이템_예약취소_실패1/http-response.adoc[]
 
-=== 예약된_아이템_예약취소시_요청값이_음수일_경우_400
+=== 아이템_예약취소_실패2
 
 .http-request
-include::{snippets}/예약된_아이템_예약취소시_요청값이_음수일_경우_400/http-request.adoc[]
+include::{snippets}/아이템_예약취소_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_예약취소_실패2/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/예약된_아이템_예약취소시_요청값이_음수일_경우_400/request-fields.adoc[]
+include::{snippets}/아이템_예약취소_실패2/request-fields.adoc[]
 
 .http-response
-include::{snippets}/예약된_아이템_예약취소시_요청값이_음수일_경우_400/http-response.adoc[]
+include::{snippets}/아이템_예약취소_실패2/http-response.adoc[]
 
-=== 예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404
+=== 아이템_예약취소_실패3
 
 .http-request
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404/http-request.adoc[]
+include::{snippets}/아이템_예약취소_실패3/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_예약취소_실패3/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404/request-fields.adoc[]
+include::{snippets}/아이템_예약취소_실패3/request-fields.adoc[]
 
 .http-response
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_reservedId를_전달할_경우_404/http-response.adoc[]
+include::{snippets}/아이템_예약취소_실패3/http-response.adoc[]
 
-=== 예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404
+=== 아이템_예약취소_실패4
 
 .http-request
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404/http-request.adoc[]
+include::{snippets}/아이템_예약취소_실패4/http-request.adoc[]
+
+.request-headers
+include::{snippets}/아이템_예약취소_실패4/request-headers.adoc[]
 
 .request-fields
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404/request-fields.adoc[]
+include::{snippets}/아이템_예약취소_실패4/request-fields.adoc[]
 
 .http-response
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_itemId를_전달할_경우_404/http-response.adoc[]
-
-=== 예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404
-
-.http-request
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/예약된_아이템_예약취소시_존재하지_않는_userId를_전달할_경우_404/http-response.adoc[]
-
-=== 예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409
-
-.http-request
-include::{snippets}/예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409/http-request.adoc[]
-
-.request-fields
-include::{snippets}/예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409/request-fields.adoc[]
-
-.http-response
-include::{snippets}/예약된_아이템_예약취소시_아이템의_상태가_RESERVE가_아님_실패_409/http-response.adoc[]
-
-=== 예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403
-
-.http-request
-include::{snippets}/예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403/http-request.adoc[]
-
-.request-fields
-include::{snippets}/예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403/request-fields.adoc[]
-
-.http-response
-include::{snippets}/예약된_아이템_예약취소시_기존_reservedId와_요청_reservedId가_다름_실패_403/http-response.adoc[]
+include::{snippets}/아이템_예약취소_실패4/http-response.adoc[]
 
 ***
 == 관심아이템 상태 변경
-=== 관심아이템_상태_변경_성공_200
+=== 관심아이템_상태_변경_성공
 
 .http-request
-include::{snippets}/관심아이템_상태_변경_성공_200/http-request.adoc[]
+include::{snippets}/관심아이템_상태_변경_성공/http-request.adoc[]
 
-.request-fields
-include::{snippets}/관심아이템_상태_변경_성공_200/request-fields.adoc[]
+.request-headers
+include::{snippets}/관심아이템_상태_변경_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/관심아이템_상태_변경_성공/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/관심아이템_상태_변경_성공_200/http-response.adoc[]
+include::{snippets}/관심아이템_상태_변경_성공/http-response.adoc[]
 
-.request-fields
-include::{snippets}/관심아이템_상태_변경_성공_200/request-fields.adoc[]
+.response-fields
+include::{snippets}/관심아이템_상태_변경_성공/response-fields.adoc[]
 
-=== 관심아이템_상태_변경_실패_404
+=== 관심아이템_상태_변경_실패
 
 .http-request
-include::{snippets}/관심아이템_상태_변경_실패_404/http-request.adoc[]
+include::{snippets}/관심아이템_상태_변경_실패/http-request.adoc[]
 
-.request-fields
-include::{snippets}/관심아이템_상태_변경_실패_404/request-fields.adoc[]
+.request-headers
+include::{snippets}/관심아이템_상태_변경_실패/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/관심아이템_상태_변경_실패/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/관심아이템_상태_변경_실패_404/http-response.adoc[]
+include::{snippets}/관심아이템_상태_변경_실패/http-response.adoc[]
 
 ***
 == 비공개 아이템 상태 변경
-
-=== 비밀아이템_상태_변경_성공_200
-
-.http-request
-include::{snippets}/비밀아이템_상태_변경_성공_200/http-request.adoc[]
-
-.request-fields
-include::{snippets}/비밀아이템_상태_변경_성공_200/request-fields.adoc[]
-
-.http-response
-include::{snippets}/비밀아이템_상태_변경_성공_200/http-response.adoc[]
-
-.request-fields
-include::{snippets}/비밀아이템_상태_변경_성공_200/request-fields.adoc[]
-
-=== 비밀아이템_상태_변경_실패_404
+=== 비밀아이템_상태_변경_성공
 
 .http-request
-include::{snippets}/비밀아이템_상태_변경_실패_404/http-request.adoc[]
+include::{snippets}/비밀아이템_상태_변경_성공/http-request.adoc[]
 
-.request-fields
-include::{snippets}/비밀아이템_상태_변경_실패_404/request-fields.adoc[]
+.request-headers
+include::{snippets}/비밀아이템_상태_변경_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/비밀아이템_상태_변경_성공/path-parameters.adoc[]
 
 .http-response
-include::{snippets}/비밀아이템_상태_변경_실패_404/http-response.adoc[]
+include::{snippets}/비밀아이템_상태_변경_성공/http-response.adoc[]
 
-.request-fields
-include::{snippets}/비밀아이템_상태_변경_실패_404/request-fields.adoc[]
+.response-fields
+include::{snippets}/비밀아이템_상태_변경_성공/response-fields.adoc[]
+
+=== 비밀아이템_상태_변경_실패
+
+.http-request
+include::{snippets}/비밀아이템_상태_변경_실패/http-request.adoc[]
+
+.request-headers
+include::{snippets}/비밀아이템_상태_변경_실패/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/비밀아이템_상태_변경_실패/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/비밀아이템_상태_변경_실패/http-response.adoc[]
+
