@@ -3,7 +3,6 @@ package com.project.mything.user.service;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.dto.UserDto;
-import com.project.mything.user.entity.Avatar;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.repository.UserRepository;
@@ -14,9 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
+import static com.project.mything.util.TestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,14 +35,11 @@ class UserServiceTest {
     @DisplayName("findVerifiedUser메서드 테스트 통과 ")
     public void findVerifiedUser_suc() {
         //given
-        User dbUser = User.builder()
-                .id(1L)
-                .build();
-        given(userRepository.findById(any())).willReturn(Optional.of(dbUser));
+        given(userRepository.findById(any())).willReturn(Optional.of(ORIGINAL_USER));
         //when
         User result = userService.findVerifiedUser(1L);
         //then
-        assertThat(result.getId()).isEqualTo(dbUser.getId());
+        assertThat(result.getId()).isEqualTo(ORIGINAL_USER.getId());
     }
 
     @Test
@@ -60,49 +56,30 @@ class UserServiceTest {
 
     @Test
     @DisplayName("getUserInfo메서드 성공")
-    public void getUserInfo_suc() {
+    public void getUserDetail_suc() {
         //given
-        User dbUser = User.builder()
-                .id(1L)
-                .name("test")
-                .birthDay(LocalDate.of(1999, 4, 8))
-                .infoMessage("testInfo")
-                .phone("01012345678")
-                .avatar(Avatar.builder().id(1L).remotePath("remotePath").build())
-                .build();
-
-        UserDto.ResponseDetailUser result = UserDto.ResponseDetailUser.builder()
-                .userId(1L)
-                .name("test")
-                .birthDay(LocalDate.of(1999, 4, 8))
-                .infoMessage("testInfo")
-                .phone("01012345678")
-                .avatarId(1L)
-                .image("remotePath")
-                .build();
-
-        given(userRepository.findUserWithAvatar(any())).willReturn(Optional.of(dbUser));
-        given(userMapper.toResponseDetailUser(any(),any())).willReturn(result);
+        given(userRepository.findUserWithImage(any())).willReturn(Optional.of(ORIGINAL_USER));
+        given(userMapper.toResponseDetailUser(any())).willReturn(RESPONSE_DETAIL_USER);
         //when
-        UserDto.ResponseDetailUser userInfo = userService.getUserInfo(dbUser.getId());
+        UserDto.ResponseDetailUser userInfo = userService.getUserDetail(USER_INFO);
         //then
-        assertThat(userInfo.getUserId()).isEqualTo(dbUser.getId());
-        assertThat(userInfo.getPhone()).isEqualTo(dbUser.getPhone());
-        assertThat(userInfo.getBirthDay().compareTo(dbUser.getBirthDay())).isEqualTo(0);
-        assertThat(userInfo.getInfoMessage()).isEqualTo(dbUser.getInfoMessage());
-        assertThat(userInfo.getAvatarId()).isEqualTo(dbUser.getAvatar().getId());
-        assertThat(userInfo.getImage()).isEqualTo(dbUser.getAvatar().getRemotePath());
+        assertThat(userInfo.getUserId()).isEqualTo(ID1);
+        assertThat(userInfo.getName()).isEqualTo(NAME);
+        assertThat(userInfo.getPhone()).isEqualTo(PHONE);
+        assertThat(userInfo.getBirthday().toString()).isEqualTo(BIRTHDAY.toString());
+        assertThat(userInfo.getInfoMessage()).isEqualTo(INFO_MESSAGE);
+        assertThat(userInfo.getAvatar().getImageId()).isEqualTo(ID1);
+        assertThat(userInfo.getAvatar().getRemotePath()).isEqualTo(REMOTE_PATH);
     }
 
     @Test
-    @DisplayName("getUserInfo메서드 존재하지 않는 유저 실패")
-    public void getUserInfo_fail() {
+    @DisplayName("getUserDetail메서드 존재하지 않는 유저 실패")
+    public void getUserDetail_fail() {
         //given
-
-        given(userRepository.findUserWithAvatar(any()))
+        given(userRepository.findUserWithImage(any()))
                 .willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         //then
-        assertThatThrownBy(() -> userService.getUserInfo(any())).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> userService.findUserWithAvatar(any())).isInstanceOf(BusinessLogicException.class);
     }
 }
