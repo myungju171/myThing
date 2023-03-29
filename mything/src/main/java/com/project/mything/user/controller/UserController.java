@@ -31,4 +31,17 @@ public class UserController {
     public UserDto.ResponseDetailUser getUserDetail(@RequestHeader("Authorization") String token) {
         return userService.getUserDetail(jwtParseToken.getUserInfo(token));
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void withdrawal(@RequestHeader("Authorization") String token) {
+        userService.withdrawal(jwtParseToken.getUserInfo(token));
+    }
+
+    @PatchMapping("/passwords")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@RequestHeader("Authorization") String token,
+                               @Valid @RequestBody UserDto.RequestChangePassword requestChangePassword) {
+        userService.changePassword(jwtParseToken.getUserInfo(token), requestChangePassword);
+    }
 }
