@@ -84,6 +84,7 @@ class ApplyControllerTest {
         ResultActions perform = mockMvc.perform(
                 post("/friends/applies/{received-id}", 0)
                         .header(JWT_HEADER, JWT_TOKEN)
+                        .param("receivedId", ID2.toString())
         );
         //then
         perform.andExpect(status().isBadRequest())
@@ -344,7 +345,7 @@ class ApplyControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("친구_요청_취소_실패3",
+                .andDo(document("친구_요청_취소_실패4",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet()
@@ -481,7 +482,7 @@ class ApplyControllerTest {
                 .andExpect(jsonPath("$.[1].user.name").value(DIFF_NAME))
                 .andExpect(jsonPath("$.[1].user.avatar.imageId").value(ID2))
                 .andExpect(jsonPath("$.[1].user.avatar.remotePath").value(DIFF_REMOTE_PATH))
-                .andDo(document("친구_요청받은_목록_확인_성공1",
+                .andDo(document("친구_요청_받은_목록_확인_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
@@ -525,7 +526,7 @@ class ApplyControllerTest {
                 .andExpect(jsonPath("$.[1].user.name").value(DIFF_NAME))
                 .andExpect(jsonPath("$.[1].user.avatar.imageId").value(ID2))
                 .andExpect(jsonPath("$.[1].user.avatar.remotePath").value(DIFF_REMOTE_PATH))
-                .andDo(document("친구_신청한_목록_확인_성공2",
+                .andDo(document("친구_요청_보낸_목록_확인_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
@@ -557,7 +558,7 @@ class ApplyControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("친구_목록_확인_실패",
+                .andDo(document("친구_요청_목록_확인_실패",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet()
