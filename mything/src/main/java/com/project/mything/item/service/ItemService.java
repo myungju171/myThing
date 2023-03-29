@@ -12,7 +12,6 @@ import com.project.mything.item.repository.ItemRepository;
 import com.project.mything.item.repository.ItemUserRepository;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
-import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -84,14 +83,20 @@ public class ItemService {
     }
 
     public ItemDto.ResponseItemId changeItemStatus(UserDto.UserInfo userInfo, ItemDto.RequestChangeItemStatus requestChangeItemStatus) {
-        validateSelfReserve(userInfo.getUserId(), requestChangeItemStatus.getReservedId());
-        User reservedUser
-                = verifyReservedUserId(requestChangeItemStatus.getReservedId());
-        ItemUser dbItemUser
-                = verifyItemUser(userInfo.getUserId(), requestChangeItemStatus.getItemId());
-        validateExistReservedUser(dbItemUser);
+        ItemUser dbItemUser = verifyItemUser(userInfo.getUserId(), requestChangeItemStatus.getItemId());
+        User reservedUser = ifItemStatusIsReserve(userInfo, requestChangeItemStatus, dbItemUser);
         dbItemUser.updateItemStatus(requestChangeItemStatus.getItemStatus(), reservedUser);
         return itemMapper.toResponseItemId(dbItemUser.getItem().getId());
+    }
+
+    private User ifItemStatusIsReserve(UserDto.UserInfo userInfo, ItemDto.RequestChangeItemStatus requestChangeItemStatus, ItemUser dbItemUser) {
+        User reservedUser = null;
+        if (requestChangeItemStatus.getItemStatus().equals(ItemStatus.RESERVE)) {
+            validateSelfReserve(userInfo.getUserId(), requestChangeItemStatus.getReservedId());
+            reservedUser = verifyReservedUserId(requestChangeItemStatus.getReservedId());
+            validateExistReservedUser(dbItemUser);
+        }
+        return reservedUser;
     }
 
     private void validateExistReservedUser(ItemUser dbItemUser) {
@@ -109,16 +114,13 @@ public class ItemService {
     }
 
     private User verifyReservedUserId(Long reservedUserId) {
-        if (reservedUserId == null) return null;
         return userService.findVerifiedUser(reservedUserId);
     }
 
     public void cancelReservedItem(UserDto.UserInfo userInfo, ItemDto.RequestCancelReserveItem requestCancelReserveItem) {
-        ItemUser dbItemUser = verifyItemUser(userInfo.getUserId(), requestCancelReserveItem.getItemId());
-        Long reservedUserId = requestCancelReserveItem.getReservedUserId();
-        verifyReservedUserId(reservedUserId);
+        ItemUser dbItemUser = verifyItemUser(requestCancelReserveItem.getItemOwnerUserId(), requestCancelReserveItem.getItemId());
         verifyItemStatus(dbItemUser.getItemStatus(), ItemStatus.RESERVE);
-        verifyItemReservedUser(dbItemUser, reservedUserId);
+        verifyItemReservedUser(dbItemUser, userInfo.getUserId());
         dbItemUser.cancelReserveItem();
     }
 

@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile:
+      on-profile: prod
 
   jpa:
     hibernate:
@@ -10,7 +10,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 100
+        default_batch_fetch_size: 500
     database: mysql
     open-in-view: false
 
@@ -31,10 +31,8 @@ spring:
 
 logging:
   level:
-    org.springframework.web.client: debug
-    org.hibernate.sql: debug
-    org.hibernate.type: trace
-    org.springframework.security: debug
+    root: error
+
 
 server:
   servlet:

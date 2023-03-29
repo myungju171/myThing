@@ -54,15 +54,15 @@ public class ItemController {
         return itemService.getDetailItem(jwtParseToken.getUserInfo(token), itemId);
     }
 
-    @GetMapping("/{user-id}")
+    @GetMapping("/users/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@PathVariable("user-id") Long userId,
-                                                                               @RequestParam(required = false, defaultValue = "TRUE") Boolean isNotMine,
-                                                                               @RequestParam(required = false, defaultValue = "FALSE") Boolean isFriend,
-                                                                               @RequestParam(required = false, defaultValue = "null") String sortBy,
-                                                                               @RequestParam Integer start,
-                                                                               @RequestParam Integer size) {
-        return itemService.getSimpleItems(userId, isNotMine, isFriend, sortBy, start, size);
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@Valid @PathVariable("user-id") Long userId,
+                                                                               @Valid @RequestParam(required = false, defaultValue = "TRUE") Boolean isWish,
+                                                                               @Valid  @RequestParam(required = false, defaultValue = "TRUE") Boolean isFriend,
+                                                                               @Valid @RequestParam(required = false, defaultValue = "null") String sortBy,
+                                                                               @Valid  @RequestParam Integer start,
+                                                                               @Valid @RequestParam Integer size) {
+        return itemService.getSimpleItems(userId, isWish, isFriend, sortBy, start, size);
     }
 
     @PatchMapping("/statuses")

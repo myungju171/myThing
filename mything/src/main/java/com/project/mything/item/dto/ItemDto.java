@@ -52,6 +52,8 @@ public class ItemDto {
         private Boolean interestedItem;
         private Boolean secretItem;
         private ItemStatus itemStatus;
+        private LocalDateTime createdAt;
+        private LocalDateTime lastModifiedAt;
     }
 
     @Getter
@@ -115,6 +117,6 @@ public class ItemDto {
         private Long itemId;
         @NotNull
         @Positive
-        private Long reservedUserId;
+        private Long itemOwnerUserId;
     }
 }
