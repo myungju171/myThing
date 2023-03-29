@@ -15,6 +15,8 @@ public interface ItemMapper {
     ItemDto.ResponseItemId toResponseItemId(Long itemId);
 
     @Mapping(source = "dbItem.id", target = "itemId")
+    @Mapping(source = "itemUser.createdAt", target = "createdAt")
+    @Mapping(source = "itemUser.lastModifiedAt", target = "lastModifiedAt")
     ItemDto.ResponseDetailItem toResponseDetailItem(ItemUser itemUser, Item dbItem);
 
 }
