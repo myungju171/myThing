@@ -1,0 +1,339 @@
+
+= 친구 요청 관련 API
+:doctype: book
+:icons: font
+:source-highlighter:
+:toc: left
+:toclevels: 4
+:sectlinks:
+:sectnums:
+:docinfo: shared-head
+:toc-title: Table of Contents
+:source-highlighter: prettify
+:app-name: myThing
+:author: BAEKSION
+
+본 REST API 문서에서 사용하는 HTTP 상태 코드는 가능한한 표준 HTTP와 REST 규약을 따릅니다.
+|===
+| `200 OK`
+| 상태를 성공적으로 처리함.
+| `201 CREATED`
+| 새 리소스를 성공적으로 생성함.
+| `204 NO CONTENT`
+| 기존 리소스를 성공적으로 제거하여 반환할 자원이 존재하지 않음.
+| `400 BAD REQUEST`
+| 잘못된 요청이므로 서버에서 처리할 수 없음.
+| `401 UNAUTHORIZED`
+| 인증에 실패함.
+| `403 FORBIDDEN`
+| 권한이 부족하여 요청을 수행할 수 없음.
+| `404 NOT FOUND`
+| 요청한 자원이 존재하지 않음.
+| `409 CONFLICT`
+| 서버의 규칙에 의해 해당 요청을 수행할 수 없음.
+|===
+
+
+***
+== 친구 신청
+=== 친구_신청_성공
+
+.http-request
+include::{snippets}/친구_신청_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_신청_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/친구_신청_성공/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_신청_성공/http-response.adoc[]
+
+.response-fields
+include::{snippets}/친구_신청_성공/response-fields.adoc[]
+
+=== 친구_신청_실패1
+
+.http-request
+include::{snippets}/친구_신청_실패1/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_신청_실패1/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/친구_신청_실패1/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_신청_실패1/http-response.adoc[]
+
+=== 친구_신청_실패2
+
+.http-request
+include::{snippets}/친구_신청_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_신청_실패2/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/친구_신청_실패2/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_신청_실패2/http-response.adoc[]
+
+=== 친구_신청_실패3
+
+.http-request
+include::{snippets}/친구_신청_실패3/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_신청_실패3/request-headers.adoc[]
+
+.http-response
+include::{snippets}/친구_신청_실패3/http-response.adoc[]
+
+***
+== 친구 요청 거부
+=== 친구_요청_거부_성공
+.http-request
+include::{snippets}/친구_요청_거부_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_거부_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_거부_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_거부_성공/http-response.adoc[]
+
+.response-fields
+include::{snippets}/친구_요청_거부_성공/response-fields.adoc[]
+
+=== 친구_요청_거부_실패1
+.http-request
+include::{snippets}/친구_요청_거부_실패1/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_거부_실패1/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_거부_실패1/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_거부_실패1/http-response.adoc[]
+
+=== 친구_요청_거부_실패2
+.http-request
+include::{snippets}/친구_요청_거부_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_거부_실패2/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_거부_실패2/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_거부_실패2/http-response.adoc[]
+
+=== 친구_요청_거부_실패3
+.http-request
+include::{snippets}/친구_요청_거부_실패3/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_거부_실패3/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_거부_실패3/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_거부_실패3/http-response.adoc[]
+
+=== 친구_요청_거부_실패4
+.http-request
+include::{snippets}/친구_요청_거부_실패4/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_거부_실패4/request-headers.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_거부_실패4/http-response.adoc[]
+
+***
+== 친구 요청 취소
+=== 친구_요청_취소_성공
+.http-request
+include::{snippets}/친구_요청_취소_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_취소_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_취소_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_취소_성공/http-response.adoc[]
+
+=== 친구_요청_취소_실패1
+.http-request
+include::{snippets}/친구_요청_취소_실패1/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_취소_실패1/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_취소_실패1/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_취소_실패1/http-response.adoc[]
+
+=== 친구_요청_취소_실패2
+.http-request
+include::{snippets}/친구_요청_취소_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_취소_실패2/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_취소_실패2/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_취소_실패2/http-response.adoc[]
+
+=== 친구_요청_취소_실패3
+.http-request
+include::{snippets}/친구_요청_취소_실패3/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_취소_실패3/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_취소_실패3/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_취소_실패3/http-response.adoc[]
+
+=== 친구_요청_취소_실패4
+.http-request
+include::{snippets}/친구_요청_취소_실패4/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_취소_실패4/request-headers.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_취소_실패4/http-response.adoc[]
+
+***
+== 친구 요청 성공
+=== 친구_요청_수락_성공
+.http-request
+include::{snippets}/친구_요청_수락_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_수락_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_수락_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_수락_성공/http-response.adoc[]
+
+=== 친구_요청_수락_실패1
+
+.http-request
+include::{snippets}/친구_요청_수락_실패1/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_수락_실패1/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_수락_실패1/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_수락_실패1/http-response.adoc[]
+
+=== 친구_요청_수락_실패2
+
+.http-request
+include::{snippets}/친구_요청_수락_실패2/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_수락_실패2/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_수락_실패2/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_수락_실패2/http-response.adoc[]
+
+=== 친구_요청_수락_실패3
+
+.http-request
+include::{snippets}/친구_요청_수락_실패3/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_수락_실패3/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_수락_실패3/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_수락_실패3/http-response.adoc[]
+
+=== 친구_요청_수락_실패4
+
+.http-request
+include::{snippets}/친구_요청_수락_실패4/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_수락_실패4/request-headers.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_수락_실패4/http-response.adoc[]
+
+***
+== 친구 요청 목록 확인
+=== 친구_요청_받은_목록_확인_성공
+
+.http-request
+include::{snippets}/친구_요청_받은_목록_확인_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_받은_목록_확인_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_받은_목록_확인_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_받은_목록_확인_성공/http-response.adoc[]
+
+.response-fields
+include::{snippets}/친구_요청_받은_목록_확인_성공/response-fields.adoc[]
+
+=== 친구_요청_보낸_목록_확인_성공
+
+.http-request
+include::{snippets}/친구_요청_보낸_목록_확인_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_보낸_목록_확인_성공/request-headers.adoc[]
+
+.request-parameters
+include::{snippets}/친구_요청_보낸_목록_확인_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_보낸_목록_확인_성공/http-response.adoc[]
+
+.response-fields
+include::{snippets}/친구_요청_보낸_목록_확인_성공/response-fields.adoc[]
+
+=== 친구_요청_목록_확인_실패
+
+.http-request
+include::{snippets}/친구_요청_목록_확인_실패/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_요청_목록_확인_실패/request-headers.adoc[]
+
+.http-response
+include::{snippets}/친구_요청_목록_확인_실패/http-response.adoc[]
