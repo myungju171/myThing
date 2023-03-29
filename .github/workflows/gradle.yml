@@ -38,6 +38,7 @@ jobs:
           sudo add-apt-repository ppa:redislabs/redis
           sudo apt update
           sudo apt install -y redis-server
+          sudo redis-cli ping
         shell: bash
           
        # [1] application.yml 생성
@@ -99,8 +100,9 @@ jobs:
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
       - name: Server Build 
-        run: |                          
-          cd mything/                    
+        run: |         
+          cd mything/  
+          cat src/main/resources/application.yml
           chmod +x ./gradlew            
           ./gradlew clean build  
           cd ..                         
