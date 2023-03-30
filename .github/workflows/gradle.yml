@@ -31,26 +31,21 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-#           sudo apt-get update
-#           sudo apt-get upgrade
-#           sudo apt-get install redis-server
-#           echo '>redis 버전확인'          
-#           redis-server --version
-#           echo '>redis 실행' 
-#           sudo systemctl start redis.service
-#           nohub redis-server &
+
       
       - name : download Redis
         run: |
           pwd
-          sudo apt install gcc
-          make distclean
-          make
-          wget https://download.redis.io/releases/redis-7.0.5.tar.gz
-          tar xzf redis-7.0.5.tar.gz
-          cd redis-7.0.5
-          make
-          sudo nohup src/redis-server &
+          echo '>우분투 업데이트'              
+          sudo apt-get update
+          sudo apt-get upgrade
+          echo '>redis 설치'    
+          sudo apt-get install redis-server
+          echo '>redis 버전확인'          
+          redis-server --version
+          echo '>redis 실행' 
+          sudo systemctl start redis.service
+          sudo nohup redis-server &
           echo '>포트확인'
           netstat -nlpt | grep 6379
           sudo redis-cli ping
