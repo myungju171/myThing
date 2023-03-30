@@ -34,9 +34,6 @@ jobs:
       
       - name : download Redis
         run: |
-          ls -al
-          echo '>포트확인'
-          netstat -nlpt | grep 6379
           pwd
           sudo apt-get update
           sudo apt-get upgrade
@@ -45,6 +42,7 @@ jobs:
           redis-server --version
           echo '>redis 실행' 
           sudo systemctl start redis.service
+          nohub redis-server &
           echo '>포트확인'
           netstat -nlpt | grep 6379
           sudo redis-cli ping
