@@ -26,7 +26,7 @@ public class AuthNumSendServiceImpl implements AuthNumSendService {
         message.setFrom(phoneAuthConfig.getFromNumber());
         message.setTo(toNumber);
         message.setText("[MyThing] 인증번호는 " + randomNumber + " 입니다.");
-        defaultMessageService.sendOne(new SingleMessageSendingRequest(message));
+//        defaultMessageService.sendOne(new SingleMessageSendingRequest(message));
         log.info(message.getTo() + "로 문자를 발송완료 했습니다.");
     }
 }
