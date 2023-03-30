@@ -71,6 +71,7 @@ jobs:
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
+          cloud.aws.s3.name: ${{ secrets.AWS_IMAGE_BUCKET_FILE }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           
           nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
@@ -100,6 +101,7 @@ jobs:
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.SERVER_AWS_IMAGE_BUCKET_NAME }}
+          cloud.aws.s3.name: ${{ secrets.AWS_IMAGE_BUCKET_FILE }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           
           nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
@@ -109,14 +111,14 @@ jobs:
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
-#       - name: Server Build 
-#         run: |         
-#           cd mything/  
-#           cat src/main/resources/application.yml
-#           sudo chmod +x ./gradlew            
-#           sudo ./gradlew clean build 
-#           cd ..                         
-#         shell: bash  
+      - name: Server Build 
+        run: |         
+          cd mything/  
+          cat src/main/resources/application.yml
+          sudo chmod +x ./gradlew            
+          sudo ./gradlew clean build 
+          cd ..                         
+        shell: bash  
         
         # [3] save build
       - name: Make zip file
@@ -136,12 +138,12 @@ jobs:
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./mything.zip s3://$S3_BUCKET_NAME/mything.zip
 
-#         # [6] deploy
-#       - name: Code Deploy
-#         run: |
-#           aws deploy create-deployment \
-#           --deployment-config-name CodeDeployDefault.AllAtOnce \
-#           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-#           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-#           --file-exists-behavior OVERWRITE \
-#           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip
+        # [6] deploy
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip
