@@ -35,76 +35,237 @@
 
 ***
 == 휴대폰 인증번호 요청
-=== 인증번호_요청_성공_200
+=== 인증번호_요청_성공
 
 .http-request
-include::{snippets}/인증번호_요청_성공_200/http-request.adoc[]
+include::{snippets}/인증번호_요청_성공/http-request.adoc[]
 
 .request-fields
-include::{snippets}/인증번호_요청_성공_200/request-fields.adoc[]
+include::{snippets}/인증번호_요청_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/인증번호_요청_성공_200/http-response.adoc[]
+include::{snippets}/인증번호_요청_성공/http-response.adoc[]
 
-
-=== 11자리의_휴대폰_번호가_아닐시_실패_400
+=== 인증번호_요청_실패1
 
 .http-request
-include::{snippets}/11자리의_휴대폰_번호가_아닐시_실패_400/http-request.adoc[]
+include::{snippets}/인증번호_요청_실패1/http-request.adoc[]
 
 .request-fields
-include::{snippets}/11자리의_휴대폰_번호가_아닐시_실패_400/request-fields.adoc[]
+include::{snippets}/인증번호_요청_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/11자리의_휴대폰_번호가_아닐시_실패_400/http-response.adoc[]
+include::{snippets}/인증번호_요청_실패1/http-response.adoc[]
+
+=== 인증번호_요청_실패2
+
+.http-request
+include::{snippets}/인증번호_요청_실패2/http-request.adoc[]
+
+.request-fields
+include::{snippets}/인증번호_요청_실패2/request-fields.adoc[]
+
+.http-response
+include::{snippets}/인증번호_요청_실패2/http-response.adoc[]
+
+=== 인증번호_요청_실패3
+
+.http-request
+include::{snippets}/인증번호_요청_실패3/http-request.adoc[]
+
+.request-fields
+include::{snippets}/인증번호_요청_실패3/request-fields.adoc[]
+
+.http-response
+include::{snippets}/인증번호_요청_실패3/http-response.adoc[]
+
 ***
 == 회원가입 요청
-=== 회원가입_성공_200
+=== 회원가입_성공
 
 .http-request
-include::{snippets}/회원가입_성공_200/http-request.adoc[]
+include::{snippets}/회원가입_성공/http-request.adoc[]
 
 .request-fields
-include::{snippets}/회원가입_성공_200/request-fields.adoc[]
+include::{snippets}/회원가입_성공/request-fields.adoc[]
 
 .http-response
-include::{snippets}/회원가입_성공_200/http-response.adoc[]
+include::{snippets}/회원가입_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/회원가입_성공_200/response-fields.adoc[]
+include::{snippets}/회원가입_성공/response-fields.adoc[]
 
-=== 기존회원_유저아이디_리턴_200
+=== 회원가입_실패1
 
 .http-request
-include::{snippets}/기존회원_유저아이디_리턴_200/http-request.adoc[]
+include::{snippets}/회원가입_실패1/http-request.adoc[]
 
 .request-fields
-include::{snippets}/기존회원_유저아이디_리턴_200/request-fields.adoc[]
+include::{snippets}/회원가입_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/기존회원_유저아이디_리턴_200/http-response.adoc[]
+include::{snippets}/회원가입_실패1/http-response.adoc[]
+
+
+=== 회원가입_실패2
+
+.http-request
+include::{snippets}/회원가입_실패2/http-request.adoc[]
+
+.request-fields
+include::{snippets}/회원가입_실패2/request-fields.adoc[]
+
+.http-response
+include::{snippets}/회원가입_실패2/http-response.adoc[]
+
+=== 회원가입_실패3
+
+.http-request
+include::{snippets}/회원가입_실패3/http-request.adoc[]
+
+.request-fields
+include::{snippets}/회원가입_실패3/request-fields.adoc[]
+
+.http-response
+include::{snippets}/회원가입_실패3/http-response.adoc[]
+
+=== 회원가입_실패4
+
+.http-request
+include::{snippets}/회원가입_실패4/http-request.adoc[]
+
+.request-fields
+include::{snippets}/회원가입_실패4/request-fields.adoc[]
+
+.http-response
+include::{snippets}/회원가입_실패4/http-response.adoc[]
+
+=== 회원가입_실패5
+
+.http-request
+include::{snippets}/회원가입_실패5/http-request.adoc[]
+
+.request-fields
+include::{snippets}/회원가입_실패5/request-fields.adoc[]
+
+.http-response
+include::{snippets}/회원가입_실패5/http-response.adoc[]
+
+***
+== 로그인 요청
+=== 로그인_성공
+
+.http-request
+include::{snippets}/로그인_성공/http-request.adoc[]
+
+.request-fields
+include::{snippets}/로그인_성공/request-fields.adoc[]
+
+.http-response
+include::{snippets}/로그인_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/기존회원_유저아이디_리턴_200/response-fields.adoc[]
+include::{snippets}/로그인_성공/response-fields.adoc[]
 
-=== 회원가입시_인증번호가_다름_실패_404
-
-.http-request
-include::{snippets}/회원가입시_인증번호가_다름_실패_404/http-request.adoc[]
-
-.request-fields
-include::{snippets}/회원가입시_인증번호가_다름_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/회원가입시_인증번호가_다름_실패_404/http-response.adoc[]
-
-=== 회원가입시_해당_핸드폰으로_인증번호를_받은_기록이_없음_실패_404
+=== 로그인_실패1
 
 .http-request
-include::{snippets}/회원가입시_해당_핸드폰으로_인증번호를_받은_기록이_없음_실패_404/http-request.adoc[]
+include::{snippets}/로그인_실패1/http-request.adoc[]
 
 .request-fields
-include::{snippets}/회원가입시_해당_핸드폰으로_인증번호를_받은_기록이_없음_실패_404/request-fields.adoc[]
+include::{snippets}/로그인_실패1/request-fields.adoc[]
 
 .http-response
-include::{snippets}/회원가입시_해당_핸드폰으로_인증번호를_받은_기록이_없음_실패_404/http-response.adoc[]
+include::{snippets}/로그인_실패1/http-response.adoc[]
+
+=== 로그인_실패2
+
+.http-request
+include::{snippets}/로그인_실패2/http-request.adoc[]
+
+.request-fields
+include::{snippets}/로그인_실패2/request-fields.adoc[]
+
+.http-response
+include::{snippets}/로그인_실패2/http-response.adoc[]
+
+***
+== 이메일 중복검사
+=== 이메일_중복검사_성공
+
+.http-request
+include::{snippets}/이메일_중복검사_성공/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/이메일_중복검사_성공/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/이메일_중복검사_성공/http-response.adoc[]
+
+=== 이메일_중복검사_실패1
+
+.http-request
+include::{snippets}/이메일_중복검사_실패1/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/이메일_중복검사_실패1/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/이메일_중복검사_실패1/http-response.adoc[]
+
+=== 이메일_중복검사_실패2
+
+.http-request
+include::{snippets}/이메일_중복검사_실패2/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/이메일_중복검사_실패2/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/이메일_중복검사_실패2/http-response.adoc[]
+
+***
+== 비밀번호 찾기
+=== 비밀번호_찾기_성공
+
+.http-request
+include::{snippets}/비밀번호_찾기_성공/http-request.adoc[]
+
+.request-fields
+include::{snippets}/비밀번호_찾기_성공/request-fields.adoc[]
+
+.http-response
+include::{snippets}/비밀번호_찾기_성공/http-response.adoc[]
+
+=== 비밀번호_찾기_실패1
+
+.http-request
+include::{snippets}/비밀번호_찾기_실패1/http-request.adoc[]
+
+.request-fields
+include::{snippets}/비밀번호_찾기_실패1/request-fields.adoc[]
+
+.http-response
+include::{snippets}/비밀번호_찾기_실패1/http-response.adoc[]
+
+=== 비밀번호_찾기_실패2
+
+.http-request
+include::{snippets}/비밀번호_찾기_실패2/http-request.adoc[]
+
+.request-fields
+include::{snippets}/비밀번호_찾기_실패2/request-fields.adoc[]
+
+.http-response
+include::{snippets}/비밀번호_찾기_실패2/http-response.adoc[]
+
+=== 비밀번호_찾기_실패3
+
+.http-request
+include::{snippets}/비밀번호_찾기_실패3/http-request.adoc[]
+
+.request-fields
+include::{snippets}/비밀번호_찾기_실패3/request-fields.adoc[]
+
+.http-response
+include::{snippets}/비밀번호_찾기_실패3/http-response.adoc[]

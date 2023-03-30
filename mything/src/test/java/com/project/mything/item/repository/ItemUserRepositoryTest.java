@@ -90,7 +90,7 @@ class ItemUserRepositoryTest {
         ItemUser itemUser = ItemUser.builder().user(user).item(item).build().addItemUser();
         ItemUser dbItemUser = itemUserRepository.save(itemUser);
         //when
-        boolean result = itemUserRepository.findItemUserByUserIdAndProductId(dbUser.getId(), dbItem.getProductId()).isPresent();
+        boolean result = itemUserRepository.findByUserIdAndProductId(dbUser.getId(), dbItem.getProductId()).isPresent();
         //then
         assertThat(result).isTrue();
     }
@@ -106,7 +106,7 @@ class ItemUserRepositoryTest {
         ItemUser itemUser = ItemUser.builder().user(user).item(item).build().addItemUser();
         ItemUser dbItemUser = itemUserRepository.save(itemUser);
         //when
-        ItemUser result = itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), item.getId())
+        ItemUser result = itemUserRepository.findByUserIdAndItemId(dbUser.getId(), item.getId())
                 .orElseThrow(() -> new RuntimeException("ItemUser null값"));
         //then
         assertThat(result.getItem().getTitle()).isEqualTo(dbItem.getTitle());
@@ -136,7 +136,7 @@ class ItemUserRepositoryTest {
         itemUserRepository.delete(dbItemUser);
 
         boolean present =
-                itemUserRepository.findItemUserByUserIdAndItemId(dbUser.getId(), dbItem.getId()).isPresent();
+                itemUserRepository.findByUserIdAndItemId(dbUser.getId(), dbItem.getId()).isPresent();
         //then
         assertThat(dbUser.getItemUserList().size()).isEqualTo(0);
         assertThat(dbItem.getItemUserList().size()).isEqualTo(0);

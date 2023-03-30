@@ -15,6 +15,7 @@ on:
 env:
   S3_BUCKET_NAME: morakmorak
   RESOURCE_PATH: ./mything/src/main/resources/application.yml
+  SERVER_RESOURCE_PATH: ./mything/src/main/resources/application-prod.yml
   CODE_DEPLOY_APPLICATION_NAME: morak
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: morak-group
 
@@ -30,6 +31,25 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      
+      - name : download Redis
+        run: |
+          pwd
+          echo '>우분투 업데이트'              
+          sudo apt-get update
+          sudo apt-get upgrade
+          echo '>redis 설치'    
+          sudo apt-get install redis-server
+          echo '>redis 버전확인'          
+          redis-server --version
+          echo '>redis 실행' 
+          sudo systemctl start redis.service
+          sudo nohup redis-server &
+          echo '>포트확인'
+          netstat -nlpt | grep 6379
+          sudo redis-cli ping
+        shell: bash
           
        # [1] application.yml 생성
       - name: Set yaml file 
@@ -41,11 +61,17 @@ jobs:
           spring.datasource.username: ${{ secrets.MYSQL_USERNAME }}
           spring.datasource.password: ${{ secrets.MYSQL_PASSWORD }}
           
+          spring.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.redis.port: ${{ secrets.REDIS_PORT }}          
+          
           server.port: ${{ secrets.SERVER_PORT }}
+          
+          jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
           
           cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
           cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
           cloud.aws.s3.bucket: ${{ secrets.AWS_IMAGE_BUCKET_NAME }}
+          cloud.aws.s3.name: ${{ secrets.AWS_IMAGE_BUCKET_FILE }}
           cloud.aws.region.static: ${{ secrets.AWS_REGION }}
           
           nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
@@ -55,38 +81,69 @@ jobs:
           naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
           naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
 
-#       - name: Server Build 
-#         run: |                          
-#           cd mything/                    
-#           chmod +x ./gradlew            
-#           ./gradlew clean build  
-#           cd ..                         
-#         shell: bash  
+      # [2] application-prod.yml 생성
+      - name: Set yaml file 
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.SERVER_RESOURCE_PATH }} 
+        env:
+          spring.datasource.url: ${{ secrets.SERVER_MYSQL_URL }}
+          spring.datasource.username: ${{ secrets.MYSQL_USERNAME }}
+          spring.datasource.password: ${{ secrets.MYSQL_PASSWORD }}
+          
+          spring.redis.host: ${{ secrets.SERVER_REDIS_HOST }}
+          spring.redis.port: ${{ secrets.REDIS_PORT }}          
+          
+          server.port: ${{ secrets.SERVER_PORT }}
+          
+          jwt.secretKey: ${{ secrets.JWT_SECRET_KEY }}
+          
+          cloud.aws.credentials.accessKey: ${{ secrets.AWS_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.AWS_SECRET_KEY }}
+          cloud.aws.s3.bucket: ${{ secrets.SERVER_AWS_IMAGE_BUCKET_NAME }}
+          cloud.aws.s3.name: ${{ secrets.AWS_IMAGE_BUCKET_FILE }}
+          cloud.aws.region.static: ${{ secrets.AWS_REGION }}
+          
+          nurigo.public: ${{ secrets.NURIGO_PUBLIC }}
+          nurigo.secret: ${{ secrets.NURIGO_SECRET }}
+          nurigo.number: ${{ secrets.NURIGO_NUMBER }}
+          
+          naver.X-Naver-Client-Id: ${{ secrets.NAVER_ID }}
+          naver.X-Naver-Client-Secret: ${{ secrets.NAVER_SECRET }}        
+
+      - name: Server Build 
+        run: |         
+          cd mything/  
+          cat src/main/resources/application.yml
+          sudo chmod +x ./gradlew            
+          sudo ./gradlew clean build 
+          cd ..                         
+        shell: bash  
         
-#         # [3] save build
-#       - name: Make zip file
-#         run: zip -r ./mything.zip .
-#         shell: bash
+        # [3] save build
+      - name: Make zip file
+        run: zip -r ./mything.zip .
+        shell: bash
       
       
-#         # [4] aws 권한
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-#           aws-region: ap-northeast-2
+        # [4] aws 권한
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
 
-#         # [5] upload
-#       - name: Upload to S3
-#         run: aws s3 cp --region ap-northeast-2 ./mything.zip s3://$S3_BUCKET_NAME/mything.zip
+        # [5] upload
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 ./mything.zip s3://$S3_BUCKET_NAME/mything.zip
 
-#         # [6] deploy
-#       - name: Code Deploy
-#         run: |
-#           aws deploy create-deployment \
-#           --deployment-config-name CodeDeployDefault.AllAtOnce \
-#           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-#           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-#           --file-exists-behavior OVERWRITE \
-#           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip
+        # [6] deploy
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=mything.zip

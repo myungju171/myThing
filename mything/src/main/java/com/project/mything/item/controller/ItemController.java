@@ -54,13 +54,15 @@ public class ItemController {
         return itemService.getDetailItem(jwtParseToken.getUserInfo(token), itemId);
     }
 
-    @GetMapping
+    @GetMapping("/users/{user-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@RequestParam Long userId,
-                                                                               @RequestParam(required = false, defaultValue = "false") Boolean isFriend,
-                                                                               @RequestParam Integer start,
-                                                                               @RequestParam Integer size) {
-        return itemService.getSimpleItems(userId, isFriend, start, size);
+    public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@Valid @PathVariable("user-id") Long userId,
+                                                                               @Valid @RequestParam(required = false, defaultValue = "TRUE") Boolean isWish,
+                                                                               @Valid  @RequestParam(required = false, defaultValue = "TRUE") Boolean isFriend,
+                                                                               @Valid @RequestParam(required = false, defaultValue = "null") String sortBy,
+                                                                               @Valid  @RequestParam Integer start,
+                                                                               @Valid @RequestParam Integer size) {
+        return itemService.getSimpleItems(userId, isWish, isFriend, sortBy, start, size);
     }
 
     @PatchMapping("/statuses")

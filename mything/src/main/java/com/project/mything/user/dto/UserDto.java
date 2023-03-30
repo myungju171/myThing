@@ -7,6 +7,7 @@ import reactor.util.annotation.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 public class UserDto {
@@ -72,5 +73,16 @@ public class UserDto {
         private LocalDate birthday;
         @Nullable
         private ImageDto.SimpleImageDto avatar;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RequestChangePassword {
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+        private String originalPassword;
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
+        private String newPassword;
     }
 }

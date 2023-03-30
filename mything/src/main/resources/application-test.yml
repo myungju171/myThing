@@ -1,4 +1,8 @@
 spring:
+  config:
+    activate:
+      on-profile: test
+
   jpa:
     hibernate:
       ddl-auto: validate # create update create-update
@@ -6,7 +10,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 100
+        default_batch_fetch_size: 500
     database: mysql
     open-in-view: false
 
@@ -37,7 +41,6 @@ server:
     encoding:
       charset: UTF-8
       force: true
-  port: 8000
 
 jwt:
   secretKey: ""
@@ -49,7 +52,7 @@ cloud:
       secretKey: ""
     s3:
       bucket: ""
-      name: ""  
+
     region:
       static: ""
 

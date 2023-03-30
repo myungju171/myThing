@@ -8,6 +8,7 @@ import com.project.mything.friend.repository.FriendRepository;
 import com.project.mything.page.ResponseMultiPageDto;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
+import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,11 +24,12 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final FriendMapper friendMapper;
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Transactional(readOnly = true)
     public FriendDto.ResponseSimpleFriend searchFriend(String friendPhone) {
         User dbFriend = userService.findUserWithItemUserByPhone(friendPhone);
-        return friendMapper.toResponseSimpleFriend(dbFriend, dbFriend.getItemUserList().size());
+        return friendMapper.toResponseSimpleFriend(userMapper.toResponseDetailUser(dbFriend), dbFriend.getItemUserList().size());
     }
 
     @Transactional(readOnly = true)

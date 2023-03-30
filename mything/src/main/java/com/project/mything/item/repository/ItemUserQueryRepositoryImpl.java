@@ -25,7 +25,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
     }
 
     @Override
-    public Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId, Boolean isFriend, Pageable pageable) {
+    public Page<ItemDto.ResponseSimpleItem> searchSimpleItem(Long userId, Boolean isWish, Boolean isFriend, String sortBy, Pageable pageable) {
         List<ItemDto.ResponseSimpleItem> result = queryFactory.select(new QItemDto_ResponseSimpleItem(
                         itemUser.item.id,
                         itemUser.item.title,
@@ -37,20 +37,18 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                         itemUser.createdAt,
                         itemUser.lastModifiedAt))
                 .from(itemUser)
-                .where(itemUser.user.id.eq(userId)
-                                .and(itemUser.itemStatus.eq(ItemStatus.POST)
-                                .or(itemUser.itemStatus.eq(ItemStatus.RESERVE)))
-                ,isFriend(isFriend))
+                .where(isWish(isWish),
+                        isFriend(isFriend))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(itemUser.interestedItem.desc(),itemUser.createdAt.desc())
+                .orderBy(itemUser.interestedItem.desc(), itemUser.id.desc())
                 .fetch();
 
         Long count = queryFactory
                 .select(itemUser.count())
                 .from(itemUser)
-                .where(itemUser.itemStatus.eq(ItemStatus.POST)
-                        .and(itemUser.itemStatus.eq(ItemStatus.RESERVE)))
+                .where(isWish(isWish),
+                        isFriend(isFriend))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);
@@ -58,5 +56,19 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
 
     private BooleanExpression isFriend(Boolean isFriend) {
         return isFriend ? itemUser.secretItem.eq(false) : null;
+    }
+
+    private BooleanExpression isWish(Boolean isWish) {
+        return isWish ? wishItem() : notWishItem();
+    }
+
+    private BooleanExpression notWishItem() {
+        return itemUser.itemStatus.eq(ItemStatus.BOUGHT)
+                .or(itemUser.itemStatus.eq(ItemStatus.RECEIVED));
+    }
+
+    private BooleanExpression wishItem() {
+        return itemUser.itemStatus.eq(ItemStatus.POST)
+                .or(itemUser.itemStatus.eq(ItemStatus.RESERVE));
     }
 }

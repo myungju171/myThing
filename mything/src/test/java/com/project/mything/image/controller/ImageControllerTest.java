@@ -25,6 +25,8 @@ import static com.project.mything.config.ApiDocumentUtils.getDocumentResponse;
 import static com.project.mything.util.TestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
@@ -52,6 +54,7 @@ class ImageControllerTest {
 
     @Test
     @DisplayName("이미지 서버에 업로드 성공 201")
+
     public void upload_suc() throws Exception {
         //given
         given(imageService.uploadImage(any())).willReturn(SIMPLE_IMAGE_DTO);
@@ -106,13 +109,14 @@ class ImageControllerTest {
     @DisplayName("유저 프로필 이미지 삭제 성공 204")
     void delete_suc() throws Exception {
         //given
+        given(jwtTokenProvider.getUserInfo(any())).willReturn(USER_INFO);
         //when
         ResultActions perform = mockMvc.perform(
                 delete("/users/avatars")
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
-        verify(imageService, times(1)).deleteImage(any());
+        verify(imageService, times(1)).deleteImage(ID1);
         perform.andExpect(status().isNoContent())
                 .andDo(document("유저_프로필_이미지_삭제_성공",
                         getDocumentRequest(),
@@ -125,6 +129,7 @@ class ImageControllerTest {
     @DisplayName("유저 프로필 이미지 삭제시 해당 유저의 아바타가 없을때 실패 409")
     void delete_fail() throws Exception {
         //given
+        given(jwtTokenProvider.getUserInfo(any())).willReturn(USER_INFO);
         doThrow(new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL)).when(imageService).deleteImage(any());
         //when
         ResultActions perform = mockMvc.perform(
@@ -136,7 +141,7 @@ class ImageControllerTest {
                 .andDo(document("유저_프로필_이미지_삭제_실패",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        getRequestHeadersSnippet()
+                        requestHeaders(headerWithName(JWT_HEADER).description("해당 토큰의 유저의 프로필 사진이 없을 시 에러가 발생합니다."))
                 ));
     }
 }

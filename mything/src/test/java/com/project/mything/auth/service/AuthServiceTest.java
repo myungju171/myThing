@@ -98,7 +98,6 @@ class AuthServiceTest {
     public void login_suc1() {
         //given
         given(userService.findUserByEmail(any())).willReturn(ORIGINAL_USER);
-        given(passwordService.isNotEqualPassword(any(), any())).willReturn(false);
         given(jwtTokenProvider.createToken(any())).willReturn(ACCESS_KEY);
         given(authMapper.toResponseToken(any(), any())).willReturn(RESPONSE_LOGIN);
         //when
@@ -122,8 +121,7 @@ class AuthServiceTest {
     @DisplayName("로그인시 비밀번호가 다를 경우 409 리턴")
     public void login_fail2() {
         //given
-        given(userService.findUserByEmail(any())).willReturn(ORIGINAL_USER);
-        given(passwordService.isNotEqualPassword(any(), any())).willReturn(true);
+        given(userService.findUserByEmail(any())).willThrow(new BusinessLogicException(ErrorCode.NO_CORRECT_ACCOUNT));
         //when
         //then
         assertThatThrownBy(() -> authService.login(REQUEST_LOGIN)).isInstanceOf(BusinessLogicException.class);

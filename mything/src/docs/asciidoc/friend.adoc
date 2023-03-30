@@ -35,89 +35,81 @@
 
 ***
 == 친구 검색
-=== 핸드폰_번호로_유저_조회시_성공_200
+=== 핸드폰번호로_유저_검색_성공
 .http-request
-include::{snippets}/핸드폰_번호로_유저_조회시_성공_200/http-request.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_성공/http-request.adoc[]
 
-.Request-parameters
-include::{snippets}/핸드폰_번호로_유저_조회시_성공_200/request-parameters.adoc[]
+.request-parameters
+include::{snippets}/핸드폰번호로_유저_검색_성공/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/핸드폰_번호로_유저_조회시_성공_200/http-response.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/핸드폰_번호로_유저_조회시_성공_200/response-fields.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_성공/response-fields.adoc[]
 
-=== 존재하지_않는_핸드폰_번호로_유저_조회시_실패_404
+=== 핸드폰번호로_유저_검색_실패1
 .http-request
-include::{snippets}/존재하지_않는_핸드폰_번호로_유저_조회시_실패_404/http-request.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패1/http-request.adoc[]
 
-.Request-parameters
-include::{snippets}/존재하지_않는_핸드폰_번호로_유저_조회시_실패_404/request-parameters.adoc[]
+.request-parameters
+include::{snippets}/핸드폰번호로_유저_검색_실패1/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/존재하지_않는_핸드폰_번호로_유저_조회시_실패_404/http-response.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패1/http-response.adoc[]
 
-=== 파라미터_누락_실패_400
+=== 핸드폰번호로_유저_검색_실패2
 .http-request
-include::{snippets}/파라미터_누락_실패_400/http-request.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패2/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/핸드폰번호로_유저_검색_실패2/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/파라미터_누락_실패_400/http-response.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패2/http-response.adoc[]
 
-=== 11자리가_아닌_핸드폰_번호로_유저_조회시_실패_400
+=== 핸드폰번호로_유저_검색_실패3
 .http-request
-include::{snippets}/11자리가_아닌_핸드폰_번호로_유저_조회시_실패_400/http-request.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패3/http-request.adoc[]
 
-.Request-parameters
-include::{snippets}/11자리가_아닌_핸드폰_번호로_유저_조회시_실패_400/request-parameters.adoc[]
+.request-parameters
+include::{snippets}/핸드폰번호로_유저_검색_실패3/request-parameters.adoc[]
 
 .http-response
-include::{snippets}/11자리가_아닌_핸드폰_번호로_유저_조회시_실패_400/http-response.adoc[]
+include::{snippets}/핸드폰번호로_유저_검색_실패3/http-response.adoc[]
 
+***
 == 친구 조회
-=== 친구리스트_불러오기_성공_200
+=== 자신의_친구목록_조회_성공
 .http-request
-include::{snippets}/친구리스트_불러오기_성공_200/http-request.adoc[]
+include::{snippets}/자신의_친구목록_조회_성공/http-request.adoc[]
 
-.Request-fields
-include::{snippets}/친구리스트_불러오기_성공_200/request-fields.adoc[]
+.request-parameters
+include::{snippets}/자신의_친구목록_조회_성공/request-parameters.adoc[]
+
+.request-headers
+include::{snippets}/자신의_친구목록_조회_성공/request-headers.adoc[]
 
 .http-response
-include::{snippets}/친구리스트_불러오기_성공_200/http-response.adoc[]
+include::{snippets}/자신의_친구목록_조회_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/친구리스트_불러오기_성공_200/response-fields.adoc[]
+include::{snippets}/자신의_친구목록_조회_성공/response-fields.adoc[]
 
-=== 친구리스트_불러오기_존재하는_친구_없음_성공_200
+***
+=== 자신의_생일인_친구목록_조회_성공
 
 .http-request
-include::{snippets}/친구리스트_불러오기_존재하는_친구_없음_성공_200/http-request.adoc[]
+include::{snippets}/자신의_생일인_친구목록_조회_성공/http-request.adoc[]
 
-.Request-fields
-include::{snippets}/친구리스트_불러오기_존재하는_친구_없음_성공_200/request-fields.adoc[]
+.request-parameters
+include::{snippets}/자신의_생일인_친구목록_조회_성공/request-parameters.adoc[]
+
+.request-headers
+include::{snippets}/자신의_생일인_친구목록_조회_성공/request-headers.adoc[]
 
 .http-response
-include::{snippets}/친구리스트_불러오기_존재하는_친구_없음_성공_200/http-response.adoc[]
+include::{snippets}/자신의_생일인_친구목록_조회_성공/http-response.adoc[]
 
 .response-fields
-include::{snippets}/친구리스트_불러오기_존재하는_친구_없음_성공_200/response-fields.adoc[]
-
-===친구리스트_불러오기_파라미터_Null_400
-
-.http-request
-include::{snippets}/친구리스트_불러오기_파라미터_Null_400/http-request.adoc[]
-
-.http-response
-include::{snippets}/친구리스트_불러오기_파라미터_Null_400/http-response.adoc[]
-
-=== 친구리스트_불러오기_존재하지_않는_유저아이디_실패_404
-
-.http-request
-include::{snippets}/친구리스트_불러오기_존재하지_않는_유저아이디_실패_404/http-request.adoc[]
-
-.Request-fields
-include::{snippets}/친구리스트_불러오기_존재하지_않는_유저아이디_실패_404/request-fields.adoc[]
-
-.http-response
-include::{snippets}/친구리스트_불러오기_존재하지_않는_유저아이디_실패_404/http-response.adoc[]
+include::{snippets}/자신의_생일인_친구목록_조회_성공/response-fields.adoc[]

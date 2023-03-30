@@ -29,8 +29,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,7 +56,7 @@ class ApplyControllerTest {
         given(applyService.createApply(any(), any())).willReturn(RESPONSE_APPLY_ID);
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies")
+                post("/friends/applies/{received-id}", ID1)
                         .param("receivedId", ID2.toString())
                         .header(JWT_HEADER, JWT_TOKEN)
         );
@@ -68,8 +67,8 @@ class ApplyControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
-                        requestParameters(
-                                parameterWithName("receivedId").description("요청을 받을 아이디 입니다.")
+                        pathParameters(
+                                parameterWithName("received-id").description("요청을 받을 아이디 입니다.")
                         ),
                         responseFields(
                                 fieldWithPath("applyId").description("생성된 요청 아이디 입니다.")
@@ -83,17 +82,17 @@ class ApplyControllerTest {
         //given
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies")
-                        .param("receivedId", "0")
+                post("/friends/applies/{received-id}", 0)
                         .header(JWT_HEADER, JWT_TOKEN)
+                        .param("receivedId", ID2.toString())
         );
         //then
         perform.andExpect(status().isBadRequest())
                 .andDo(document("친구_신청_실패1",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("receivedId").description("요청을 받을 아이디 입니다.")
+                        pathParameters(
+                                parameterWithName("received-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
                         ),
                         getRequestHeadersSnippet()
                 ));
@@ -106,8 +105,7 @@ class ApplyControllerTest {
         given(applyService.createApply(any(), any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies")
-                        .param("receivedId", NOT_FOUND_ID.toString())
+                post("/friends/applies/{received-id}", NOT_FOUND_ID)
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
@@ -116,8 +114,8 @@ class ApplyControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
-                        requestParameters(
-                                parameterWithName("receivedId").description("존재하지 않는 receivedId 입니다..")
+                        pathParameters(
+                                parameterWithName("received-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
                         )
                 ));
     }
@@ -347,7 +345,7 @@ class ApplyControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("친구_요청_취소_실패3",
+                .andDo(document("친구_요청_취소_실패4",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet()
@@ -484,7 +482,7 @@ class ApplyControllerTest {
                 .andExpect(jsonPath("$.[1].user.name").value(DIFF_NAME))
                 .andExpect(jsonPath("$.[1].user.avatar.imageId").value(ID2))
                 .andExpect(jsonPath("$.[1].user.avatar.remotePath").value(DIFF_REMOTE_PATH))
-                .andDo(document("친구_요청받은_목록_확인_성공1",
+                .andDo(document("친구_요청_받은_목록_확인_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
@@ -528,7 +526,7 @@ class ApplyControllerTest {
                 .andExpect(jsonPath("$.[1].user.name").value(DIFF_NAME))
                 .andExpect(jsonPath("$.[1].user.avatar.imageId").value(ID2))
                 .andExpect(jsonPath("$.[1].user.avatar.remotePath").value(DIFF_REMOTE_PATH))
-                .andDo(document("친구_신청한_목록_확인_성공2",
+                .andDo(document("친구_요청_보낸_목록_확인_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
@@ -560,7 +558,7 @@ class ApplyControllerTest {
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("친구_목록_확인_실패",
+                .andDo(document("친구_요청_목록_확인_실패",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         getRequestHeadersSnippet()
