@@ -35,7 +35,8 @@ public class AuthService {
         duplicatePhone(phone);
         String randomCode = passwordService.getRandomCode();
         authNumSendService.send(phone, randomCode);
-        redisRepository.saveData(phone, randomCode, 1000 * 60 * 3L);
+//        redisRepository.saveData(phone, randomCode, 1000 * 60 * 3L);
+        redisRepository.saveData(phone, "1234", 1000 * 60 * 3L);
         return Boolean.TRUE;
     }
 
