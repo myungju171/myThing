@@ -21,14 +21,20 @@ struct FirstInitView: View {
           Text("나만의 취향을")
           Text("찾아보고 공유해요")
         }
-        .font(.title)
+        .foregroundColor(.black)
+        .fontDesign(.monospaced)
+        .font(.title2)
+        .fontWeight(.bold)
         NavigationLink {
-          LoginView()
+          MainLoginView()
         } label: {
           Button {
           } label: {
             Text("시작하기")
               .foregroundColor(.white)
+              .fontDesign(.monospaced)
+              .font(.body)
+              .fontWeight(.bold)
               .padding(20)
           }
           .frame(width: 300)
