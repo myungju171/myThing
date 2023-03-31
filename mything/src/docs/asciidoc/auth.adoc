@@ -151,6 +151,17 @@ include::{snippets}/회원가입_실패5/request-fields.adoc[]
 .http-response
 include::{snippets}/회원가입_실패5/http-response.adoc[]
 
+=== 회원가입_실패6
+
+.http-request
+include::{snippets}/회원가입_실패6/http-request.adoc[]
+
+.request-fields
+include::{snippets}/회원가입_실패6/request-fields.adoc[]
+
+.http-response
+include::{snippets}/회원가입_실패6/http-response.adoc[]
+
 ***
 == 로그인 요청
 === 로그인_성공
