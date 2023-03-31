@@ -47,6 +47,7 @@ public class AuthService {
 
     public AuthDto.ResponseLogin join(AuthDto.RequestJoin requestJoin) {
         verifiedRandomCode(requestJoin.getPhone(), requestJoin.getAuthNumber());
+        duplicateEmail(requestJoin.getEmail());
         User user = authMapper.toUser(requestJoin);
         user.encodePassword(passwordService);
         addUserRole(user);

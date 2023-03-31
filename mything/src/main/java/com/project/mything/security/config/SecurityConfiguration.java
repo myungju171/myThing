@@ -1,5 +1,6 @@
 package com.project.mything.security.config;
 
+import com.project.mything.security.jwt.exception.JwtExceptionFilter;
 import com.project.mything.security.jwt.filter.JwtAuthenticationFilter;
 import com.project.mything.security.jwt.exception.JwtAuthenticationEntryPoint;
 import com.project.mything.security.jwt.service.JwtTokenProvider;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -41,17 +43,20 @@ public class SecurityConfiguration {
                 .httpBasic().disable()
                 //커스텀 필터 등록
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .mvcMatchers(GET, "/items/users/{user-id}").permitAll()
                 .mvcMatchers("/users/**").hasRole("USER")
                 .mvcMatchers("/items/**").hasRole("USER")
                 .mvcMatchers("/images/**").hasRole("USER")
                 .mvcMatchers("/friends/**").hasRole("USER")
                 .mvcMatchers("/auth/**").permitAll()
                 .anyRequest().permitAll();
+
         return http.build();
     }
 

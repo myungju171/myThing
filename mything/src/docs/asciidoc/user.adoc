@@ -96,22 +96,8 @@ include::{snippets}/개인_프로필_정보_확인_성공/request-headers.adoc[]
 .http-response
 include::{snippets}/개인_프로필_정보_확인_성공/http-response.adoc[]
 
-***
-== 개인 프로필 정보 확인
-=== 개인_프로필_정보_확인_성공
-
-.http-request
-include::{snippets}/회원탈퇴_성공/http-request.adoc[]
-
-.request-headers
-include::{snippets}/회원탈퇴_성공/request-headers.adoc[]
-
-.http-response
-include::{snippets}/회원탈퇴_성공/http-response.adoc[]
-
 .response-fields
-include::{snippets}/회원탈퇴_성공/response-fields.adoc[]
-
+include::{snippets}/개인_프로필_정보_확인_성공/response-fields.adoc[]
 
 ***
 == 회원 탈퇴

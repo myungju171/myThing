@@ -335,6 +335,41 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("회원가입 요청시 이메일이 중복일 경우 409에러를 리턴한다. ")
+    public void requestJoin_fail16() throws Exception {
+        //given
+        AuthDto.RequestJoin INVALID_NAME_REQUEST_JOIN = AuthDto.RequestJoin.builder()
+                .email("dupplicate@email.com")
+                .name(NAME)
+                .phone(PHONE)
+                .password(PASSWORD)
+                .birthday(BIRTHDAY)
+                .authNumber(AUTH_NUMBER).build();
+        String content = objectMapper.writeValueAsString(INVALID_NAME_REQUEST_JOIN);
+        given(authService.join(any())).willThrow(new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST));
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict())
+                .andDo(document("회원가입_실패6",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                List.of(fieldWithPath("email").type(JsonFieldType.STRING).description("회원가입시 이미 존재하는 이메일일 경우 409 에러가 발생합니다."),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("유저 비밀번호 영문+숫자+특수문자 8자 이상 20자 이하 입니다."),
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
+                                        fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
+                                        fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
+                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                ))
+                ));
+    }
+
+    @Test
     @DisplayName("로그인 요청시 아이디와 비밀번호가 이상 없다면, 201코드와 유저아이디와 엑세스 토큰을 리턴한다.")
     public void login_suc() throws Exception {
         //given

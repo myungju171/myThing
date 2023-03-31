@@ -17,10 +17,10 @@ import java.nio.charset.StandardCharsets;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(response.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.getWriter().write("UNAUTHORIZED");
+        response.getWriter().write("\"ERROR\" : \"UNAUTHORIZED\"");
         log.info("Jwt token is unauthorized");
     }
 }
