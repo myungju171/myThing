@@ -49,7 +49,7 @@ cloud:
       secretKey: ""
     s3:
       bucket: ""
-
+      name: ""  
     region:
       static: ""
 

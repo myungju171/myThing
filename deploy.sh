@@ -38,4 +38,4 @@ sudo ls -al
 cd build/libs
 
 echo "> JAR BUILD"
-sudo nohup java -jar -Duser.timezone=Asia/Seoul mything-0.0.1-SNAPSHOT.jar >> $REPOSITORY/nohup.out 2>&1 &
+sudo nohup java -jar -Dspring.profiles.active=prod mything-0.0.1-SNAPSHOT.jar >> /home/ec2-user/mything/deploy.log 2>/home/ec2-user/mything/deploy_err.log &
