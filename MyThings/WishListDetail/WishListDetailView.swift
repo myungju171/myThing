@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WishListDetailView: View {
   @ObservedObject var viewModel: WishListDetailViewModel
-  @State var manager = Network()
   var itemId: Int
   var userId: Int
   init(viewModel: WishListDetailViewModel, itemId: Int, userId: Int) {

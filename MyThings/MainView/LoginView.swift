@@ -9,7 +9,6 @@ import SwiftUI
 import Combine
 
 struct LoginView: View {
-//  let settings = MyWishListViewModel(network: NetworkService(configuration: .default))
   @State var name: String = ""
   @State var birthDatestr: String = ""
   @State var phoneNumber: String = ""

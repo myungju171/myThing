@@ -58,10 +58,9 @@ struct MyPageEditView: View {
   @State var image = UIImage(named: "deep")
   @State var nameText: String = ""
   @State var messageText: String = ""
-  
   @State var birthDatestr: String = ""
   @State private var birthDate = Date()
-  var network = Network()
+  @ObservedObject var viewModel = MypageEditViewModel(network: NetworkService(configuration: .default), userId: 1)
   var model: MyPageModel?
   var body: some View {
     ZStack {
@@ -102,7 +101,7 @@ struct MyPageEditView: View {
         Text(model?.infoMessage ?? "")
         Spacer()
         Button("수정") {
-          network.editMyInfo(image: image ?? UIImage(), userId: 1, name: nameText, infoMessage: messageText, birthDay: birthDate.dateToStringTime()) {
+        viewModel.editMyInfo(image: image ?? UIImage(), userId: 1, name: nameText, infoMessage: messageText, birthDay: birthDate.dateToStringTime()) {
             print("poooost")
           }
         }
