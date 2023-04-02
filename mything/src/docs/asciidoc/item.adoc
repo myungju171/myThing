@@ -40,25 +40,33 @@
 .http-request
 include::{snippets}/네이버_검색_API_성공/http-request.adoc[]
 
-.request-headers
-include::{snippets}/네이버_검색_API_성공/request-headers.adoc[]
-
 .request-parameters
 include::{snippets}/네이버_검색_API_성공/request-parameters.adoc[]
 
 .http-response
 include::{snippets}/네이버_검색_API_성공/http-response.adoc[]
 
-=== 네이버_검색_API_실패
+.response-fields
+include::{snippets}/네이버_검색_API_성공/response-fields.adoc[]
+
+=== 네이버_검색_API_실패1
 
 .http-request
-include::{snippets}/네이버_검색_API_실패/http-request.adoc[]
-
-.request-headers
-include::{snippets}/네이버_검색_API_실패/request-headers.adoc[]
+include::{snippets}/네이버_검색_API_실패1/http-request.adoc[]
 
 .http-response
-include::{snippets}/네이버_검색_API_실패/http-response.adoc[]
+include::{snippets}/네이버_검색_API_실패1/http-response.adoc[]
+
+=== 네이버_검색_API_실패2
+
+.http-request
+include::{snippets}/네이버_검색_API_실패2/http-request.adoc[]
+
+.request-parameters
+include::{snippets}/네이버_검색_API_실패2/request-parameters.adoc[]
+
+.http-response
+include::{snippets}/네이버_검색_API_실패2/http-response.adoc[]
 
 ***
 == 아이템 저장
