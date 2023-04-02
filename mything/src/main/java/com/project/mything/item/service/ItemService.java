@@ -16,7 +16,6 @@ import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.*;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,7 @@ public class ItemService {
     private final NAVERApiService naverApiService;
 
     @Transactional(readOnly = true)
-    public ResponseEntity<String> search(String query, Integer size, String sort, Integer start) {
+    public ItemDto.ResponseSearchItem search(String query, Integer size, String sort, Integer start) {
         return naverApiService.searchItem(query, size, sort, start);
     }
 

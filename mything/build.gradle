@@ -105,6 +105,9 @@ dependencies {
 
 	//@Nullable 어노테이션 사용시 빌드 에러 막는 의존성
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+	// json (json 객체 다루기)
+	implementation group: 'org.json', name: 'json', version: '20230227'
 }
 
 tasks.named('test') {
