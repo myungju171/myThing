@@ -69,49 +69,24 @@ class ItemControllerTest {
     @DisplayName("아이템검색 API 사용 성공시 200과 해당 아이템들을 배열에 담아서 전달한다.")
     public void search_suc() throws Exception {
         //given
-        String content = "{\n" +
-                "    \"lastBuildDate\": \"Sat, 21 Jan 2023 11:48:13 +0900\",\n" +
-                "    \"total\": 80950516,\n" +
-                "    \"start\": 1,\n" +
-                "    \"display\": 1,\n" +
-                "    \"items\": [\n" +
-                "        {\n" +
-                "            \"title\": \"나이키 레볼루션 6 넥스트 네이처 DC3728-001\",\n" +
-                "            \"link\": \"https://search.shopping.naver.com/gate.nhn?id=33197507754\",\n" +
-                "            \"image\": \"https://shopping-phinf.pstatic.net/main_3319750/33197507754.20221017111653.jpg\",\n" +
-                "            \"lprice\": \"37890\",\n" +
-                "            \"hprice\": \"\",\n" +
-                "            \"mallName\": \"네이버\",\n" +
-                "            \"productId\": \"33197507754\",\n" +
-                "            \"productType\": \"1\",\n" +
-                "            \"brand\": \"나이키\",\n" +
-                "            \"maker\": \"나이키\",\n" +
-                "            \"category1\": \"패션잡화\",\n" +
-                "            \"category2\": \"남성신발\",\n" +
-                "            \"category3\": \"운동화\",\n" +
-                "            \"category4\": \"러닝화\"\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
-
-        given(itemService.search(any(), any(), any(), any())).willReturn(new ResponseEntity<String>(
-                content, HttpStatus.OK));
+        given(itemService.search(any(), any(), any(), any())).willReturn(RESPONSE_SEARCH_ITEM);
         //when
         ResultActions perform = mockMvc.perform(
                 get("/items/search")
                         .header(JWT_HEADER, JWT_TOKEN)
                         .param("query", "test")
-                        .param("size", "10")
+                        .param("size", "2")
                         .param("sort", "sim")
                         .param("start", "1")
         );
         //then
         perform.andExpect(status().isOk())
-                .andExpect(content().string(content))
+                .andExpect(jsonPath("$.start").value(1))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.items").exists())
                 .andDo(document("네이버_검색_API_성공",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        getRequestHeadersSnippet(),
                         requestParameters(
                                 parameterWithName("query").description("검색어입니다. 필수입니다."),
                                 parameterWithName("size").description("가져올 데이터의 갯수입니다. 필수값이 아닙니다. 디폴드10개"),
@@ -121,7 +96,16 @@ class ItemControllerTest {
                                         " dsc: 가격순으로 내림차순 정렬"),
                                 parameterWithName("start").description("가져올 데이터의 페이지 번호 입니다. 필수값이 아닙니다. 디폴트 1번")
                         ),
-                        responseBody()
+                        responseFields(
+                                fieldWithPath("start").description("조회할 페이지 번호 입니다."),
+                                fieldWithPath("size").description("조회할 아이템의 갯수 입니다."),
+                                fieldWithPath("items").description("검색한 아이템의 정보가 들어있는 배열입니다."),
+                                fieldWithPath("items.[].productId").description("아이템의 고유 상품 아이디 번호 입니다."),
+                                fieldWithPath("items.[].title").description("아이템의 상품명 입니다."),
+                                fieldWithPath("items.[].link").description("아이템의 상품 URL 주소 입니다."),
+                                fieldWithPath("items.[].image").description("아이템 이미지 주소 입니다."),
+                                fieldWithPath("items.[].price").description("아이템의 가격 입니다.")
+                        )
                 ));
     }
 
@@ -132,16 +116,47 @@ class ItemControllerTest {
         //given
         //when
         ResultActions perform = mockMvc.perform(
-                get("/items")
+                get("/items/search")
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
         perform.andExpect(status().isBadRequest())
-                .andDo(document("네이버_검색_API_실패",
+                .andDo(document("네이버_검색_API_실패1",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        getRequestHeadersSnippet(),
                         responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("아이템검색 API 사용시 파라미터를 전달하지 않을시 400 Bad_Request가 리턴된다. ")
+    public void search_fail2() throws Exception {
+        //given
+        given(itemService.search(any(), any(), any(), any()))
+                .willThrow(new BusinessLogicException(ErrorCode.NAVER_JSON_ERROR));
+        //when
+        ResultActions perform = mockMvc.perform(
+                get("/items/search")
+                        .header(JWT_HEADER, JWT_TOKEN)
+                        .param("query", "test")
+                        .param("size", "2")
+                        .param("sort", "sim")
+                        .param("start", "1")
+        );
+        //then
+        perform.andExpect(status().isInternalServerError())
+                .andDo(document("네이버_검색_API_실패2",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("query").description("검색어입니다. 필수입니다."),
+                                parameterWithName("size").description("가져올 데이터의 갯수입니다. 필수값이 아닙니다. 디폴드10개"),
+                                parameterWithName("sort").description("정렬조건입니다. 필수값이 아닙니다. 디폴트 sim(정확도순으로 내림차순 정렬)," +
+                                        " date: 날짜순으로 내림차순 정렬,\n" +
+                                        " asc: 가격순으로 오름차순 정렬,\n" +
+                                        " dsc: 가격순으로 내림차순 정렬"),
+                                parameterWithName("start").description("가져올 데이터의 페이지 번호 입니다. 필수값이 아닙니다. 디폴트 1번")
+                        )
                 ));
     }
 
@@ -179,7 +194,7 @@ class ItemControllerTest {
 
     @Test
     @DisplayName("아이템을 중복으로 저장하면 409 CONFLICT를 리턴한다. ")
-    public void searchItem_fail1() throws Exception {
+    public void saveItem_fail1() throws Exception {
         //given
         String content = objectMapper.writeValueAsString(REQUEST_SAVE_ITEM);
         given(itemService.saveItem(any(), any())).willThrow(new BusinessLogicException(ErrorCode.ITEM_EXISTS));
@@ -209,12 +224,12 @@ class ItemControllerTest {
 
     @Test
     @DisplayName("아이템 저장하기 API를 사용할때 요청 dto값 중 하나라도 null값일시 400 BadRequest를 리턴한다. ")
-    public void search_fail2() throws Exception {
+    public void saveItem_fail2() throws Exception {
         //given
         ItemDto.RequestSaveItem invalidRequestSaveItem = ItemDto.RequestSaveItem.builder()
                 .title(TITLE)
                 .productId(ID1)
-                .image(IMAGE)
+                .image(REMOTE_PATH)
                 .price(PRICE)
                 .build();
         String content = objectMapper.writeValueAsString(invalidRequestSaveItem);
