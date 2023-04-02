@@ -52,13 +52,18 @@ public class TestConstants {
     public final static String JWT_HEADER = "Authorization";
     public final static String JWT_TOKEN = "AccessToken";
     public final static Integer ITEM_COUNT = 5;
-    public final static String DIFF_REMOTE_PATH = "differentRemotePath";
+    public final static String DIFF_REMOTE_PATH = "Different RemotePath";
     public final static Long NOT_FOUND_ID = 404L;
     public final static String LINK = "testLink";
+    private static final String DIFF_LINK = "Different test remotePath";
     public final static String TITLE = "testTitle";
-    public final static String IMAGE = "test_remote_path";
+    private static final String DIFF_TITLE = "Different test title";
     public final static Integer PRICE = 1000;
+    private static final Integer DIFF_PRICE = 2000;
     public static final String MEMO = "MEMO";
+    public static final Long PRODUCT_ID = 36799089619L;
+    private static final Long DIFF_PRODUCT_ID = 36250794620L;
+
 
     public final static LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
 
@@ -259,7 +264,7 @@ public class TestConstants {
             .title(TITLE)
             .productId(ID1)
             .price(PRICE)
-            .image(IMAGE)
+            .image(REMOTE_PATH)
             .build();
 
     public final static ItemDto.ResponseItemId RESPONSE_ITEM_ID = ItemDto.ResponseItemId.builder()
@@ -271,7 +276,7 @@ public class TestConstants {
             .title(TITLE)
             .link(LINK)
             .price(PRICE)
-            .image(IMAGE)
+            .image(REMOTE_PATH)
             .memo(MEMO)
             .interestedItem(Boolean.FALSE)
             .secretItem(Boolean.FALSE)
@@ -299,7 +304,7 @@ public class TestConstants {
                     .title(TITLE)
                     .createdAt(LocalDateTime.now())
                     .lastModifiedAt(LocalDateTime.now())
-                    .image(IMAGE)
+                    .image(REMOTE_PATH)
                     .price(PRICE)
                     .build());
         }
@@ -330,5 +335,26 @@ public class TestConstants {
     public final static UserDto.RequestChangePassword INVALID_REQUEST_CHANGE_PASSWORD = UserDto.RequestChangePassword.builder()
             .originalPassword(PASSWORD)
             .newPassword(INVALID_PASSWORD)
+            .build();
+
+    public final static ItemDto.SearchItem SEARCH_ITEM = ItemDto.SearchItem.builder()
+            .title(TITLE)
+            .link(LINK)
+            .image(REMOTE_PATH)
+            .productId(PRODUCT_ID)
+            .price(PRICE)
+            .build();
+
+    public final static ItemDto.SearchItem DIFF_SEARCH_ITEM = ItemDto.SearchItem.builder()
+            .title(DIFF_TITLE)
+            .link(DIFF_LINK)
+            .image(DIFF_REMOTE_PATH)
+            .productId(DIFF_PRODUCT_ID)
+            .price(DIFF_PRICE)
+            .build();
+    public final static ItemDto.ResponseSearchItem RESPONSE_SEARCH_ITEM = ItemDto.ResponseSearchItem.builder()
+            .items(List.of(SEARCH_ITEM, DIFF_SEARCH_ITEM))
+            .size(2)
+            .start(1)
             .build();
 }
