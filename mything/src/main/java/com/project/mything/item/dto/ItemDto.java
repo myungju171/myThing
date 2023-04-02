@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ItemDto {
     @Getter
@@ -118,5 +119,27 @@ public class ItemDto {
         @NotNull
         @Positive
         private Long itemOwnerUserId;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SearchItem {
+        private Long productId;
+        private String title;
+        private String link;
+        private String image;
+        private Integer price;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseSearchItem {
+        private Integer start;
+        private Integer size;
+        private List<SearchItem> items;
     }
 }
