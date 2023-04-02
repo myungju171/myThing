@@ -1,8 +1,8 @@
 package com.project.mything.item.service;
 
-import org.springframework.http.ResponseEntity;
+import com.project.mything.item.dto.ItemDto;
 
 
 public interface NAVERApiService {
-    public abstract ResponseEntity<String> searchItem(String query, Integer size, String sort, Integer start);
+    public abstract ItemDto.ResponseSearchItem searchItem(String query, Integer size, String sort, Integer start);
 }
