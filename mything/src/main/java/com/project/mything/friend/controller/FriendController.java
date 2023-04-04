@@ -37,10 +37,10 @@ public class FriendController {
         return friendService.getFriendsList(jwtParseToken.getUserInfo(token), friendStatus, isBirthday);
     }
 
-    @DeleteMapping("/{friend-id}")
+    @DeleteMapping("/{delete-user-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFriend(@RequestHeader("Authorization") String token,
-                             @PathVariable("friend-id") Long friendId) {
-        friendService.deleteFriend(jwtParseToken.getUserInfo(token), friendId);
+                             @Positive @PathVariable("delete-user-id") Long deleteUserId) {
+        friendService.deleteFriend(jwtParseToken.getUserInfo(token), deleteUserId);
     }
 }
