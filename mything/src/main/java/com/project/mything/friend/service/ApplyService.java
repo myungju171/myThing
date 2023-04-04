@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -29,10 +30,24 @@ public class ApplyService {
     private final ApplyQueryRepository applyQueryRepository;
 
     public ApplyDto.ResponseApplyId createApply(UserDto.UserInfo userInfo, Long receiveUserId) {
+        validateSelfApply(userInfo.getUserId(), receiveUserId);
+        duplicateApply(userInfo, receiveUserId);
         User sendUser = userService.findVerifiedUser(userInfo.getUserId());
         User receiveUser = userService.findVerifiedUser(receiveUserId);
         Apply dbApply = saveApply(sendUser, receiveUser);
-        return applyMapper.toResponseSimpleApply(dbApply.getId());
+        return applyMapper.toResponseApplyId(dbApply.getId());
+    }
+
+    private void validateSelfApply(Long applyUserId, Long receiveUserId) {
+        if(Objects.equals(applyUserId, receiveUserId))
+            throw new BusinessLogicException(ErrorCode.APPLY_SENDER_CONFLICT);
+    }
+
+    private void duplicateApply(UserDto.UserInfo userInfo, Long receiveUserId) {
+        if (applyRepository.findExistApply(userInfo.getUserId(), receiveUserId).isPresent())
+            throw new BusinessLogicException(ErrorCode.SEND_APPLY_ALREADY_EXIST);
+        if (applyRepository.findExistApply(receiveUserId, userInfo.getUserId()).isPresent())
+            throw new BusinessLogicException(ErrorCode.RECEIVED_APPLY_APPLY_EXIST);
     }
 
     private Apply saveApply(User sendUser, User receiveUser) {
@@ -45,13 +60,13 @@ public class ApplyService {
     public void cancelApply(UserDto.UserInfo userInfo, Long applyId) {
         Apply dbApply = findApplyWithSendUserById(applyId);
         verifyApplySender(userInfo.getUserId(), dbApply);
-        applyRepository.delete(dbApply);
+        deleteApply(dbApply);
     }
 
     public void rejectApply(UserDto.UserInfo userInfo, Long applyId) {
         Apply dbApply = findApplyWithReceiveUserById(applyId);
         verifyApplyReceiver(userInfo.getUserId(), dbApply);
-        applyRepository.delete(dbApply);
+        deleteApply(dbApply);
     }
 
 
@@ -94,6 +109,6 @@ public class ApplyService {
 
     @Transactional(readOnly = true)
     public List<ApplyDto.ResponseSimpleApply> getApply(UserDto.UserInfo userInfo, Boolean isReceiveApply, ApplyStatus applyStatus) {
-        return applyQueryRepository.getApply(userInfo.getUserId(), isReceiveApply);
+        return applyQueryRepository.getApply(userInfo.getUserId(), isReceiveApply, applyStatus);
     }
 }

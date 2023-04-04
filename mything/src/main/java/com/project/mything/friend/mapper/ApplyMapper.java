@@ -14,5 +14,5 @@ public interface ApplyMapper {
     Apply ToApply(User sendUser, User receiveUser);
 
 
-    ApplyDto.ResponseApplyId toResponseSimpleApply(Long applyId);
+    ApplyDto.ResponseApplyId toResponseApplyId(Long applyId);
 }
