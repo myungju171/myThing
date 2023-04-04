@@ -1,5 +1,7 @@
 package com.project.mything.friend.service;
 
+import com.project.mything.exception.BusinessLogicException;
+import com.project.mything.exception.ErrorCode;
 import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.friend.entity.Friend;
 import com.project.mything.friend.entity.enums.FriendStatus;
@@ -36,12 +38,11 @@ public class FriendService {
     public ResponseMultiPageDto<FriendDto.ResponseSimpleFriend> getFriendsList(UserDto.UserInfo userInfo,
                                                                                FriendStatus friendStatus,
                                                                                Boolean isBirthday) {
-        User dbUser = userService.findVerifiedUser(userInfo.getUserId());
         Page<FriendDto.ResponseSimpleFriend> friendList =
                 friendRepository.getFriendList(userInfo.getUserId(),
                         friendStatus,
                         isBirthday,
-                        PageRequest.of(0, dbUser.getFriendList().size() + 1));
+                        PageRequest.of(0, 999));
         return new ResponseMultiPageDto<FriendDto.ResponseSimpleFriend>(friendList.getContent(), friendList);
     }
 
@@ -57,5 +58,23 @@ public class FriendService {
         sendUser.getFriendList().add(senderFriend);
         friendRepository.save(senderFriend);
     }
+
+    public void deleteFriend(UserDto.UserInfo userInfo, Long deleteUserId) {
+        Friend requestUserFriend = findFriend(userInfo.getUserId(), deleteUserId);
+        Friend receiveUserFriend = findFriend(deleteUserId, userInfo.getUserId());
+        deleteFriendEntity(receiveUserFriend);
+        deleteFriendEntity(requestUserFriend);
+    }
+
+    private Friend findFriend(Long userId, Long userFriendId) {
+        return friendRepository.findFriend(userId, userFriendId)
+                .orElseThrow(() -> new BusinessLogicException(ErrorCode.FRIEND_NOT_FOUND));
+    }
+
+    private void deleteFriendEntity(Friend dbFriend) {
+        dbFriend.getUser().getFriendList().remove(dbFriend);
+        friendRepository.delete(dbFriend);
+    }
+
 
 }
