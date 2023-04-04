@@ -21,11 +21,11 @@ public class ApplyController {
     private final JwtParseToken jwtParseToken;
     private final ApplyService applyService;
 
-    @PostMapping("/{received-id}")
+    @PostMapping("/{received-user-id}")
     @ResponseStatus(HttpStatus.CREATED)
     public ApplyDto.ResponseApplyId createApply(@RequestHeader("Authorization") String token,
-                                                @Positive @PathVariable("received-id") Long receivedId) {
-        return applyService.createApply(jwtParseToken.getUserInfo(token), receivedId);
+                                                @Positive @PathVariable("received-user-id") Long receivedUserId) {
+        return applyService.createApply(jwtParseToken.getUserInfo(token), receivedUserId);
     }
 
     @DeleteMapping("/rejects")
@@ -53,7 +53,7 @@ public class ApplyController {
     @ResponseStatus(HttpStatus.OK)
     public List<ApplyDto.ResponseSimpleApply> getSendApply(@RequestHeader("Authorization") String token,
                                                            @RequestParam Boolean isReceiveApply,
-                                                           @RequestParam ApplyStatus applyStatus) {
+                                                           @RequestParam(required = false, defaultValue = "SUGGEST") ApplyStatus applyStatus) {
         return applyService.getApply(jwtParseToken.getUserInfo(token), isReceiveApply, applyStatus);
     }
 }
