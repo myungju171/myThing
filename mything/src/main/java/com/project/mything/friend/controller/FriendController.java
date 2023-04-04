@@ -25,7 +25,7 @@ public class FriendController {
     @GetMapping("/searches")
     @ResponseStatus(HttpStatus.OK)
     public FriendDto.ResponseSimpleFriend searchFriend(@Size(min = 11, max = 11) @Positive(message = "'-'을 붙이지 말아주세요.")
-                                                           @RequestParam String friendPhone) {
+                                                       @RequestParam String friendPhone) {
         return friendService.searchFriend(friendPhone);
     }
 
@@ -35,5 +35,12 @@ public class FriendController {
                                                                                @RequestParam FriendStatus friendStatus,
                                                                                @RequestParam Boolean isBirthday) {
         return friendService.getFriendsList(jwtParseToken.getUserInfo(token), friendStatus, isBirthday);
+    }
+
+    @DeleteMapping("/{delete-user-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFriend(@RequestHeader("Authorization") String token,
+                             @Positive @PathVariable("delete-user-id") Long deleteUserId) {
+        friendService.deleteFriend(jwtParseToken.getUserInfo(token), deleteUserId);
     }
 }

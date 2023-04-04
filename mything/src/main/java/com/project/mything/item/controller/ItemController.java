@@ -22,7 +22,7 @@ public class ItemController {
 
     private final JwtParseToken jwtParseToken;
 
-    @GetMapping("/search")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ItemDto.ResponseSearchItem search(@Valid @NotBlank @RequestParam String query,
                                              @RequestParam(required = false, defaultValue = "10") Integer size,

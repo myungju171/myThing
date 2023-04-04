@@ -72,7 +72,7 @@ class ItemControllerTest {
         given(itemService.search(any(), any(), any(), any())).willReturn(RESPONSE_SEARCH_ITEM);
         //when
         ResultActions perform = mockMvc.perform(
-                get("/items/search")
+                get("/items")
                         .header(JWT_HEADER, JWT_TOKEN)
                         .param("query", "test")
                         .param("size", "2")
@@ -116,7 +116,7 @@ class ItemControllerTest {
         //given
         //when
         ResultActions perform = mockMvc.perform(
-                get("/items/search")
+                get("/items")
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
@@ -136,7 +136,7 @@ class ItemControllerTest {
                 .willThrow(new BusinessLogicException(ErrorCode.NAVER_JSON_ERROR));
         //when
         ResultActions perform = mockMvc.perform(
-                get("/items/search")
+                get("/items")
                         .header(JWT_HEADER, JWT_TOKEN)
                         .param("query", "test")
                         .param("size", "2")

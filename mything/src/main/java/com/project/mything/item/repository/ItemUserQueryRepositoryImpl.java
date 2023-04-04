@@ -2,6 +2,7 @@ package com.project.mything.item.repository;
 
 import com.project.mything.item.dto.ItemDto;
 import com.project.mything.item.dto.QItemDto_ResponseSimpleItem;
+import com.project.mything.item.entity.QItem;
 import com.project.mything.item.entity.enums.ItemStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -37,6 +38,7 @@ public class ItemUserQueryRepositoryImpl implements ItemUserQueryRepository {
                         itemUser.createdAt,
                         itemUser.lastModifiedAt))
                 .from(itemUser)
+                .leftJoin(itemUser.item, QItem.item)
                 .where(isWish(isWish),
                         isFriend(isFriend))
                 .offset(pageable.getOffset())
