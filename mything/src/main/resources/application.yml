@@ -27,10 +27,8 @@ spring:
 
 logging:
   level:
-    org.springframework.web.client: debug
     org.hibernate.sql: debug
-    org.hibernate.type: trace
-    org.springframework.security: debug
+    org.hibernate.type: info
 
 server:
   servlet:

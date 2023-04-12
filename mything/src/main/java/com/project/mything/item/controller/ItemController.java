@@ -6,7 +6,6 @@ import com.project.mything.item.service.ItemService;
 import com.project.mything.security.jwt.service.JwtParseToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +22,12 @@ public class ItemController {
 
     private final JwtParseToken jwtParseToken;
 
-    @GetMapping("/search")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> search(@RequestHeader("Authorization") String token,
-                                         @Valid @NotBlank @RequestParam String query,
-                                         @RequestParam(required = false, defaultValue = "10") Integer size,
-                                         @RequestParam(required = false, defaultValue = "sim") String sort,
-                                         @RequestParam(required = false, defaultValue = "1") Integer start) {
+    public ItemDto.ResponseSearchItem search(@Valid @NotBlank @RequestParam String query,
+                                             @RequestParam(required = false, defaultValue = "10") Integer size,
+                                             @RequestParam(required = false, defaultValue = "sim") String sort,
+                                             @RequestParam(required = false, defaultValue = "1") Integer start) {
         return itemService.search(query, size, sort, start);
     }
 
@@ -58,9 +56,9 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseMultiPageDto<ItemDto.ResponseSimpleItem> getSimpleItemsMine(@Valid @PathVariable("user-id") Long userId,
                                                                                @Valid @RequestParam(required = false, defaultValue = "TRUE") Boolean isWish,
-                                                                               @Valid  @RequestParam(required = false, defaultValue = "TRUE") Boolean isFriend,
+                                                                               @Valid @RequestParam(required = false, defaultValue = "TRUE") Boolean isFriend,
                                                                                @Valid @RequestParam(required = false, defaultValue = "null") String sortBy,
-                                                                               @Valid  @RequestParam Integer start,
+                                                                               @Valid @RequestParam Integer start,
                                                                                @Valid @RequestParam Integer size) {
         return itemService.getSimpleItems(userId, isWish, isFriend, sortBy, start, size);
     }

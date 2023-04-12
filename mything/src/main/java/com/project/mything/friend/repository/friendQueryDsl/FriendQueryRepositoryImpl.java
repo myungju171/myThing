@@ -4,7 +4,9 @@ import com.project.mything.friend.dto.FriendDto;
 import com.project.mything.friend.dto.QFriendDto_ResponseSimpleFriend;
 import com.project.mything.friend.entity.enums.FriendStatus;
 import com.project.mything.image.dto.QImageDto_SimpleImageDto;
+import com.project.mything.image.entity.QImage;
 import com.project.mything.user.dto.QUserDto_ResponseDetailUser;
+import com.project.mything.user.entity.QUser;
 import com.project.mything.user.entity.enums.UserStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,7 +19,6 @@ import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 
 import static com.project.mything.friend.entity.QFriend.friend;
 
@@ -38,9 +39,13 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
                                 friend.userFriend.phone,
                                 friend.userFriend.birthday,
                                 friend.userFriend.infoMessage,
-                                new QImageDto_SimpleImageDto(friend.userFriend.image.id, friend.userFriend.image.remotePath)),
+                                new QImageDto_SimpleImageDto(friend.userFriend.image.id,
+                                        friend.userFriend.image.remotePath)),
                         friend.userFriend.itemUserList.size()))
                 .from(friend)
+                .leftJoin(friend.userFriend.image, QImage.image)
+                .leftJoin(friend.userFriend, QUser.user)
+                .leftJoin(friend.user, QUser.user)
                 .where(friend.user.id.eq(userId)
                                 .and(friend.user.userStatus.eq(UserStatus.ACTIVE)),
                         birthday(isBirthday),
@@ -53,16 +58,22 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
         Long count = queryFactory
                 .select(friend.count())
                 .from(friend)
-                .where(status(friendStatus),
-                        (friend.user.id.eq(userId))
-                                .and(friend.user.userStatus.eq(UserStatus.ACTIVE)))
+                .where(friend.user.id.eq(userId)
+                                .and(friend.user.userStatus.eq(UserStatus.ACTIVE)),
+                        birthday(isBirthday),
+                        status(friendStatus))
                 .fetchOne();
 
-        return new PageImpl<>(result, pageable, Objects.requireNonNull(count));
+        return new PageImpl<>(result, pageable, count);
     }
 
     private BooleanExpression birthday(Boolean isBirthday) {
-        return isBirthday ? friend.userFriend.birthday.eq(LocalDate.now()) : null;
+        return isBirthday ? recognizeUserBirth(LocalDate.now()) : null;
+    }
+
+    private BooleanExpression recognizeUserBirth(LocalDate today) {
+        return friend.userFriend.birthday.month().eq(today.getMonthValue())
+                .and(friend.userFriend.birthday.dayOfMonth().eq(today.getDayOfMonth()));
     }
 
     private BooleanExpression status(FriendStatus friendStatus) {
