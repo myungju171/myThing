@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,7 +38,7 @@ public class AuthController {
 
     @GetMapping("/email")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void duplicateEmail(@Valid @Email @RequestParam String email) {
+    public void duplicateEmail(@Valid @Email @NotBlank @RequestParam String email) {
         authService.duplicateEmail(email);
     }
 
