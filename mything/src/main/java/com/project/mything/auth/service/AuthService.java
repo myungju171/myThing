@@ -32,7 +32,6 @@ public class AuthService {
         if (redisRepository.getData(requestAuthNumber.getPhone()).isPresent())
             throw new BusinessLogicException(ErrorCode.MESSAGE_ALREADY_SEND);
         String phone = requestAuthNumber.getPhone();
-        duplicatePhone(phone);
         String randomCode = passwordService.getRandomCode();
         authNumSendService.send(phone, randomCode);
 //        redisRepository.saveData(phone, randomCode, 1000 * 60 * 3L);
@@ -46,6 +45,7 @@ public class AuthService {
     }
 
     public AuthDto.ResponseLogin join(AuthDto.RequestJoin requestJoin) {
+        duplicatePhone(requestJoin.getPhone());
         verifiedRandomCode(requestJoin.getPhone(), requestJoin.getAuthNumber());
         duplicateEmail(requestJoin.getEmail());
         User user = authMapper.toUser(requestJoin);
