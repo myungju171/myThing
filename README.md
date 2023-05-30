@@ -36,15 +36,50 @@
 
 ## ⭐️ 화면 및 기능 소개
 ### 인증
+회원가입 및 로그인이 가능합니다. 
+
 <img width="250" alt="회원가입사진" src="https://github.com/myungju171/myThing/assets/104377048/ae020d47-4db2-4ddb-846e-5d973f03fd92">
-
 <img width="250" alt="로그인 사진" src="https://github.com/myungju171/myThing/assets/104377048/b68a2b93-9514-432a-a18e-7876761e9ab4">
-
+<img width="250" alt="로그인 에러사진" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/30ce9270-efaf-4948-9d7a-77636ed7ccca">
 
 </br>
 
+### 위시리스트 화면
+개인 위시리스트는 비공개 설정과 관심상품 등록이 가능하고, 친구가 선물 예약중인 상품과 아직 구매하지 않은 상품을 확인 가능합니다. 
+</br>
+친구 위시리스트는 친구의 비공개 상품 확인이 불가능하며 선물하기와 예약중인 상품을 확인 가능합니다. 
+
+<img width="307" alt="개인 위시리스트" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/76d4e7a0-e469-4859-8679-98e9a5d50d27">
+<img width="250" alt="친구 위시리스트" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/b040018c-5bbd-447d-870b-435c363c74ed">
+
+### 상품 검색 
+네이버 쇼핑 API를 통해 검색어에 해당하는 아이템 확인이 가능합니다. 
+
+<img width="250" alt="상품검색" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/781facbc-3a6e-4ee5-b2f3-470fa1139a22">
+<img width="237" alt="상품 상세정보" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/bbbaec86-d2d7-4ad9-9288-cca9fa9304a8">
+
+### 친구 검색 및 친구 목록
+myThing 사용자의 핸드폰 번호를 작성하여 친구 검색이 가능합니다. 
+친구 목록에서 오늘 생일인 친구 목록을 확인할 수 있습니다.
+
+<img width="260" alt="친구 검색" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/8c858170-e13f-4c56-9cbc-70a742a11625">
+<img width="248" alt="친구 리스트" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/dab298e8-5f96-4f2c-b9e4-e37c794889c5">
+<img width="243" alt="친구 생일 리스트" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/16ff108f-2fde-46d1-9bbc-078f129e0c30">
+
+### 개인정보 수정 
+개인정보를 수정하거나 프로필 사진을 다시 등록할 수 있습니다. (해당 페이지에서 회원탈퇴가 가능합니다.)
+
+<img width="230" alt="마이페이지" src="https://github.com/SionBackEnd/myThing-project/assets/104377048/f800d82b-bc36-4ac4-8506-9c5afd76e653">
+
+
+
+<img width="254" alt="개인정보 수정 " src="https://github.com/SionBackEnd/myThing-project/assets/104377048/8e15b535-a12d-42b8-9a79-6ebf808d135c">
+
+
+
 ## ERD
 ![MyThing](https://github.com/myungju171/myThing/assets/104377048/60b53950-100e-4fb7-a341-46da51f537db)
+
 
 
 
