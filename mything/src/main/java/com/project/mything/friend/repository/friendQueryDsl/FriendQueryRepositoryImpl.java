@@ -58,6 +58,7 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
         Long count = queryFactory
                 .select(friend.count())
                 .from(friend)
+                .leftJoin(friend.user, QUser.user)
                 .where(friend.user.id.eq(userId)
                                 .and(friend.user.userStatus.eq(UserStatus.ACTIVE)),
                         birthday(isBirthday),
@@ -68,7 +69,7 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
     }
 
     private BooleanExpression birthday(Boolean isBirthday) {
-        return isBirthday ? recognizeUserBirth(LocalDate.now()) : null;
+        return Boolean.TRUE.equals(isBirthday) ? recognizeUserBirth(LocalDate.now()) : null;
     }
 
     private BooleanExpression recognizeUserBirth(LocalDate today) {
