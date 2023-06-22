@@ -65,7 +65,7 @@ public class FriendQueryRepositoryImpl implements FriendQueryRepository {
                         status(friendStatus))
                 .fetchOne();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, pageable, count == null ? 0L : count);
     }
 
     private BooleanExpression birthday(Boolean isBirthday) {
