@@ -1,0 +1,95 @@
+@startuml
+skinparam sequenceMessageAlign reverseDirection
+skinparam responseMessageBelowArrow true
+Actor -> ItemController: 아이템 저장 요청
+activate ItemController #FFBBBB
+ItemController -> ItemController : 요청 데이터 검증
+
+ItemController -> JwtParseToken : 토큰 데이터 검증
+activate ItemController #FFCC11
+activate JwtParseToken #FFBBBB
+|||
+JwtParseToken --> ItemController : UserDto 리턴
+deactivate ItemController
+deactivate JwtParseToken
+
+ItemController -> ItemService : saveItem() 요청
+activate ItemController #FFCC11
+activate ItemService #FFBBBB
+
+ItemService -> ItemRepo : 위시리스트에 존재하는 \n아이템을 저장하는지 검증
+activate ItemService #FFCC11
+activate ItemRepo #FFBBBB
+ItemRepo -> Item !! : 조회 실패
+ItemRepo -> ItemService : 조회 실패 응답
+deactivate ItemRepo
+deactivate ItemService
+
+ItemService -> UserService : User 객체 조회
+activate ItemService #FFCC11
+activate UserService #FFBBBB
+UserService -> User ** : 조회
+UserService --> ItemService : User 객체 리턴
+deactivate UserService
+deactivate ItemService
+
+alt#Gold #LightBlue Item 조회 성공시
+ItemService -> ItemRepo : Item 객체 조회
+activate ItemService #FFCC11
+activate ItemRepo #FFBBBB
+ItemRepo -> Item ** : 조회 성공
+ItemRepo --> ItemService : Item 객체 리턴
+deactivate ItemRepo
+deactivate ItemService
+else #LightYellow Item 조회 실패시
+ItemService -> ItemRepo : Item 객체 조회
+activate ItemService #FFCC11
+activate ItemRepo #FFBBBB
+ItemRepo -> Item !! : 조회 실패
+ItemRepo --> ItemService : 조회 실패 응답
+deactivate ItemRepo
+deactivate ItemService
+ItemService -> ItemMapper : Item 객체 변환 요청
+|||
+activate ItemService #FFCC11
+activate ItemMapper #FFBBBB
+ItemMapper -> Item ** : 객체 생성
+ItemMapper --> ItemService : Item 객체 리턴
+deactivate ItemService
+deactivate ItemMapper
+
+ItemService -> ItemRepo : Item 객체 \n 저장 요청
+activate ItemService #FFCC11
+activate ItemRepo #FFBBBB
+ItemRepo -> Item : 저장
+Item --> ItemRepo : 저장 완료
+
+ItemRepo --> ItemService : 저장된 Item 객체 응답
+deactivate ItemRepo
+deactivate ItemService
+end
+
+ItemService -> ItemUser ** : ItemUser 객체 생성
+ItemService -> ItemUserRepo : ItemUser 저장 요청
+activate ItemService #FFCC11
+activate ItemUserRepo #FFBBBB
+ItemUserRepo -> ItemUser : 저장
+ItemUser --> ItemUserRepo : 저장 완료
+ItemUserRepo --> ItemService : 저장된 ItemUser 객체 리턴
+deactivate ItemUserRepo
+deactivate ItemService
+
+ItemService -> ItemMapper : 응답 Json 변환 요청
+activate ItemService #FFCC11
+activate ItemMapper #FFBBBB
+|||
+ItemMapper --> ItemService : 응답 Json 리턴
+deactivate ItemMapper
+deactivate ItemService
+
+ItemService --> ItemController : 응답 Json 리턴
+deactivate ItemService
+deactivate ItemController
+ItemController --> Actor :   응답 Json 리턴
+deactivate ItemController
+@enduml

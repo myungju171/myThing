@@ -1,0 +1,37 @@
+@startuml
+skinparam sequenceMessageAlign reverseDirection
+skinparam responseMessageBelowArrow true
+Actor -> ItemController: 아이템 저장 요청
+activate ItemController #FFBBBB
+ItemController -> ItemController : 요청 데이터 검증
+
+ItemController -> JwtParseToken : 토큰 데이터 검증
+activate ItemController #FFCC11
+activate JwtParseToken #FFBBBB
+|||
+JwtParseToken --> ItemController : UserDto 리턴
+deactivate ItemController
+deactivate JwtParseToken
+
+ItemController -> ItemService : saveItem() 요청
+activate ItemController #FFCC11
+activate ItemService #FFBBBB
+
+ItemService -> ItemRepo : 이미 저장한 아이템을 \n    저장하는지 검증
+activate ItemService #FFCC11
+activate ItemRepo #FFBBBB
+ItemRepo -> Item !! : 조회 실패
+ItemRepo -> ItemService : 조회 실패 응답
+deactivate ItemRepo
+deactivate ItemService
+
+ItemService -> UserService : User 객체 조회
+activate ItemService #FFCC11
+activate UserService #FFBBBB
+UserService -> User ** : 조회
+UserService --> ItemService : User 객체 리턴
+deactivate UserService
+deactivate ItemService
+
+ItemService -> ItemRepo :
+@enduml

@@ -1,0 +1,88 @@
+@startuml
+skinparam sequenceMessageAlign reverseDirection
+skinparam responseMessageBelowArrow true
+Actor -> AuthController: 회원 가입 요청
+activate AuthController #FFBBBB
+AuthController -> AuthController : 요청 데이터 검증
+
+AuthController -> AuthService : join() 요청
+activate AuthController #FFCC11
+activate AuthService #FFBBBB
+
+AuthService -> AuthService : 핸드폰 번호 중복 검증
+activate AuthService #FFCC11
+AuthService -> Redis : 핸드폰 인증번호 검증
+activate Redis #FFBBBB
+Redis -> Redis : 검증
+deactivate Redis
+deactivate AuthService
+AuthService -> AuthService : 이메일(아이디) \n    중복 검증
+
+AuthService -> UserMapper : 요청 데이터 유저 객체 \n         변환 요청
+activate AuthService #FFCC11
+activate UserMapper #FFBBBB
+UserMapper -> User ** : create
+UserMapper --> AuthService : 유저 객체 응답
+deactivate UserMapper
+deactivate AuthService
+
+AuthService -> User : 패스워드 암호화 요청
+activate AuthService #FFCC11
+activate User #FFBBBB
+User -> PasswordService : 호출
+activate PasswordService #FFBBBB
+PasswordService -> PasswordService : 암호화
+deactivate PasswordService
+deactivate User
+
+deactivate AuthService
+
+
+AuthService -> UserRole ** : create
+AuthService -> Role ** : create
+
+User -> UserRole : 연관관계 주입
+activate User #FFBBBB
+activate UserRole #FFBBBB
+UserRole --> User :연관관계 주입
+deactivate User
+
+
+UserRole -> Role : 연관관게 주입
+activate Role #FFBBBB
+Role --> UserRole :연관관계 주입
+deactivate UserRole
+deactivate Role
+
+AuthService -> UserService : 유저 객체 저장 요청
+activate AuthService #FFCC11
+activate UserService #FFBBBB
+UserService -> UserService : 저장
+UserService --> AuthService : 유저 객체 리턴
+deactivate AuthService
+deactivate UserService
+
+AuthService -> JwtTokenProvider : 토큰 생성 요청
+activate AuthService #FFCC11
+activate JwtTokenProvider #FFBBBB
+JwtTokenProvider -> token ** : create
+JwtTokenProvider --> AuthService : 토큰 리턴
+deactivate AuthService
+deactivate JwtTokenProvider
+
+AuthService -> AuthMapper : 응답 Json 변환 요청
+activate AuthService #FFCC11
+activate AuthMapper #FFBBBB
+|||
+AuthMapper --> AuthController : 응답 값 리턴
+deactivate AuthService
+deactivate AuthService
+
+
+deactivate AuthMapper
+deactivate AuthController
+
+AuthController --> Actor : 응답 값 리턴
+deactivate AuthController
+
+@enduml
