@@ -29,8 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -263,5 +262,24 @@ class FriendControllerTest {
                                 fieldWithPath("pageInfo.totalPages").description("페이지 전체 갯수 입니다.")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("친구 삭제 성공 204")
+    public void deleteFriend_suc() throws Exception {
+    //given
+    //when
+        ResultActions perform = mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/friends/{delete-user-id}", ID2)
+                        .header(JWT_HEADER, JWT_TOKEN)
+        );
+        //then
+        perform.andExpect(status().isNoContent())
+                .andDo(document("친구_삭제_성공",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        getRequestHeadersSnippet(),
+                        pathParameters(parameterWithName("delete-user-id").description("삭제할 유저의 아이디 번호 입니다."))
+                        ));
     }
 }
