@@ -4,7 +4,6 @@ import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.image.dto.ImageDto;
 import com.project.mything.image.mapper.ImageMapper;
-import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.repository.UserRepository;
 import com.project.mything.image.entity.Image;
@@ -49,6 +48,7 @@ public class ImageService {
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         try {
             Image image = userWithAvatar.getImage();
+            if(image==null) return;
             s3Service.deleteImage(image.getLocalPath());
             imageRepository.delete(image);
         } catch (NullPointerException e) {

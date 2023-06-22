@@ -1,0 +1,92 @@
+@startuml
+skinparam sequenceMessageAlign reverseDirection
+skinparam responseMessageBelowArrow true
+Actor -> ApplyController: 친구 신청 요청
+activate ApplyController #FFBBBB
+ApplyController -> ApplyController : 요청 데이터 검증
+
+ApplyController -> JwtParseToken : 토큰 데이터 검증
+activate ApplyController #FFCC11
+activate JwtParseToken #FFBBBB
+|||
+JwtParseToken --> ApplyController : UserDto 리턴
+deactivate ApplyController
+deactivate JwtParseToken
+
+ApplyController -> ApplyService : createApply() 요청
+activate ApplyController #FFCC11
+activate ApplyService #FFBBBB
+
+ApplyService -> ApplyService : 자기 자신에게 \n친구 신청 검증
+|||
+ApplyService -> ApplyRepo : 중복 친구 신청 요청 검증
+activate ApplyService #FFCC11
+activate ApplyRepo #FFBBBB
+ApplyRepo -> ApplyRepo : 조회 및 검증
+ApplyRepo --> ApplyService : 조회 결과 응답
+deactivate ApplyRepo
+deactivate ApplyService
+
+ApplyService -> UserService : sendUser 객체 요청
+activate ApplyService #FFCC11
+activate UserService #FFBBBB
+UserService -> sendUser ** : 조회
+UserService --> ApplyService : sendUser 객체 리턴
+deactivate UserService
+deactivate ApplyService
+
+ApplyService -> UserService : receiveUser 객체 요청
+activate ApplyService #FFCC11
+activate UserService #FFBBBB
+UserService -> receiveUser ** : 조회
+UserService --> ApplyService : receiveUser 객체 리턴
+deactivate UserService
+deactivate ApplyService
+
+ApplyService -> ApplyMapper : Apply 객체 생성 요청
+activate ApplyService #FFCC11
+activate ApplyMapper #FFBBBB
+ApplyMapper -> Apply **: create
+ApplyMapper --> ApplyService : Apply 객체 리턴
+deactivate ApplyMapper
+deactivate ApplyService
+
+sendUser -> Apply : 연관관계 주입
+activate Apply #FFBBBB
+activate sendUser #FFBBBB
+|||
+Apply --> sendUser : 연관관계 주입
+deactivate Apply
+deactivate sendUser
+receiveUser -> Apply : 연관관계 주입
+activate Apply #FFBBBB
+activate receiveUser #FFBBBB
+|||
+Apply --> receiveUser : 연관관계 주입
+deactivate Apply
+deactivate receiveUser
+
+
+ApplyService -> ApplyRepo : Apply 저장 요청
+activate ApplyService #FFCC11
+activate ApplyRepo #FFBBBB
+
+ApplyRepo -> ApplyRepo : Apply 객체 저장
+ApplyRepo -> ApplyService : 저장된 Apply 객체 리턴
+deactivate ApplyRepo
+deactivate ApplyService
+
+ApplyService -> ApplyMapper : 응답 Json 변환 요청
+activate ApplyService #FFCC11
+activate ApplyMapper #FFBBBB
+ApplyMapper -> ApplyMapper : 변환
+ApplyMapper --> ApplyService : 응답 Json 응답
+deactivate ApplyMapper
+deactivate ApplyService
+ApplyService --> ApplyController : 응답 Json 리턴
+deactivate ApplyService
+deactivate ApplyController
+ApplyController --> Actor : 응답 Json 리턴
+deactivate ApplyController
+
+@enduml

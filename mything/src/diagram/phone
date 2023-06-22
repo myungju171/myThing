@@ -1,0 +1,63 @@
+@startuml
+skinparam sequenceMessageAlign reverseDirection
+skinparam responseMessageBelowArrow true
+Actor -> AuthController: 핸드폰 인증번호 요청
+activate AuthController #FFBBBB
+AuthController -> AuthController : 요청 데이터 검증
+
+AuthController -> AuthService : sendAuthNumber() \n            요청
+activate AuthController #FFCC11
+activate AuthService #FFBBBB
+
+alt#Red #LightYellow 조회 성공 케이스
+AuthService -> Redis : 유저 핸드폰 번호 \n     조회 요청
+activate AuthService #FFCC11
+activate Redis #FFBBBB
+Redis -> Redis : 조회 성공
+Redis --> AuthService : 응답 값 리턴
+
+deactivate Redis
+AuthService --> AuthController : 5분 안에 재전송 불가 \n       예외 전달
+deactivate AuthService
+deactivate AuthController
+AuthController --> Actor : 에러 전송
+end
+
+AuthService -> Redis : 유저 핸드폰 번호 \n     조회 요청
+activate AuthController #FFCC11
+activate AuthService #FFCC11
+activate Redis #FFBBBB
+Redis -> Redis !! : 조회 실패
+Redis --> AuthService : 응답 값 리턴
+deactivate AuthService
+deactivate Redis
+
+AuthService -> PasswordService : 랜덤 인증번호 4자리 요청
+activate AuthService #FFCC11
+activate PasswordService #FFBBBB
+PasswordService -> PasswordService : 인증번호 생성
+PasswordService --> AuthService: 인증번호 응답
+deactivate PasswordService
+deactivate AuthService
+
+AuthService -> AuthNumberService : 인증번호 메세지 전송 요청
+activate AuthService #FFCC11
+activate AuthNumberService #FFBBBB
+AuthNumberService -> AuthNumberService : 메세지 전송
+deactivate AuthNumberService
+deactivate AuthService
+
+AuthService -> Redis : 유저 핸드폰 번호 저장 요청
+activate AuthService #FFCC11
+activate Redis #FFBBBB
+Redis -> Redis : 저장
+deactivate AuthService
+deactivate Redis
+
+AuthService --> AuthController : TRUE 값 리턴
+deactivate AuthService
+deactivate AuthController
+
+AuthController --> Actor : 응답 값 리턴
+deactivate AuthController
+@enduml

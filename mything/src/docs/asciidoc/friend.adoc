@@ -113,3 +113,19 @@ include::{snippets}/자신의_생일인_친구목록_조회_성공/http-response
 
 .response-fields
 include::{snippets}/자신의_생일인_친구목록_조회_성공/response-fields.adoc[]
+
+***
+== 친구 삭제
+=== 친구_삭제_성공
+
+.http-request
+include::{snippets}/친구_삭제_성공/http-request.adoc[]
+
+.request-headers
+include::{snippets}/친구_삭제_성공/request-headers.adoc[]
+
+.path-parameters
+include::{snippets}/친구_삭제_성공/path-parameters.adoc[]
+
+.http-response
+include::{snippets}/친구_삭제_성공/http-response.adoc[]

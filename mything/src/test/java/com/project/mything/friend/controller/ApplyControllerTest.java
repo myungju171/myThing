@@ -56,7 +56,7 @@ class ApplyControllerTest {
         given(applyService.createApply(any(), any())).willReturn(RESPONSE_APPLY_ID);
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies/{received-id}", ID1)
+                post("/friends/applies/{received-user-id}", ID1)
                         .param("receivedId", ID2.toString())
                         .header(JWT_HEADER, JWT_TOKEN)
         );
@@ -68,7 +68,7 @@ class ApplyControllerTest {
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
                         pathParameters(
-                                parameterWithName("received-id").description("요청을 받을 아이디 입니다.")
+                                parameterWithName("received-user-id").description("요청을 받을 아이디 입니다.")
                         ),
                         responseFields(
                                 fieldWithPath("applyId").description("생성된 요청 아이디 입니다.")
@@ -82,7 +82,7 @@ class ApplyControllerTest {
         //given
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies/{received-id}", 0)
+                post("/friends/applies/{received-user-id}", 0)
                         .header(JWT_HEADER, JWT_TOKEN)
                         .param("receivedId", ID2.toString())
         );
@@ -92,7 +92,7 @@ class ApplyControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("received-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
+                                parameterWithName("received-user-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
                         ),
                         getRequestHeadersSnippet()
                 ));
@@ -105,7 +105,7 @@ class ApplyControllerTest {
         given(applyService.createApply(any(), any())).willThrow(new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
         //when
         ResultActions perform = mockMvc.perform(
-                post("/friends/applies/{received-id}", NOT_FOUND_ID)
+                post("/friends/applies/{received-user-id}", NOT_FOUND_ID)
                         .header(JWT_HEADER, JWT_TOKEN)
         );
         //then
@@ -115,7 +115,7 @@ class ApplyControllerTest {
                         getDocumentResponse(),
                         getRequestHeadersSnippet(),
                         pathParameters(
-                                parameterWithName("received-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
+                                parameterWithName("received-user-id").description("요청을 받을 아이디 입니다. 0보다 큰 자연수 입니다. ")
                         )
                 ));
     }
