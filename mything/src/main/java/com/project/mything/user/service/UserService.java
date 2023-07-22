@@ -40,11 +40,7 @@ public class UserService {
     private void editAvatar(UserDto.RequestEditProFile requestEditProFile, User dbUser) {
         if (requestEditProFile.getAvatar() == null)
             imageService.deleteImage(dbUser.getId());
-        else changeToNewAvatar(requestEditProFile, dbUser);
-    }
-
-    private void changeToNewAvatar(UserDto.RequestEditProFile requestEditProFile, User dbUser) {
-        imageService.findById(Objects.requireNonNull(requestEditProFile.getAvatar()).getImageId())
+        else imageService.findById(Objects.requireNonNull(requestEditProFile.getAvatar()).getImageId())
                 .mappingToUser(dbUser);
     }
 
