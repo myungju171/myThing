@@ -25,7 +25,7 @@ public class ImageService {
     private final ImageMapper imageMapper;
     private final UserRepository userRepository;
 
-    public ImageDto.SimpleImageDto uploadImage (MultipartFile multipartFile) {
+    public ImageDto.SimpleImageDto uploadImage(MultipartFile multipartFile) {
         String localPath = getLocalPath(multipartFile);
 
         Image image = imageMapper.toImage(localPath,
@@ -46,18 +46,15 @@ public class ImageService {
     public void deleteImage(Long userId) {
         User userWithAvatar = userRepository.findUserWithImage(userId)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.USER_NOT_FOUND));
-        try {
-            Image image = userWithAvatar.getImage();
-            if(image==null) return;
+        Image image = userWithAvatar.getImage();
+        if (image != null) {
             s3Service.deleteImage(image.getLocalPath());
             imageRepository.delete(image);
-        } catch (NullPointerException e) {
-            throw new BusinessLogicException(ErrorCode.AVATAR_MUST_NOT_NULL);
         }
         userWithAvatar.removeImage();
     }
 
     public Image findById(Long imageId) {
-        return imageRepository.findById(imageId).orElseThrow(()->new BusinessLogicException(ErrorCode.IMAGE_NOT_FOUND));
+        return imageRepository.findById(imageId).orElseThrow(() -> new BusinessLogicException(ErrorCode.IMAGE_NOT_FOUND));
     }
 }

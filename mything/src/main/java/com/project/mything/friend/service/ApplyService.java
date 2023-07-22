@@ -7,7 +7,7 @@ import com.project.mything.friend.entity.Apply;
 import com.project.mything.friend.entity.enums.ApplyStatus;
 import com.project.mything.friend.mapper.ApplyMapper;
 import com.project.mything.friend.repository.ApplyRepository;
-import com.project.mything.friend.repository.applyQueryDsl.ApplyQueryRepository;
+import com.project.mything.friend.repository.apply.querydsl.ApplyQueryRepository;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.service.UserService;
