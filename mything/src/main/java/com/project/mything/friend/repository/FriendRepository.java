@@ -1,7 +1,7 @@
 package com.project.mything.friend.repository;
 
 import com.project.mything.friend.entity.Friend;
-import com.project.mything.friend.repository.friendQueryDsl.FriendQueryRepository;
+import com.project.mything.friend.repository.friend.querydsl.FriendQueryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

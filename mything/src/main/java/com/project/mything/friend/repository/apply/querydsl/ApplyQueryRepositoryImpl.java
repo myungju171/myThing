@@ -1,4 +1,4 @@
-package com.project.mything.friend.repository.applyQueryDsl;
+package com.project.mything.friend.repository.apply.querydsl;
 
 import com.project.mything.friend.dto.ApplyDto;
 import com.project.mything.friend.dto.QApplyDto_ResponseSimpleApply;
@@ -41,7 +41,7 @@ public class ApplyQueryRepositoryImpl implements ApplyQueryRepository {
     }
 
     private QUserDto_ResponseSimpleUser applyType(Boolean isReceivedApply) {
-        return isReceivedApply ? receiveApply() : senderApply();
+        return Boolean.TRUE.equals(isReceivedApply) ? receiveApply() : senderApply();
     }
 
     private QUserDto_ResponseSimpleUser senderApply() {
@@ -59,7 +59,7 @@ public class ApplyQueryRepositoryImpl implements ApplyQueryRepository {
     }
 
     private BooleanExpression isReceivedApply(Boolean isReceivedApply, Long userId) {
-        return isReceivedApply ? apply.receiveUser.id.eq(userId) : apply.sendUser.id.eq(userId);
+        return Boolean.TRUE.equals(isReceivedApply) ? apply.receiveUser.id.eq(userId) : apply.sendUser.id.eq(userId);
     }
 
     private BooleanExpression applyStatus(ApplyStatus applyStatus) {

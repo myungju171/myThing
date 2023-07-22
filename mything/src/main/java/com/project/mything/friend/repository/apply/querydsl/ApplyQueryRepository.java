@@ -1,4 +1,4 @@
-package com.project.mything.friend.repository.applyQueryDsl;
+package com.project.mything.friend.repository.apply.querydsl;
 
 import com.project.mything.friend.dto.ApplyDto;
 import com.project.mything.friend.entity.enums.ApplyStatus;
