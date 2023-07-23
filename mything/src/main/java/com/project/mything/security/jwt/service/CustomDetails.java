@@ -1,6 +1,6 @@
 package com.project.mything.security.jwt.service;
 
-import com.project.mything.user.entity.User;
+import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.enums.RoleName;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,10 +16,10 @@ import java.util.Collection;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomDetails implements UserDetails {
 
-    private User user;
+    private UserDto.SecurityUserDetail userDetail;
 
-    public CustomDetails(User user) {
-        this.user = user;
+    public CustomDetails(UserDto.SecurityUserDetail userDetail) {
+        this.userDetail = userDetail;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class CustomDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userDetail.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return userDetail.getEmail();
     }
 
     @Override
