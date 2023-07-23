@@ -18,4 +18,8 @@ public interface UserMapper {
     @Mapping(source = "user.image.id", target = "avatar.imageId")
     @Mapping(source = "user.image.remotePath", target = "avatar.remotePath")
     UserDto.ResponseDetailUser toResponseDetailUser(User user);
+
+    @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.password", target = "password")
+    UserDto.SecurityUserDetail toSecurityUserDetail(User user);
 }
