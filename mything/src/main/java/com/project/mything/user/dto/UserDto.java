@@ -1,5 +1,9 @@
 package com.project.mything.user.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.querydsl.core.annotations.QueryProjection;
 import com.project.mything.image.dto.ImageDto;
 import lombok.*;
@@ -35,6 +39,8 @@ public class UserDto {
         private Long userId;
         private String name;
         private String phone;
+        @JsonSerialize(using = LocalDateSerializer.class)
+        @JsonDeserialize(using = LocalDateDeserializer.class)
         private LocalDate birthday;
         private String infoMessage;
         ImageDto.SimpleImageDto avatar;
@@ -84,5 +90,14 @@ public class UserDto {
         private String originalPassword;
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "영문+숫자+특수문자 8자 이상 20자 이하 입니다.")
         private String newPassword;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SecurityUserDetail {
+        private String email;
+        private String password;
     }
 }

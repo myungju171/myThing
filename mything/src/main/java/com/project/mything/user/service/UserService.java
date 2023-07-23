@@ -3,12 +3,15 @@ package com.project.mything.user.service;
 import com.project.mything.auth.service.PasswordService;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
+import com.project.mything.redis.config.RedisCacheKeys;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.repository.UserRepository;
 import com.project.mything.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import java.util.Objects;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -93,5 +97,11 @@ public class UserService {
         passwordService.validatePassword(requestChangePassword.getOriginalPassword(), dbUser.getPassword());
         dbUser.changePassword(requestChangePassword.getNewPassword());
         dbUser.encodePassword(passwordService);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(key = "#email", value = RedisCacheKeys.USER, cacheManager = "redisCacheManager")
+    public UserDto.SecurityUserDetail findSecurityUserDetail(String email) {
+        return userMapper.toSecurityUserDetail(findUserByEmail(email));
     }
 }

@@ -59,6 +59,21 @@ public class AuthTest {
     }
 
     @Test
+    @DisplayName("로그인 실패 테스트")
+    public void login_fail() throws Exception {
+        //given
+        String content = objectMapper.writeValueAsString(REQUEST_LOGIN);
+        //when
+        ResultActions perform = mockMvc.perform(
+                post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+        //then
+        perform.andExpect(status().isConflict());
+    }
+
+    @Test
     @DisplayName("로그인 성공 테스트")
     public void login_suc() throws Exception {
         //given
@@ -77,21 +92,6 @@ public class AuthTest {
         perform.andExpect(status().isCreated())
                 .andExpect(jsonPath("userId").value(originalUser.getId()))
                 .andExpect(jsonPath("accessToken").exists());
-    }
-
-    @Test
-    @DisplayName("로그인 실패 테스트")
-    public void login_fail() throws Exception {
-        //given
-        String content = objectMapper.writeValueAsString(REQUEST_LOGIN);
-        //when
-        ResultActions perform = mockMvc.perform(
-                post("/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-        //then
-        perform.andExpect(status().isConflict());
     }
 
     @Test

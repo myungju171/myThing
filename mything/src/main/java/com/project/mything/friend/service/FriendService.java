@@ -8,11 +8,13 @@ import com.project.mything.friend.entity.enums.FriendStatus;
 import com.project.mything.friend.mapper.FriendMapper;
 import com.project.mything.friend.repository.FriendRepository;
 import com.project.mything.page.ResponseMultiPageDto;
+import com.project.mything.redis.config.RedisCacheKeys;
 import com.project.mything.user.dto.UserDto;
 import com.project.mything.user.entity.User;
 import com.project.mything.user.mapper.UserMapper;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(key = "#isBirthday.booleanValue()", value = RedisCacheKeys.FRIEND_LIST,cacheManager = "redisCacheManager")
     public ResponseMultiPageDto<FriendDto.ResponseSimpleFriend> getFriendsList(UserDto.UserInfo userInfo,
                                                                                FriendStatus friendStatus,
                                                                                Boolean isBirthday) {
@@ -43,7 +46,7 @@ public class FriendService {
                         friendStatus,
                         isBirthday,
                         PageRequest.of(0, 999));
-        return new ResponseMultiPageDto<FriendDto.ResponseSimpleFriend>(friendList.getContent(), friendList);
+        return new ResponseMultiPageDto<>(friendList.getContent(), friendList);
     }
 
     public void createFriend(Long sendUserId, Long receiveUserId) {

@@ -2,6 +2,7 @@ package com.project.mything.auth.service;
 
 import com.project.mything.auth.dto.AuthDto;
 import com.project.mything.auth.mapper.AuthMapper;
+import com.project.mything.redis.config.RedisCacheKeys;
 import com.project.mything.redis.repository.RedisRepository;
 import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
@@ -12,6 +13,7 @@ import com.project.mything.user.entity.UserRole;
 import com.project.mything.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +71,7 @@ public class AuthService {
             throw new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER);
     }
 
+    @CacheEvict(key = "#requestLogin.email", value = RedisCacheKeys.USER, cacheManager = "redisCacheManager")
     public AuthDto.ResponseLogin login(AuthDto.RequestLogin requestLogin) {
         User dbUser = userService.findUserByEmail(requestLogin.getEmail());
         passwordService.validatePassword(requestLogin.getPassword(), dbUser.getPassword());
@@ -76,7 +79,7 @@ public class AuthService {
     }
 
     public void duplicateEmail(String email) {
-        if (userService.duplicateEmail(email))
+        if (Boolean.TRUE.equals(userService.duplicateEmail(email)))
             throw new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST);
     }
 
