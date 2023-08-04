@@ -1,16 +1,13 @@
 spring:
-  config:
-    activate:
-      on-profile: test
 
   jpa:
     hibernate:
-      ddl-auto: validate # create update create-update
+      ddl-auto: update  # create update create-update
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 500
+        default_batch_fetch_size: 100
     database: mysql
     open-in-view: false
 
@@ -20,20 +17,19 @@ spring:
       max-request-size: 20MB
 
   datasource:
-    url: ""
-    username: ""
-    password: ""
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8:///
 
   redis:
-    host: ""
-    port:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+
 
 logging:
   level:
     org.springframework.web.client: debug
-    org.hibernate.sql: debug
-    org.hibernate.type: trace
+    org.hibernate.sql: info
+    org.hibernate.type: info
     org.springframework.security: debug
 
 server:
@@ -52,10 +48,13 @@ cloud:
       secretKey: ""
     s3:
       bucket: ""
+      name : ""
 
+      dir: ""
     region:
       static: ""
-
+    stack:
+      auto: false
 
 nurigo:
   public: ""
@@ -65,3 +64,4 @@ nurigo:
 naver:
   X-Naver-Client-Id: ""
   X-Naver-Client-Secret: ""
+
