@@ -29,6 +29,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisRepository redisRepository;
     private final UserService userService;
+    private final MailService mailService;
 
     public Boolean sendAuthNumber(AuthDto.RequestAuthNumber requestAuthNumber) {
         if (redisRepository.getData(requestAuthNumber.getPhone()).isPresent())
@@ -48,8 +49,8 @@ public class AuthService {
 
     public AuthDto.ResponseLogin join(AuthDto.RequestJoin requestJoin) {
         duplicatePhone(requestJoin.getPhone());
-        verifiedRandomCode(requestJoin.getPhone(), requestJoin.getAuthNumber());
-        duplicateEmail(requestJoin.getEmail());
+        verifiedRandomCode(requestJoin.getPhone(), requestJoin.getPhoneAuthNumber());
+        verifiedRandomCode(requestJoin.getEmail(), requestJoin.getMailAuthNumber());
         User user = authMapper.toUser(requestJoin);
         user.encodePassword(passwordService);
         addUserRole(user);
@@ -64,8 +65,8 @@ public class AuthService {
         user.getUserRoles().add(userRole);
     }
 
-    private void verifiedRandomCode(String phone, String authNumber) {
-        String randomCode = redisRepository.getData(phone)
+    private void verifiedRandomCode(String key, String authNumber) {
+        String randomCode = redisRepository.getData(key)
                 .orElseThrow(() -> new BusinessLogicException(ErrorCode.NO_MATCH_PHONE_NUMBER));
         if (!randomCode.equals(authNumber))
             throw new BusinessLogicException(ErrorCode.NO_MATCH_AUTH_NUMBER);
@@ -78,9 +79,12 @@ public class AuthService {
         return authMapper.toResponseToken(dbUser, jwtTokenProvider.createToken(dbUser));
     }
 
-    public void duplicateEmail(String email) {
+    public void sendEmailAuthNumber(String email) {
         if (Boolean.TRUE.equals(userService.duplicateEmail(email)))
             throw new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST);
+        String randomCode = passwordService.getRandomCode();
+        redisRepository.saveData(email, randomCode, 1000* 60 * 3L);
+        mailService.sendMail(email, MailService.AUTH_EMAIL_TITLE, "MyThing 인증번호는 " + randomCode + "입니다.");
     }
 
     public void findPassword(AuthDto.RequestFindPassword requestFindPassword) {
