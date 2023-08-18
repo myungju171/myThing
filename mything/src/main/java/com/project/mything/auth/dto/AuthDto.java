@@ -31,7 +31,11 @@ public class AuthDto {
         private String phone;
         @NotBlank
         @Size(min = 4, max = 4)
-        private String authNumber;
+        private String phoneAuthNumber;
+        @NotBlank
+        @Size(min = 4, max = 4)
+        private String mailAuthNumber;
+
     }
 
     @Getter
