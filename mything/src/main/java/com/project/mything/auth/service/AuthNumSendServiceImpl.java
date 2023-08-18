@@ -4,8 +4,8 @@ import com.project.mything.auth.config.PhoneAuthConfig;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -19,7 +19,7 @@ public class AuthNumSendServiceImpl implements AuthNumSendService {
         this.defaultMessageService =
                 NurigoApp.INSTANCE.initialize(phoneAuthConfig.getPublicKey(), phoneAuthConfig.getSecret(), "https://api.coolsms.co.kr");
     }
-
+    @Async("threadPoolTaskExecutor")
     public void send(String toNumber, String randomNumber) {
 
         Message message = new Message();
