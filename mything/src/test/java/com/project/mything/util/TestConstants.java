@@ -63,7 +63,7 @@ public class TestConstants {
     public static final String MEMO = "MEMO";
     public static final Long PRODUCT_ID = 36799089619L;
     private static final Long DIFF_PRODUCT_ID = 36250794620L;
-
+    public static final String MAIL_AUTH_NUMBER = "1234";
 
     public final static LocalDateTime LOCAL_DATE_TIME = LocalDateTime.now();
 
@@ -73,7 +73,9 @@ public class TestConstants {
             .phone(PHONE)
             .password(PASSWORD)
             .birthday(BIRTHDAY)
-            .authNumber(AUTH_NUMBER).build();
+            .phoneAuthNumber(AUTH_NUMBER)
+            .mailAuthNumber(MAIL_AUTH_NUMBER)
+            .build();
 
     public final static AuthDto.RequestAuthNumber REQUEST_AUTH_NUMBER = AuthDto.RequestAuthNumber.builder()
             .phone(PHONE)
