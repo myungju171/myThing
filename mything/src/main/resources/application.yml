@@ -25,6 +25,23 @@ spring:
     host: ""
     port:
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000 #ms
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+            protocols: TLSv1.2
+
+
 logging:
   level:
     org.hibernate.sql: debug

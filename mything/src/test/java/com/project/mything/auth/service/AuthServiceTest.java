@@ -7,6 +7,7 @@ import com.project.mything.exception.BusinessLogicException;
 import com.project.mything.exception.ErrorCode;
 import com.project.mything.user.service.UserService;
 import com.project.mything.security.jwt.service.JwtTokenProvider;
+import com.project.mything.util.TestConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,6 +61,7 @@ class AuthServiceTest {
     public void join_suc() {
         //given
         given(redisRepository.getData(any())).willReturn(Optional.of(AUTH_NUMBER));
+        given(redisRepository.getData(any())).willReturn(Optional.of(TestConstants.MAIL_AUTH_NUMBER));
         given(authMapper.toUser(any())).willReturn(ORIGINAL_USER);
         given(userService.saveUser(any())).willReturn(ORIGINAL_USER);
         given(jwtTokenProvider.createToken(any())).willReturn(ACCESS_KEY);

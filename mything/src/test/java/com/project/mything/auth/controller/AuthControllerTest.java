@@ -164,7 +164,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 )),
                         responseFields(
                                 List.of(
@@ -198,7 +199,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -226,7 +228,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -241,7 +244,8 @@ class AuthControllerTest {
                 .phone(PHONE)
                 .password(INVALID_PASSWORD)
                 .birthday(BIRTHDAY)
-                .authNumber(AUTH_NUMBER).build();
+                .phoneAuthNumber(AUTH_NUMBER)
+                .mailAuthNumber(MAIL_AUTH_NUMBER).build();
         String content = objectMapper.writeValueAsString(INVALID_PASSWORD_REQUEST_JOIN);
 
         //when
@@ -261,7 +265,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -276,7 +281,8 @@ class AuthControllerTest {
                 .phone(PHONE)
                 .password(PASSWORD)
                 .birthday(BIRTHDAY)
-                .authNumber(AUTH_NUMBER).build();
+                .phoneAuthNumber(AUTH_NUMBER)
+                .mailAuthNumber(MAIL_AUTH_NUMBER).build();
         String content = objectMapper.writeValueAsString(INVALID_EMAIL_REQUEST_JOIN);
         //when
         ResultActions perform = mockMvc.perform(
@@ -295,7 +301,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -310,7 +317,8 @@ class AuthControllerTest {
                 .phone(PHONE)
                 .password(PASSWORD)
                 .birthday(BIRTHDAY)
-                .authNumber(AUTH_NUMBER).build();
+                .phoneAuthNumber(AUTH_NUMBER)
+                .mailAuthNumber(MAIL_AUTH_NUMBER).build();
         String content = objectMapper.writeValueAsString(INVALID_NAME_REQUEST_JOIN);
         //when
         ResultActions perform = mockMvc.perform(
@@ -329,7 +337,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -344,7 +353,8 @@ class AuthControllerTest {
                 .phone(PHONE)
                 .password(PASSWORD)
                 .birthday(BIRTHDAY)
-                .authNumber(AUTH_NUMBER).build();
+                .phoneAuthNumber(AUTH_NUMBER)
+                .mailAuthNumber(MAIL_AUTH_NUMBER).build();
         String content = objectMapper.writeValueAsString(INVALID_NAME_REQUEST_JOIN);
         given(authService.join(any())).willThrow(new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST));
         //when
@@ -364,7 +374,8 @@ class AuthControllerTest {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("유저 이름 한글 2자 이상 16자 이하입니다."),
                                         fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저의 생년월일 형식 2023-01-21"),
                                         fieldWithPath("phone").type(JsonFieldType.STRING).description("유저의 핸드폰 번호 '-'을 제거해서 010 포함 11자리 입니다."),
-                                        fieldWithPath("authNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
+                                        fieldWithPath("phoneAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다."),
+                                        fieldWithPath("mailAuthNumber").type(JsonFieldType.STRING).description("전달받은 동일한 인증번호를 입력하셔야 합니다.")
                                 ))
                 ));
     }
@@ -450,7 +461,7 @@ class AuthControllerTest {
                         .param("email", EMAIL)
         );
         //then
-        verify(authService, times(1)).duplicateEmail(any());
+        verify(authService, times(1)).sendEmailAuthNumber(any());
         perform.andExpect(status().isNoContent())
                 .andDo(document("이메일_중복검사_성공",
                         requestParameters(
@@ -469,7 +480,7 @@ class AuthControllerTest {
                         .param("email", INVALID_EMAIL)
         );
         //then
-        verify(authService, times(0)).duplicateEmail(any());
+        verify(authService, times(0)).sendEmailAuthNumber(any());
         perform.andExpect(status().isBadRequest())
                 .andDo(document("이메일_중복검사_실패1",
                         requestParameters(
@@ -482,7 +493,7 @@ class AuthControllerTest {
     @DisplayName("동일한 이메일이 존재하는지 확인시 이메일이 이미 존재하면 409 리턴.")
     public void duplicateEmail_fail1() throws Exception {
         //given
-        doThrow(new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST)).when(authService).duplicateEmail(any());
+        doThrow(new BusinessLogicException(ErrorCode.EMAIL_ALREADY_EXIST)).when(authService).sendEmailAuthNumber(any());
         //when
         ResultActions perform = mockMvc.perform(
                 get("/auth/email")

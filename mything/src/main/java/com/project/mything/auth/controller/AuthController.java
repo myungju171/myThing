@@ -38,8 +38,8 @@ public class AuthController {
 
     @GetMapping("/email")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void duplicateEmail(@Valid @Email @NotBlank @RequestParam String email) {
-        authService.duplicateEmail(email);
+    public void sendEmailAuthNumber(@Valid @Email @NotBlank @RequestParam String email) {
+        authService.sendEmailAuthNumber(email);
     }
 
     @PatchMapping("/password")
